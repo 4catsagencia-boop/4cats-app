@@ -36,8 +36,8 @@ export default function AdminPage() {
                 onClick={() => setActiveSection(item.id)}
                 className={`text-left text-sm px-4 py-2.5 rounded-md transition-colors w-full ${
                   activeSection === item.id
-                    ? "bg-[#f3f3f3] text-[#111] font-medium"
-                    : "text-[#888] hover:text-[#111] hover:bg-[#f7f7f7]"
+                    ? "bg-[#F3EEFF] text-[#7C5CBF] font-medium border-l-2 border-[#7C5CBF] rounded-l-none"
+                    : "text-[#888] hover:text-[#7C5CBF] hover:bg-[#F3EEFF]"
                 }`}
               >
                 {item.label}
@@ -49,7 +49,7 @@ export default function AdminPage() {
         {/* ---- Main area ---- */}
         <main className="min-w-0">
           <header className="mb-10 pb-6 border-b border-[#e5e5e5]">
-            <h1 className="text-2xl font-semibold text-[#111] tracking-tight capitalize">
+            <h1 className="text-2xl font-bold text-[#7C5CBF] tracking-tight capitalize">
               {activeSection}
             </h1>
             <p className="text-sm text-[#888] mt-1">

@@ -67,10 +67,10 @@ export default function CatalogoSection() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-[#111]">Catálogo (Legacy)</h2>
+        <h2 className="text-xl font-semibold text-[#7C5CBF]">Catálogo (Legacy)</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#111] text-white text-sm px-4 py-2 rounded-md hover:bg-[#333] transition-colors"
+          className="bg-[#7C5CBF] text-white text-sm px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-colors"
         >
           {showForm ? "Cerrar" : "Nuevo producto"}
         </button>
@@ -84,7 +84,7 @@ export default function CatalogoSection() {
               <input
                 type="text"
                 required
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
               />
@@ -94,7 +94,7 @@ export default function CatalogoSection() {
               <input
                 type="number"
                 required
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.precio}
                 onChange={(e) => setForm({ ...form, precio: e.target.value })}
               />
@@ -102,7 +102,7 @@ export default function CatalogoSection() {
             <div className="flex flex-col gap-1.5 md:col-span-2">
               <label className="text-xs font-medium text-[#444]">Descripción</label>
               <textarea
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111] resize-none"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] resize-none"
                 rows={2}
                 value={form.descripcion}
                 onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
@@ -111,7 +111,7 @@ export default function CatalogoSection() {
             <div className="flex flex-col gap-1.5 md:col-span-2">
               <label className="text-xs font-medium text-[#444]">Características</label>
               <textarea
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111] resize-none font-mono text-xs"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] resize-none font-mono text-xs"
                 rows={4}
                 value={form.caracteristicas}
                 onChange={(e) => setForm({ ...form, caracteristicas: e.target.value })}
@@ -120,7 +120,7 @@ export default function CatalogoSection() {
           </div>
           <button
             type="submit"
-            className="mt-6 bg-[#111] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#333] transition-colors"
+            className="mt-6 bg-[#7C5CBF] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#6B4DAE] transition-colors"
           >
             Guardar Producto
           </button>
@@ -144,7 +144,7 @@ export default function CatalogoSection() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="hover:bg-[#f9f9f9]">
-                  <td className="px-4 py-4 font-medium text-[#111]">{item.nombre}</td>
+                  <td className="px-4 py-4 font-medium text-[#7C5CBF]">{item.nombre}</td>
                   <td className="px-4 py-4 text-[#555]">{item.precio}</td>
                   <td className="px-4 py-4 text-right text-[#888]">No editable</td>
                 </tr>

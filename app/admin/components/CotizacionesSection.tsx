@@ -183,10 +183,10 @@ export default function CotizacionesSection() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-[#111]">Cotizaciones</h2>
+        <h2 className="text-xl font-semibold text-[#7C5CBF]">Cotizaciones</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#111] text-white text-sm px-4 py-2 rounded-md hover:bg-[#333] transition-colors"
+          className="bg-[#7C5CBF] text-white text-sm px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-colors"
         >
           {showForm ? "Cerrar" : "Nueva cotización"}
         </button>
@@ -197,9 +197,9 @@ export default function CotizacionesSection() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Cliente */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-sm font-semibold text-[#111]">Información del Cliente</h3>
+              <h3 className="text-sm font-semibold text-[#7C5CBF]">Información del Cliente</h3>
               <select
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.cliente_id}
                 onChange={(e) => setForm({ ...form, cliente_id: e.target.value })}
                 required
@@ -215,32 +215,32 @@ export default function CotizacionesSection() {
                 <div className="flex flex-col gap-3 p-4 border border-[#e5e5e5] rounded bg-white">
                   <input
                     placeholder="Nombre"
-                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                     value={form.nuevo_cliente.nombre}
                     onChange={(e) => setForm({ ...form, nuevo_cliente: { ...form.nuevo_cliente, nombre: e.target.value }})}
                     required
                   />
                   <input
                     placeholder="Email"
-                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                     value={form.nuevo_cliente.email}
                     onChange={(e) => setForm({ ...form, nuevo_cliente: { ...form.nuevo_cliente, email: e.target.value }})}
                   />
                   <input
                     placeholder="Teléfono"
-                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                     value={form.nuevo_cliente.telefono}
                     onChange={(e) => setForm({ ...form, nuevo_cliente: { ...form.nuevo_cliente, telefono: e.target.value }})}
                   />
                   <input
                     placeholder="Empresa"
-                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                     value={form.nuevo_cliente.empresa}
                     onChange={(e) => setForm({ ...form, nuevo_cliente: { ...form.nuevo_cliente, empresa: e.target.value }})}
                   />
                   <input
                     placeholder="RUT"
-                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                    className="text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                     value={form.nuevo_cliente.rut}
                     onChange={(e) => setForm({ ...form, nuevo_cliente: { ...form.nuevo_cliente, rut: e.target.value }})}
                   />
@@ -250,9 +250,9 @@ export default function CotizacionesSection() {
 
             {/* Plan / Items */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-sm font-semibold text-[#111]">Plan y Servicios</h3>
+              <h3 className="text-sm font-semibold text-[#7C5CBF]">Plan y Servicios</h3>
               <select
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.plan_id}
                 onChange={(e) => setForm({ ...form, plan_id: e.target.value })}
               >
@@ -269,7 +269,7 @@ export default function CotizacionesSection() {
                     <div key={index} className="flex gap-2">
                       <input
                         placeholder="Descripción"
-                        className="flex-1 text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                        className="flex-1 text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                         value={item.descripcion}
                         onChange={(e) => {
                           const newItems = [...form.items_manuales];
@@ -280,7 +280,7 @@ export default function CotizacionesSection() {
                       <input
                         type="number"
                         placeholder="Precio"
-                        className="w-24 text-sm px-3 py-1.5 border border-[#e5e5e5] rounded"
+                        className="w-24 text-sm px-3 py-1.5 border border-[#e5e5e5] rounded focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                         value={item.precio}
                         onChange={(e) => {
                           const newItems = [...form.items_manuales];
@@ -303,7 +303,7 @@ export default function CotizacionesSection() {
                   <button
                     type="button"
                     onClick={() => setForm({ ...form, items_manuales: [...form.items_manuales, { descripcion: "", precio: 0 }] })}
-                    className="text-xs text-[#111] border border-dashed border-[#e5e5e5] py-2 rounded hover:bg-[#f9f9f9]"
+                    className="text-xs text-[#7C5CBF] border border-dashed border-[#e5e5e5] py-2 rounded hover:bg-[#F3EEFF]"
                   >
                     + Agregar ítem manual
                   </button>
@@ -312,7 +312,7 @@ export default function CotizacionesSection() {
 
               <textarea
                 placeholder="Notas adicionales..."
-                className="text-sm px-3.5 py-2 border border-[#e5e5e5] rounded min-h-[100px]"
+                className="text-sm px-3.5 py-2 border border-[#e5e5e5] rounded min-h-[100px] focus:ring-1 focus:ring-[#7C5CBF] outline-none"
                 value={form.notas}
                 onChange={(e) => setForm({ ...form, notas: e.target.value })}
               />
@@ -321,7 +321,7 @@ export default function CotizacionesSection() {
 
           <button
             type="submit"
-            className="mt-8 bg-[#111] text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#333] transition-colors"
+            className="mt-8 bg-[#7C5CBF] text-white text-sm px-6 py-2.5 rounded-md hover:bg-[#6B4DAE] transition-colors"
           >
             Generar y Guardar Cotización
           </button>
@@ -350,7 +350,7 @@ export default function CotizacionesSection() {
                 <tr key={cot.id} className="hover:bg-[#f9f9f9]">
                   <td className="px-4 py-4 font-mono text-xs">{String(cot.numero).padStart(4, "0")}</td>
                   <td className="px-4 py-4">
-                    <div className="font-medium text-[#111]">{cot.cliente_nombre}</div>
+                    <div className="font-medium text-[#7C5CBF]">{cot.cliente_nombre}</div>
                     <div className="text-[10px] text-[#888] uppercase tracking-wider">{cot.cliente_empresa || "Particular"}</div>
                   </td>
                   <td className="px-4 py-4 text-[#555]">{cot.plan_nombre}</td>
@@ -369,7 +369,7 @@ export default function CotizacionesSection() {
                   <td className="px-4 py-4 text-right">
                     <button
                       onClick={() => handleDownloadPDF(cot)}
-                      className="text-xs text-[#111] border border-[#e5e5e5] px-2.5 py-1 rounded hover:bg-[#f3f3f3] transition-colors"
+                      className="text-xs text-[#7C5CBF] border border-[#e5e5e5] px-2.5 py-1 rounded hover:bg-[#F3EEFF] transition-colors"
                     >
                       PDF
                     </button>

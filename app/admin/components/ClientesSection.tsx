@@ -77,10 +77,10 @@ export default function ClientesSection() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-[#111]">Clientes</h2>
+        <h2 className="text-xl font-semibold text-[#7C5CBF]">Clientes</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#111] text-white text-sm px-4 py-2 rounded-md hover:bg-[#333] transition-colors"
+          className="bg-[#7C5CBF] text-white text-sm px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-colors"
         >
           {showForm ? "Cerrar" : "Nuevo cliente"}
         </button>
@@ -94,7 +94,7 @@ export default function ClientesSection() {
               <input
                 type="text"
                 required
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
               />
@@ -103,7 +103,7 @@ export default function ClientesSection() {
               <label className="text-xs font-medium text-[#444]">Email</label>
               <input
                 type="email"
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
@@ -112,7 +112,7 @@ export default function ClientesSection() {
               <label className="text-xs font-medium text-[#444]">Teléfono</label>
               <input
                 type="text"
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.telefono}
                 onChange={(e) => setForm({ ...form, telefono: e.target.value })}
               />
@@ -121,7 +121,7 @@ export default function ClientesSection() {
               <label className="text-xs font-medium text-[#444]">Empresa</label>
               <input
                 type="text"
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.empresa}
                 onChange={(e) => setForm({ ...form, empresa: e.target.value })}
               />
@@ -130,7 +130,7 @@ export default function ClientesSection() {
               <label className="text-xs font-medium text-[#444]">RUT</label>
               <input
                 type="text"
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.rut}
                 onChange={(e) => setForm({ ...form, rut: e.target.value })}
               />
@@ -139,7 +139,7 @@ export default function ClientesSection() {
               <label className="text-xs font-medium text-[#444]">Dirección</label>
               <input
                 type="text"
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.direccion}
                 onChange={(e) => setForm({ ...form, direccion: e.target.value })}
               />
@@ -147,7 +147,7 @@ export default function ClientesSection() {
             <div className="flex flex-col gap-1.5 md:col-span-2">
               <label className="text-xs font-medium text-[#444]">Notas</label>
               <textarea
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111] resize-none"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] resize-none"
                 rows={2}
                 value={form.notas}
                 onChange={(e) => setForm({ ...form, notas: e.target.value })}
@@ -156,7 +156,7 @@ export default function ClientesSection() {
           </div>
           <button
             type="submit"
-            className="mt-6 bg-[#111] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#333] transition-colors"
+            className="mt-6 bg-[#7C5CBF] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#6B4DAE] transition-colors"
           >
             Guardar Cliente
           </button>
@@ -182,7 +182,7 @@ export default function ClientesSection() {
             ) : (
               clientes.map((cliente) => (
                 <tr key={cliente.id} className="hover:bg-[#f9f9f9]">
-                  <td className="px-4 py-4 font-medium text-[#111]">{cliente.nombre}</td>
+                  <td className="px-4 py-4 font-medium text-[#7C5CBF]">{cliente.nombre}</td>
                   <td className="px-4 py-4 text-[#555]">{cliente.empresa || "-"}</td>
                   <td className="px-4 py-4 text-[#555]">{cliente.email || "-"}</td>
                   <td className="px-4 py-4 text-[#555]">{cliente.telefono || "-"}</td>

@@ -100,10 +100,10 @@ export default function PlanesSection() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-[#111]">Planes</h2>
+        <h2 className="text-xl font-semibold text-[#7C5CBF]">Planes</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#111] text-white text-sm px-4 py-2 rounded-md hover:bg-[#333] transition-colors"
+          className="bg-[#7C5CBF] text-white text-sm px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-colors"
         >
           {showForm ? "Cerrar" : "Nuevo plan"}
         </button>
@@ -117,7 +117,7 @@ export default function PlanesSection() {
               <input
                 type="text"
                 required
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
               />
@@ -127,7 +127,7 @@ export default function PlanesSection() {
               <input
                 type="number"
                 required
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111]"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]"
                 value={form.precio}
                 onChange={(e) => setForm({ ...form, precio: e.target.value })}
               />
@@ -135,7 +135,7 @@ export default function PlanesSection() {
             <div className="flex flex-col gap-1.5 md:col-span-2">
               <label className="text-xs font-medium text-[#444]">Descripción</label>
               <textarea
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111] resize-none"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] resize-none"
                 rows={2}
                 value={form.descripcion}
                 onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
@@ -144,7 +144,7 @@ export default function PlanesSection() {
             <div className="flex flex-col gap-1.5 md:col-span-2">
               <label className="text-xs font-medium text-[#444]">Características (una por línea)</label>
               <textarea
-                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#111] resize-none font-mono text-xs"
+                className="w-full text-sm px-3.5 py-2 rounded-md border border-[#e5e5e5] outline-none focus:ring-1 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] resize-none font-mono text-xs"
                 rows={4}
                 value={form.caracteristicas}
                 onChange={(e) => setForm({ ...form, caracteristicas: e.target.value })}
@@ -153,7 +153,7 @@ export default function PlanesSection() {
           </div>
           <button
             type="submit"
-            className="mt-6 bg-[#111] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#333] transition-colors"
+            className="mt-6 bg-[#7C5CBF] text-white text-sm px-5 py-2.5 rounded-md hover:bg-[#6B4DAE] transition-colors"
           >
             Guardar Plan
           </button>
@@ -179,7 +179,7 @@ export default function PlanesSection() {
               planes.map((plan) => (
                 <tr key={plan.id} className="hover:bg-[#f9f9f9]">
                   <td className="px-4 py-4">
-                    <div className="font-medium text-[#111]">{plan.nombre}</div>
+                    <div className="font-medium text-[#7C5CBF]">{plan.nombre}</div>
                     <div className="text-xs text-[#888] line-clamp-1">{plan.descripcion}</div>
                   </td>
                   <td className="px-4 py-4 text-[#555]">{formatCLP(plan.precio)}</td>
@@ -188,7 +188,7 @@ export default function PlanesSection() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleTogglePublicado(plan.id, plan.publicado)}
-                          className={`w-8 h-4 rounded-full relative transition-colors ${plan.publicado ? "bg-[#111]" : "bg-[#e5e5e5]"}`}
+                          className={`w-8 h-4 rounded-full relative transition-colors ${plan.publicado ? "bg-[#7C5CBF]" : "bg-[#e5e5e5]"}`}
                         >
                           <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform ${plan.publicado ? "left-[1.125rem]" : "left-0.5"}`} />
                         </button>
@@ -197,7 +197,7 @@ export default function PlanesSection() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleToggleDestacado(plan.id, plan.destacado)}
-                          className={`w-8 h-4 rounded-full relative transition-colors ${plan.destacado ? "bg-[#111]" : "bg-[#e5e5e5]"}`}
+                          className={`w-8 h-4 rounded-full relative transition-colors ${plan.destacado ? "bg-[#7C5CBF]" : "bg-[#e5e5e5]"}`}
                         >
                           <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform ${plan.destacado ? "left-[1.125rem]" : "left-0.5"}`} />
                         </button>
