@@ -4,27 +4,33 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-
-const plans = ["Emprendedor", "Pyme Activa", "Corporativo"];
+import { fetchPlanesPublicados, supabase, insertCotizacion } from "@/utils/supabase";
 
 function CotizarForm() {
   const searchParams = useSearchParams();
   const planParam = searchParams.get("plan") ?? "";
 
+  const [planes, setPlanes] = useState<any[]>([]);
   const [form, setForm] = useState({
     nombre: "",
     email: "",
     telefono: "",
-    plan: plans.includes(planParam) ? planParam : "",
+    plan: "",
     mensaje: "",
   });
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof form>>({});
 
   useEffect(() => {
-    if (plans.includes(planParam)) {
-      setForm((f) => ({ ...f, plan: planParam }));
+    async function loadPlanes() {
+      const data = await fetchPlanesPublicados();
+      setPlanes(data || []);
+      if (data && data.some(p => p.nombre === planParam)) {
+        setForm(f => ({ ...f, plan: planParam }));
+      }
     }
+    loadPlanes();
   }, [planParam]);
 
   function validate() {
@@ -37,8 +43,6 @@ function CotizarForm() {
     }
     if (!form.telefono.trim()) {
       errs.telefono = "El teléfono es requerido.";
-    } else if (!/^\+?[\d\s\-()]{7,}$/.test(form.telefono)) {
-      errs.telefono = "Ingresa un teléfono válido.";
     }
     if (!form.plan) errs.plan = "Selecciona un plan.";
     return errs;
@@ -56,21 +60,80 @@ function CotizarForm() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
     }
-    setSubmitted(true);
+
+    setLoading(true);
+
+    try {
+      // 1. Buscar o Crear Cliente
+      let clienteId = null;
+      const { data: existingClient } = await supabase
+        .from("clientes")
+        .select("id")
+        .eq("email", form.email.trim())
+        .single();
+
+      if (existingClient) {
+        clienteId = existingClient.id;
+      } else {
+        const { data: newClient, error: clientError } = await supabase
+          .from("clientes")
+          .insert([{
+            nombre: form.nombre.trim(),
+            email: form.email.trim(),
+            telefono: form.telefono.trim()
+          }])
+          .select()
+          .single();
+        
+        if (clientError) throw clientError;
+        clienteId = newClient.id;
+      }
+
+      // 2. Guardar Cotización
+      const selectedPlan = planes.find(p => p.nombre === form.plan);
+      const subtotal = selectedPlan?.precio || 0;
+      const impuesto = subtotal * 0.19;
+      const total = subtotal + impuesto;
+
+      const { error: quoteError } = await supabase
+        .from("cotizaciones")
+        .insert([{
+          cliente_id: clienteId,
+          cliente_nombre: form.nombre.trim(),
+          cliente_email: form.email.trim(),
+          cliente_telefono: form.telefono.trim(),
+          plan_nombre: form.plan,
+          items: selectedPlan ? [{ descripcion: selectedPlan.nombre, precio: selectedPlan.precio }] : [],
+          subtotal,
+          impuesto,
+          total,
+          notas: form.mensaje,
+          estado: "pendiente"
+        }]);
+
+      if (quoteError) throw quoteError;
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error saving quote:", error);
+      alert("Hubo un error al enviar tu solicitud. Por favor intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="max-w-md mx-auto px-6 pt-32 pb-20 text-center">
+        <div className="max-md mx-auto px-6 pt-32 pb-20 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-[#e5e5e5] mb-6">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -143,7 +206,7 @@ function CotizarForm() {
                     strokeLinejoin="round"
                   />
                 ),
-                label: "hola@4cats.mx",
+                label: "luis.saez@4cats.cl",
               },
               {
                 icon: (
@@ -155,7 +218,7 @@ function CotizarForm() {
                     strokeLinejoin="round"
                   />
                 ),
-                label: "+52 55 0000 0000",
+                label: "+56 9 3481 9569",
               },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
@@ -187,9 +250,10 @@ function CotizarForm() {
               <input
                 name="nombre"
                 type="text"
-                placeholder="María García"
+                placeholder="Juan Pérez"
                 value={form.nombre}
                 onChange={handleChange}
+                disabled={loading}
                 className={inputClass(!!errors.nombre)}
               />
             </Field>
@@ -199,9 +263,10 @@ function CotizarForm() {
               <input
                 name="email"
                 type="email"
-                placeholder="maria@empresa.com"
+                placeholder="juan@empresa.cl"
                 value={form.email}
                 onChange={handleChange}
+                disabled={loading}
                 className={inputClass(!!errors.email)}
               />
             </Field>
@@ -211,9 +276,10 @@ function CotizarForm() {
               <input
                 name="telefono"
                 type="tel"
-                placeholder="+52 55 0000 0000"
+                placeholder="+56 9 0000 0000"
                 value={form.telefono}
                 onChange={handleChange}
+                disabled={loading}
                 className={inputClass(!!errors.telefono)}
               />
             </Field>
@@ -224,12 +290,13 @@ function CotizarForm() {
                 name="plan"
                 value={form.plan}
                 onChange={handleChange}
+                disabled={loading}
                 className={inputClass(!!errors.plan)}
               >
                 <option value="">Selecciona un plan</option>
-                {plans.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
+                {planes.map((p) => (
+                  <option key={p.id} value={p.nombre}>
+                    {p.nombre}
                   </option>
                 ))}
               </select>
@@ -243,15 +310,17 @@ function CotizarForm() {
                 placeholder="Cuéntanos brevemente tu proyecto o necesidad…"
                 value={form.mensaje}
                 onChange={handleChange}
+                disabled={loading}
                 className={`${inputClass(false)} resize-none`}
               />
             </Field>
 
             <button
               type="submit"
-              className="mt-1 w-full bg-[#111] text-white text-sm font-medium py-2.5 rounded-md hover:bg-[#333] transition-colors"
+              disabled={loading}
+              className="mt-1 w-full bg-[#111] text-white text-sm font-medium py-2.5 rounded-md hover:bg-[#333] transition-colors disabled:opacity-50"
             >
-              Enviar solicitud
+              {loading ? "Enviando..." : "Enviar solicitud"}
             </button>
 
             <p className="text-xs text-center text-[#aaa]">

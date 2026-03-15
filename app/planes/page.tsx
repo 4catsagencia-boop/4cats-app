@@ -1,71 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import { fetchPlanesPublicados } from "@/utils/supabase";
 
-const plans = [
-  {
-    name: "Emprendedor",
-    price: "$299",
-    period: "/mes",
-    description: "Para negocios que están dando sus primeros pasos digitales.",
-    features: [
-      "Sitio web de 3 páginas",
-      "Dominio incluido",
-      "Hosting básico",
-      "Soporte por email",
-      "1 revisión mensual",
-    ],
-    cta: "Empezar",
-    featured: false,
-  },
-  {
-    name: "Pyme Activa",
-    price: "$699",
-    period: "/mes",
-    description: "El plan más elegido por medianas empresas en crecimiento.",
-    features: [
-      "Sitio web de hasta 10 páginas",
-      "Dominio + hosting premium",
-      "SEO básico incluido",
-      "Integración con redes sociales",
-      "Soporte prioritario",
-      "4 revisiones mensuales",
-      "Analíticas mensuales",
-    ],
-    cta: "Elegir Pyme Activa",
-    featured: true,
-  },
-  {
-    name: "Corporativo",
-    price: "$1,499",
-    period: "/mes",
-    description: "Solución completa para empresas con necesidades avanzadas.",
-    features: [
-      "Sitio web sin límite de páginas",
-      "Infraestructura dedicada",
-      "SEO avanzado + SEM",
-      "E-commerce incluido",
-      "Gerente de cuenta asignado",
-      "Revisiones ilimitadas",
-      "Reportes semanales",
-    ],
-    cta: "Contactar ventas",
-    featured: false,
-  },
-];
+interface Plan {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  caracteristicas: string[];
+  destacado: boolean;
+}
 
-const featureRows = [
-  { label: "Páginas incluidas", values: ["3 páginas", "Hasta 10 páginas", "Sin límite"] },
-  { label: "Dominio", values: ["Incluido", "Incluido", "Incluido"] },
-  { label: "Hosting", values: ["Básico", "Premium", "Dedicado"] },
-  { label: "SEO", values: ["—", "Básico", "Avanzado + SEM"] },
-  { label: "E-commerce", values: ["—", "—", "Incluido"] },
-  { label: "Redes sociales", values: ["—", "Integración", "Gestión completa"] },
-  { label: "Soporte", values: ["Email", "Prioritario", "Cuenta dedicada"] },
-  { label: "Revisiones", values: ["1/mes", "4/mes", "Ilimitadas"] },
-  { label: "Reportes", values: ["—", "Mensuales", "Semanales"] },
-];
+const formatCLP = (precio: number) => {
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(precio);
+};
 
 export default function PlanesPage() {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadPlans() {
+      try {
+        const data = await fetchPlanesPublicados();
+        setPlans(data || []);
+      } catch (error) {
+        console.error("Error loading plans:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPlans();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -86,135 +59,90 @@ export default function PlanesPage() {
 
       {/* Pricing cards */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e5e5e5] border border-[#e5e5e5] rounded-xl overflow-hidden">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`flex flex-col p-8 ${
-                plan.featured ? "bg-[#111] text-white" : "bg-white text-[#111]"
-              }`}
-            >
-              {plan.featured && (
-                <span className="inline-block text-[10px] font-semibold tracking-widest uppercase bg-white text-[#111] rounded-full px-2.5 py-0.5 mb-5 self-start">
-                  Más popular
-                </span>
-              )}
-              <p
-                className={`text-xs font-semibold tracking-widest uppercase mb-2 ${
-                  plan.featured ? "text-[#aaa]" : "text-[#888]"
-                }`}
-              >
-                {plan.name}
-              </p>
-              <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-3xl font-semibold tracking-tight">
-                  {plan.price}
-                </span>
-                <span
-                  className={`text-sm ${
-                    plan.featured ? "text-[#aaa]" : "text-[#888]"
-                  }`}
-                >
-                  {plan.period}
-                </span>
-              </div>
-              <p
-                className={`text-sm leading-relaxed mb-7 ${
-                  plan.featured ? "text-[#bbb]" : "text-[#666]"
-                }`}
-              >
-                {plan.description}
-              </p>
-
-              <ul className="flex flex-col gap-2.5 mb-8">
-                {plan.features.map((feat) => (
-                  <li key={feat} className="flex items-start gap-2.5 text-sm">
-                    <svg
-                      className={`mt-0.5 shrink-0 ${
-                        plan.featured ? "text-white" : "text-[#111]"
-                      }`}
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M2.5 7L5.5 10L11.5 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className={plan.featured ? "text-[#ddd]" : "text-[#444]"}>
-                      {feat}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-auto">
-                <Link
-                  href={`/cotizar?plan=${encodeURIComponent(plan.name)}`}
-                  className={`block text-center text-sm font-medium py-2.5 rounded-md transition-colors ${
-                    plan.featured
-                      ? "bg-white text-[#111] hover:bg-[#f0f0f0]"
-                      : "border border-[#e5e5e5] text-[#111] hover:bg-[#f5f5f5]"
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="border-t border-[#e5e5e5]" />
-      </div>
-
-      {/* Comparison table */}
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <h2 className="text-xl font-semibold tracking-tight text-[#111] mb-10">
-          Comparación detallada
-        </h2>
-
-        <div className="w-full">
-          {/* Table header */}
-          <div className="grid grid-cols-4 border-b border-[#e5e5e5] pb-3 mb-0">
-            <div className="text-xs font-semibold text-[#888] uppercase tracking-wider" />
+        {loading ? (
+          <div className="py-20 text-center text-[#888]">Cargando planes...</div>
+        ) : plans.length === 0 ? (
+          <div className="py-20 text-center text-[#888] border border-dashed border-[#e5e5e5] rounded-xl">
+            <p className="text-lg font-medium text-[#111]">Próximamente</p>
+            <p className="text-sm mt-1">Estamos actualizando nuestros planes para ti.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e5e5e5] border border-[#e5e5e5] rounded-xl overflow-hidden">
             {plans.map((plan) => (
-              <div key={plan.name} className="text-center">
+              <div
+                key={plan.id}
+                className={`flex flex-col p-8 ${
+                  plan.destacado ? "bg-[#111] text-white" : "bg-white text-[#111]"
+                }`}
+              >
+                {plan.destacado && (
+                  <span className="inline-block text-[10px] font-semibold tracking-widest uppercase bg-white text-[#111] rounded-full px-2.5 py-0.5 mb-5 self-start">
+                    Más popular
+                  </span>
+                )}
                 <p
-                  className={`text-xs font-semibold uppercase tracking-widest ${
-                    plan.featured ? "text-[#111]" : "text-[#888]"
+                  className={`text-xs font-semibold tracking-widest uppercase mb-2 ${
+                    plan.destacado ? "text-[#aaa]" : "text-[#888]"
                   }`}
                 >
-                  {plan.name}
+                  {plan.nombre}
                 </p>
+                <div className="flex items-baseline gap-1 mb-3">
+                  <span className="text-3xl font-semibold tracking-tight">
+                    {formatCLP(plan.precio)}
+                  </span>
+                </div>
+                <p
+                  className={`text-sm leading-relaxed mb-7 ${
+                    plan.destacado ? "text-[#bbb]" : "text-[#666]"
+                  }`}
+                >
+                  {plan.descripcion}
+                </p>
+
+                <ul className="flex flex-col gap-2.5 mb-8">
+                  {plan.caracteristicas.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm">
+                      <svg
+                        className={`mt-0.5 shrink-0 ${
+                          plan.destacado ? "text-white" : "text-[#111]"
+                        }`}
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                      >
+                        <path
+                          d="M2.5 7L5.5 10L11.5 4"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className={plan.destacado ? "text-[#ddd]" : "text-[#444]"}>
+                        {feat}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-auto">
+                  <Link
+                    href={`/cotizar?plan=${encodeURIComponent(plan.nombre)}`}
+                    className={`block text-center text-sm font-medium py-2.5 rounded-md transition-colors ${
+                      plan.destacado
+                        ? "bg-white text-[#111] hover:bg-[#f0f0f0]"
+                        : "border border-[#e5e5e5] text-[#111] hover:bg-[#f5f5f5]"
+                    }`}
+                  >
+                    Empezar
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
-
-          {/* Table rows */}
-          {featureRows.map((row, i) => (
-            <div
-              key={row.label}
-              className={`grid grid-cols-4 py-3.5 border-b border-[#e5e5e5] ${
-                i % 2 === 0 ? "bg-white" : "bg-[#fafafa]"
-              }`}
-            >
-              <div className="text-sm text-[#444] font-medium">{row.label}</div>
-              {row.values.map((val, vi) => (
-                <div key={vi} className="text-center text-sm text-[#555]">
-                  {val}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+        )}
       </section>
 
       {/* Footer CTA */}
