@@ -30,6 +30,26 @@ export default function Home() {
             Cotizar gratis
           </Link>
         </div>
+
+        <div className="mt-20 pt-10 border-t border-[#e5e5e5]">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#888] mb-4">
+            Contacto
+          </p>
+          <div className="flex flex-col gap-2">
+            <a
+              href="tel:+56934819569"
+              className="text-sm text-[#444] hover:text-[#111] transition-colors"
+            >
+              +56 9 3481 9569
+            </a>
+            <a
+              href="mailto:luis.saez@4cats.cl"
+              className="text-sm text-[#444] hover:text-[#111] transition-colors"
+            >
+              luis.saez@4cats.cl
+            </a>
+          </div>
+        </div>
       </main>
     </div>
   );
