@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +14,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "4Cats — Soluciones digitales",
-  description: "Planes y cotizaciones para tu negocio",
+  title: "4cats — Agencia digital Chile",
+  description: "Diseñamos, desarrollamos y posicionamos tu presencia digital. Planes claros, sin costos ocultos, con resultados medibles.",
+  keywords: ["agencia digital", "Chile", "diseño web", "desarrollo web", "SEO", "marketing digital"],
+  authors: [{ name: "4cats" }],
+  openGraph: {
+    title: "4cats — Agencia digital Chile",
+    description: "Diseñamos, desarrollamos y posicionamos tu presencia digital.",
+    url: "https://4cats.cl",
+    siteName: "4cats",
+    locale: "es_CL",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -23,11 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="es">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
