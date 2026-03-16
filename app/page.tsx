@@ -22,169 +22,151 @@ function PawIcon({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 function LucyCat({ isHovered }: { isHovered: boolean }) {
+  const c = "#F5A855"
   return (
-    <svg width="130" height="150" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="130" height="148" viewBox="0 0 100 128" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Sombra */}
-      <ellipse cx="50" cy="111" rx="28" ry="4" fill="#d4a86a" opacity="0.5" />
-      {/* Orejas */}
-      <path d="M20 50 L10 16 L38 42 Z" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M80 50 L90 16 L62 42 Z" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M22 47 L15 22 L36 42 Z" fill="#ffcba4" />
-      <path d="M78 47 L85 22 L64 42 Z" fill="#ffcba4" />
+      <ellipse cx="50" cy="124" rx="26" ry="4" fill={c} opacity="0.25" />
+      {/* Cola — misma silueta, detrás del cuerpo */}
+      <path d="M75 97 Q100 76 93 52 Q87 32 70 38" stroke={c} strokeWidth="13" strokeLinecap="round" fill="none" />
+      {/* Cuerpo */}
+      <ellipse cx="50" cy="100" rx="32" ry="20" fill={c} />
       {/* Cabeza */}
-      <circle cx="50" cy="72" r="36" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" />
-      {/* Cachetes */}
-      <ellipse cx="27" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
-      <ellipse cx="73" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
+      <circle cx="50" cy="66" r="28" fill={c} />
+      {/* Orejas */}
+      <path d="M26 52 L17 24 L42 46 Z" fill={c} />
+      <path d="M74 52 L83 24 L58 46 Z" fill={c} />
+      {/* Patas */}
+      <ellipse cx="36" cy="116" rx="13" ry="7" fill={c} />
+      <ellipse cx="64" cy="116" rx="13" ry="7" fill={c} />
       {/* Ojos */}
-      <circle cx="37" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="63" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="38" cy="68" r={isHovered ? 6 : 5} fill="#4a7c59" />
-      <circle cx="64" cy="68" r={isHovered ? 6 : 5} fill="#4a7c59" />
-      <circle cx="40" cy="66" r="2" fill="white" />
-      <circle cx="66" cy="66" r="2" fill="white" />
-      {/* Nariz y boca */}
-      <path d="M47 78 L50 82 L53 78" fill="#ff9a9a" stroke="#2d2d2d" strokeWidth="1" strokeLinejoin="round" />
-      <path d="M46 83 Q50 87 54 83" stroke="#2d2d2d" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Bigotes */}
-      <path d="M35 75 L14 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M35 79 L14 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 75 L86 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 79 L86 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
+      <circle cx="39" cy="64" r="6" fill="white" />
+      <circle cx="61" cy="64" r="6" fill="white" />
+      <circle cx="40" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="62" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="41" cy="63" r="1.2" fill="white" />
+      <circle cx="63" cy="63" r="1.2" fill="white" />
+      {/* Nariz */}
+      <path d="M48 72 L50 75 L52 72" fill="white" opacity="0.6" />
       {/* Corona */}
-      <path d="M24 44 L28 26 L38 36 L50 18 L62 36 L72 26 L76 44 Z"
-        fill="#FFD700" stroke="#b8860b" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M25 44 L75 44" stroke="#b8860b" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="50" cy="19" r="3.5" fill="#ff6b9d" stroke="#b8860b" strokeWidth="1" />
-      <circle cx="29" cy="27" r="2.5" fill="#ff6b9d" stroke="#b8860b" strokeWidth="1" />
-      <circle cx="71" cy="27" r="2.5" fill="#ff6b9d" stroke="#b8860b" strokeWidth="1" />
+      <path d="M25 44 L29 27 L39 37 L50 19 L61 37 L71 27 L75 44 Z" fill="#FFD700" />
+      <rect x="25" y="43" width="50" height="5" rx="2" fill="#FFD700" />
+      <circle cx="50" cy="20" r="3.5" fill="white" opacity="0.9" />
+      <circle cx="30" cy="28" r="2.5" fill="white" opacity="0.8" />
+      <circle cx="70" cy="28" r="2.5" fill="white" opacity="0.8" />
     </svg>
   )
 }
 
 function BillieCatCard({ isHovered }: { isHovered: boolean }) {
+  const c = "#9B8EB2"
   return (
-    <svg width="130" height="150" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="130" height="148" viewBox="0 0 100 128" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Sombra */}
-      <ellipse cx="50" cy="111" rx="28" ry="4" fill="#b0b0b0" opacity="0.4" />
-      {/* Orejas */}
-      <path d="M20 50 L10 16 L38 42 Z" fill="#e8e8e8" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M80 50 L90 16 L62 42 Z" fill="#e8e8e8" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M22 47 L15 22 L36 42 Z" fill="#ffcba4" />
-      <path d="M78 47 L85 22 L64 42 Z" fill="#ffcba4" />
+      <ellipse cx="50" cy="124" rx="26" ry="4" fill={c} opacity="0.25" />
+      {/* Cola */}
+      <path d="M75 97 Q100 76 93 52 Q87 32 70 38" stroke={c} strokeWidth="13" strokeLinecap="round" fill="none" />
+      {/* Cuerpo */}
+      <ellipse cx="50" cy="100" rx="32" ry="20" fill={c} />
       {/* Cabeza */}
-      <circle cx="50" cy="72" r="36" fill="#F4F2FC" stroke="#2d2d2d" strokeWidth="2" />
-      {/* Mancha gris lateral */}
-      <ellipse cx="22" cy="64" rx="13" ry="18" fill="#c8c8d8" />
-      {/* Cachetes */}
-      <ellipse cx="27" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
-      <ellipse cx="73" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
+      <circle cx="50" cy="66" r="28" fill={c} />
+      {/* Orejas */}
+      <path d="M26 52 L17 24 L42 46 Z" fill={c} />
+      <path d="M74 52 L83 24 L58 46 Z" fill={c} />
+      {/* Patas */}
+      <ellipse cx="36" cy="116" rx="13" ry="7" fill={c} />
+      <ellipse cx="64" cy="116" rx="13" ry="7" fill={c} />
       {/* Ojos */}
-      <circle cx="37" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="63" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="38" cy="68" r={isHovered ? 6 : 5} fill="#4a90d9" />
-      <circle cx="64" cy="68" r={isHovered ? 6 : 5} fill="#4a90d9" />
-      <circle cx="40" cy="66" r="2" fill="white" />
-      <circle cx="66" cy="66" r="2" fill="white" />
-      {/* Nariz y boca */}
-      <path d="M47 78 L50 82 L53 78" fill="#ff9a9a" stroke="#2d2d2d" strokeWidth="1" strokeLinejoin="round" />
-      <path d="M46 83 Q50 87 54 83" stroke="#2d2d2d" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Bigotes */}
-      <path d="M35 75 L14 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-      <path d="M35 79 L14 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-      <path d="M65 75 L86 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-      <path d="M65 79 L86 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-      {/* Boina rosa */}
-      <ellipse cx="52" cy="38" rx="28" ry="11" fill="#e84393" stroke="#2d2d2d" strokeWidth="1.5" />
-      <ellipse cx="52" cy="36" rx="24" ry="8" fill="#ff6eb3" />
+      <circle cx="39" cy="64" r="6" fill="white" />
+      <circle cx="61" cy="64" r="6" fill="white" />
+      <circle cx="40" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="62" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="41" cy="63" r="1.2" fill="white" />
+      <circle cx="63" cy="63" r="1.2" fill="white" />
+      {/* Nariz */}
+      <path d="M48 72 L50 75 L52 72" fill="white" opacity="0.6" />
+      {/* Boina */}
+      <ellipse cx="53" cy="41" rx="27" ry="10" fill="#E84393" />
+      <ellipse cx="53" cy="39" rx="22" ry="7" fill="#FF6EB3" />
       {/* Pompón */}
-      <circle cx="38" cy="29" r="7" fill="#e84393" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="38" cy="29" r="3.5" fill="#ff99cc" />
+      <circle cx="39" cy="31" r="8" fill="#E84393" />
+      <circle cx="39" cy="31" r="4" fill="#FF99CC" />
     </svg>
   )
 }
 
 function LaylaCatCard({ isHovered }: { isHovered: boolean }) {
+  const c = "#7C5CBF"
   return (
-    <svg width="130" height="150" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="130" height="148" viewBox="0 0 100 128" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Sombra */}
-      <ellipse cx="50" cy="111" rx="28" ry="4" fill="#d4a86a" opacity="0.5" />
-      {/* Orejas */}
-      <path d="M20 50 L10 16 L38 42 Z" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M80 50 L90 16 L62 42 Z" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M22 47 L15 22 L36 42 Z" fill="#ffcba4" />
-      <path d="M78 47 L85 22 L64 42 Z" fill="#ffcba4" />
+      <ellipse cx="50" cy="124" rx="26" ry="4" fill={c} opacity="0.25" />
+      {/* Cola */}
+      <path d="M75 97 Q100 76 93 52 Q87 32 70 38" stroke={c} strokeWidth="13" strokeLinecap="round" fill="none" />
+      {/* Cuerpo */}
+      <ellipse cx="50" cy="100" rx="32" ry="20" fill={c} />
       {/* Cabeza */}
-      <circle cx="50" cy="72" r="36" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" />
-      {/* Mancha oscura calico */}
-      <ellipse cx="26" cy="60" rx="15" ry="19" fill="#2d2d2d" opacity="0.65" />
-      {/* Cachetes */}
-      <ellipse cx="27" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
-      <ellipse cx="73" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
+      <circle cx="50" cy="66" r="28" fill={c} />
+      {/* Orejas */}
+      <path d="M26 52 L17 24 L42 46 Z" fill={c} />
+      <path d="M74 52 L83 24 L58 46 Z" fill={c} />
+      {/* Patas */}
+      <ellipse cx="36" cy="116" rx="13" ry="7" fill={c} />
+      <ellipse cx="64" cy="116" rx="13" ry="7" fill={c} />
       {/* Ojos */}
-      <circle cx="37" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="63" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="38" cy="68" r={isHovered ? 6 : 5} fill="#9370db" />
-      <circle cx="64" cy="68" r={isHovered ? 6 : 5} fill="#9370db" />
-      <circle cx="40" cy="66" r="2" fill="white" />
-      <circle cx="66" cy="66" r="2" fill="white" />
-      {/* Nariz y boca */}
-      <path d="M47 78 L50 82 L53 78" fill="#ff9a9a" stroke="#2d2d2d" strokeWidth="1" strokeLinejoin="round" />
-      <path d="M46 83 Q50 87 54 83" stroke="#2d2d2d" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Bigotes */}
-      <path d="M35 75 L14 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M35 79 L14 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 75 L86 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 79 L86 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      {/* Audífonos — banda */}
-      <path d="M12 68 Q12 30 50 28 Q88 30 88 68" stroke="#7C5CBF" strokeWidth="5" strokeLinecap="round" fill="none" />
+      <circle cx="39" cy="64" r="6" fill="white" />
+      <circle cx="61" cy="64" r="6" fill="white" />
+      <circle cx="40" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="62" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="41" cy="63" r="1.2" fill="white" />
+      <circle cx="63" cy="63" r="1.2" fill="white" />
+      {/* Nariz */}
+      <path d="M48 72 L50 75 L52 72" fill="white" opacity="0.6" />
+      {/* Audífonos — banda sobre la cabeza */}
+      <path d="M14 66 Q14 30 50 28 Q86 30 86 66" stroke="#FFD700" strokeWidth="6" strokeLinecap="round" fill="none" />
       {/* Copa izquierda */}
-      <rect x="4" y="62" width="16" height="20" rx="5" fill="#7C5CBF" stroke="#2d2d2d" strokeWidth="1.5" />
-      <rect x="7" y="65" width="10" height="14" rx="3" fill="#9B7FE0" />
+      <rect x="5" y="60" width="16" height="20" rx="6" fill="#FFD700" />
+      <rect x="8" y="63" width="10" height="14" rx="3" fill="#FFF0A0" />
       {/* Copa derecha */}
-      <rect x="80" y="62" width="16" height="20" rx="5" fill="#7C5CBF" stroke="#2d2d2d" strokeWidth="1.5" />
-      <rect x="83" y="65" width="10" height="14" rx="3" fill="#9B7FE0" />
+      <rect x="79" y="60" width="16" height="20" rx="6" fill="#FFD700" />
+      <rect x="82" y="63" width="10" height="14" rx="3" fill="#FFF0A0" />
     </svg>
   )
 }
 
 function RoxanneCat({ isHovered }: { isHovered: boolean }) {
+  const c = "#D4788A"
   return (
-    <svg width="130" height="150" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="130" height="148" viewBox="0 0 100 128" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Sombra */}
-      <ellipse cx="50" cy="111" rx="28" ry="4" fill="#b0b0b0" opacity="0.4" />
-      {/* Orejas — izquierda blanca, derecha naranja (calico) */}
-      <path d="M20 50 L10 16 L38 42 Z" fill="#F4F2FC" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M80 50 L90 16 L62 42 Z" fill="#F5A855" stroke="#2d2d2d" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M22 47 L15 22 L36 42 Z" fill="#ffcba4" />
-      <path d="M78 47 L85 22 L64 42 Z" fill="#ffcba4" />
+      <ellipse cx="50" cy="124" rx="26" ry="4" fill={c} opacity="0.25" />
+      {/* Cola */}
+      <path d="M75 97 Q100 76 93 52 Q87 32 70 38" stroke={c} strokeWidth="13" strokeLinecap="round" fill="none" />
+      {/* Cuerpo */}
+      <ellipse cx="50" cy="100" rx="32" ry="20" fill={c} />
       {/* Cabeza */}
-      <circle cx="50" cy="72" r="36" fill="#F8F6FF" stroke="#2d2d2d" strokeWidth="2" />
-      {/* Manchas calico */}
-      <ellipse cx="72" cy="58" rx="16" ry="20" fill="#F5A855" />
-      <ellipse cx="30" cy="80" rx="12" ry="14" fill="#2d2d2d" opacity="0.5" />
-      {/* Cachetes */}
-      <ellipse cx="27" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
-      <ellipse cx="73" cy="79" rx="9" ry="6" fill="#ff9a9a" opacity="0.3" />
+      <circle cx="50" cy="66" r="28" fill={c} />
+      {/* Orejas */}
+      <path d="M26 52 L17 24 L42 46 Z" fill={c} />
+      <path d="M74 52 L83 24 L58 46 Z" fill={c} />
+      {/* Patas */}
+      <ellipse cx="36" cy="116" rx="13" ry="7" fill={c} />
+      <ellipse cx="64" cy="116" rx="13" ry="7" fill={c} />
       {/* Ojos */}
-      <circle cx="37" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="63" cy="68" r="9" fill="white" stroke="#2d2d2d" strokeWidth="1.5" />
-      <circle cx="38" cy="68" r={isHovered ? 6 : 5} fill="#c47a7a" />
-      <circle cx="64" cy="68" r={isHovered ? 6 : 5} fill="#c47a7a" />
-      <circle cx="40" cy="66" r="2" fill="white" />
-      <circle cx="66" cy="66" r="2" fill="white" />
-      {/* Nariz y boca */}
-      <path d="M47 78 L50 82 L53 78" fill="#ff9a9a" stroke="#2d2d2d" strokeWidth="1" strokeLinejoin="round" />
-      <path d="M46 83 Q50 87 54 83" stroke="#2d2d2d" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Bigotes */}
-      <path d="M35 75 L14 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M35 79 L14 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 75 L86 70" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
-      <path d="M65 79 L86 79" stroke="#2d2d2d" strokeWidth="1" strokeLinecap="round" opacity="0.45" />
+      <circle cx="39" cy="64" r="6" fill="white" />
+      <circle cx="61" cy="64" r="6" fill="white" />
+      <circle cx="40" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="62" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
+      <circle cx="41" cy="63" r="1.2" fill="white" />
+      <circle cx="63" cy="63" r="1.2" fill="white" />
+      {/* Nariz */}
+      <path d="M48 72 L50 75 L52 72" fill="white" opacity="0.6" />
       {/* Moño */}
-      <path d="M50 40 L34 29 L28 40 L34 51 Z" fill="#ff6b9d" stroke="#2d2d2d" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M50 40 L66 29 L72 40 L66 51 Z" fill="#ff6b9d" stroke="#2d2d2d" strokeWidth="1.5" strokeLinejoin="round" />
-      <circle cx="50" cy="40" r="5" fill="#e84393" stroke="#2d2d2d" strokeWidth="1.5" />
+      <path d="M50 40 L33 29 L27 40 L33 51 Z" fill="white" opacity="0.92" />
+      <path d="M50 40 L67 29 L73 40 L67 51 Z" fill="white" opacity="0.92" />
+      <circle cx="50" cy="40" r="5.5" fill="white" />
+      {/* Detalle moño */}
+      <path d="M50 40 L33 29 L27 40 L33 51 Z" fill="white" opacity="0.15" />
     </svg>
   )
 }
@@ -204,7 +186,7 @@ const cats = [
     name: "Billie",
     role: "Diseno y Creatividad",
     description: "Transforma ideas en experiencias visuales que enamoran.",
-    color: "#9a9a9a",
+    color: "#9B8EB2",
     song: "Billie Jean",
     Component: BillieCatCard,
   },
@@ -222,7 +204,7 @@ const cats = [
     name: "Roxanne",
     role: "Marketing Digital",
     description: "Convierte visitas en clientes con estrategias que funcionan.",
-    color: "#c47a7a",
+    color: "#D4788A",
     song: "Roxanne",
     Component: RoxanneCat,
   },
