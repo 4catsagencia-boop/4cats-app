@@ -5,7 +5,64 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import { fetchPlanesPublicados, supabase } from "@/utils/supabase";
-import LaylaCat from "../components/cats/LaylaCat";
+
+function PeekingCat() {
+  return (
+    <svg width="130" height="92" viewBox="0 0 130 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Cuerpo oculto detrás de la tarjeta — solo asoma la cabeza */}
+      <circle cx="65" cy="74" r="54" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" />
+
+      {/* Iluminación frente */}
+      <ellipse cx="48" cy="50" rx="20" ry="13" fill="#ffe4b8" opacity="0.45" />
+
+      {/* Rayas tabby en frente */}
+      <path d="M50 33 Q65 28 80 33" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.55" />
+      <path d="M48 42 Q65 37 82 42" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.45" />
+      <path d="M47 51 Q65 46 83 51" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.35" />
+
+      {/* Oreja izquierda */}
+      <path d="M18 46 L6 8 L44 38 Z" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M21 43 L13 16 L41 37 Z" fill="#ffcba4" />
+
+      {/* Oreja derecha */}
+      <path d="M112 46 L124 8 L86 38 Z" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M109 43 L117 16 L89 37 Z" fill="#ffcba4" />
+
+      {/* Blancos de ojos */}
+      <ellipse cx="46" cy="65" rx="13" ry="14" fill="white" stroke="#5a4a3a" strokeWidth="2" />
+      <ellipse cx="84" cy="65" rx="13" ry="14" fill="white" stroke="#5a4a3a" strokeWidth="2" />
+
+      {/* Pupilas grandes — expresión curiosa */}
+      <ellipse cx="47" cy="65" rx="8" ry="10" fill="#3d5a3e" />
+      <ellipse cx="85" cy="65" rx="8" ry="10" fill="#3d5a3e" />
+
+      {/* Brillos de ojos */}
+      <circle cx="51" cy="60" r="3.5" fill="white" />
+      <circle cx="89" cy="60" r="3.5" fill="white" />
+      <circle cx="44" cy="70" r="1.5" fill="white" opacity="0.55" />
+      <circle cx="82" cy="70" r="1.5" fill="white" opacity="0.55" />
+
+      {/* Cejas levantadas — ¡curiosa! */}
+      <path d="M34 51 Q46 46 58 51" stroke="#5a4a3a" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M72 51 Q84 46 96 51" stroke="#5a4a3a" strokeWidth="2" strokeLinecap="round" fill="none" />
+
+      {/* Nariz */}
+      <path d="M62 77 L65 82 L68 77" fill="#ff9a9a" stroke="#5a4a3a" strokeWidth="1.5" strokeLinejoin="round" />
+
+      {/* Bigotes izquierda */}
+      <path d="M46 74 L18 68" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+      <path d="M46 79 L18 79" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+
+      {/* Bigotes derecha */}
+      <path d="M84 74 L112 68" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+      <path d="M84 79 L112 79" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+
+      {/* Cachetes sonrosados */}
+      <ellipse cx="28" cy="73" rx="10" ry="6" fill="#ffb6c1" opacity="0.38" />
+      <ellipse cx="102" cy="73" rx="10" ry="6" fill="#ffb6c1" opacity="0.38" />
+    </svg>
+  );
+}
 
 function CotizarForm() {
   const searchParams = useSearchParams();
@@ -240,12 +297,22 @@ function CotizarForm() {
         </div>
 
         {/* Right: form */}
-        <div className="relative">
-          <div className="hidden md:block absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 z-10">
-            <LaylaCat className="w-32 h-32" />
+        <div className="relative pt-[80px]">
+          {/* Gatita asomándose desde detrás de la tarjeta */}
+          <style>{`
+            @keyframes peek-bob {
+              0%, 100% { transform: translateX(-50%) translateY(0px); }
+              50%       { transform: translateX(-50%) translateY(-7px); }
+            }
+          `}</style>
+          <div
+            className="hidden md:block absolute top-0 left-1/2"
+            style={{ transform: "translateX(-50%)", animation: "peek-bob 3s ease-in-out infinite", zIndex: 0 }}
+          >
+            <PeekingCat />
           </div>
-          
-          <div className="bg-white border border-[#E4E4E7] rounded-3xl p-8 shadow-xl shadow-[#18181B]/5 relative z-0">
+
+          <div className="bg-white border border-[#E4E4E7] rounded-3xl p-8 shadow-xl shadow-[#18181B]/5 relative z-10">
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
               <Field label="Nombre completo" error={errors.nombre}>
                 <input
