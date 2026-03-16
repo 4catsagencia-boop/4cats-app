@@ -7,59 +7,23 @@ import Navbar from "../components/Navbar";
 import { fetchPlanesPublicados, supabase } from "@/utils/supabase";
 
 function PeekingCat() {
+  const c = "#7C5CBF"
   return (
-    <svg width="130" height="92" viewBox="0 0 130 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Cuerpo oculto detrás de la tarjeta — solo asoma la cabeza */}
-      <circle cx="65" cy="74" r="54" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" />
-
-      {/* Iluminación frente */}
-      <ellipse cx="48" cy="50" rx="20" ry="13" fill="#ffe4b8" opacity="0.45" />
-
-      {/* Rayas tabby en frente */}
-      <path d="M50 33 Q65 28 80 33" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.55" />
-      <path d="M48 42 Q65 37 82 42" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.45" />
-      <path d="M47 51 Q65 46 83 51" stroke="#c97a3a" strokeWidth="2" strokeLinecap="round" opacity="0.35" />
-
-      {/* Oreja izquierda */}
-      <path d="M18 46 L6 8 L44 38 Z" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" strokeLinejoin="round" />
-      <path d="M21 43 L13 16 L41 37 Z" fill="#ffcba4" />
-
-      {/* Oreja derecha */}
-      <path d="M112 46 L124 8 L86 38 Z" fill="#f5a855" stroke="#5a4a3a" strokeWidth="2.5" strokeLinejoin="round" />
-      <path d="M109 43 L117 16 L89 37 Z" fill="#ffcba4" />
-
-      {/* Blancos de ojos */}
-      <ellipse cx="46" cy="65" rx="13" ry="14" fill="white" stroke="#5a4a3a" strokeWidth="2" />
-      <ellipse cx="84" cy="65" rx="13" ry="14" fill="white" stroke="#5a4a3a" strokeWidth="2" />
-
-      {/* Pupilas grandes — expresión curiosa */}
-      <ellipse cx="47" cy="65" rx="8" ry="10" fill="#3d5a3e" />
-      <ellipse cx="85" cy="65" rx="8" ry="10" fill="#3d5a3e" />
-
-      {/* Brillos de ojos */}
-      <circle cx="51" cy="60" r="3.5" fill="white" />
-      <circle cx="89" cy="60" r="3.5" fill="white" />
-      <circle cx="44" cy="70" r="1.5" fill="white" opacity="0.55" />
-      <circle cx="82" cy="70" r="1.5" fill="white" opacity="0.55" />
-
-      {/* Cejas levantadas — ¡curiosa! */}
-      <path d="M34 51 Q46 46 58 51" stroke="#5a4a3a" strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M72 51 Q84 46 96 51" stroke="#5a4a3a" strokeWidth="2" strokeLinecap="round" fill="none" />
-
+    <svg width="120" height="82" viewBox="0 0 108 82" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Orejas — sobresalen arriba de la tarjeta */}
+      <path d="M24 48 L14 14 L42 40 Z" fill={c} />
+      <path d="M84 48 L94 14 L66 40 Z" fill={c} />
+      {/* Cabeza — se asoma desde abajo, parte baja cortada por la tarjeta */}
+      <circle cx="54" cy="76" r="46" fill={c} />
+      {/* Ojos grandes y curiosos */}
+      <circle cx="38" cy="62" r="9" fill="white" />
+      <circle cx="70" cy="62" r="9" fill="white" />
+      <circle cx="39" cy="62" r="5.5" fill={c} />
+      <circle cx="71" cy="62" r="5.5" fill={c} />
+      <circle cx="41" cy="60" r="2" fill="white" />
+      <circle cx="73" cy="60" r="2" fill="white" />
       {/* Nariz */}
-      <path d="M62 77 L65 82 L68 77" fill="#ff9a9a" stroke="#5a4a3a" strokeWidth="1.5" strokeLinejoin="round" />
-
-      {/* Bigotes izquierda */}
-      <path d="M46 74 L18 68" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
-      <path d="M46 79 L18 79" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
-
-      {/* Bigotes derecha */}
-      <path d="M84 74 L112 68" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
-      <path d="M84 79 L112 79" stroke="#5a4a3a" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
-
-      {/* Cachetes sonrosados */}
-      <ellipse cx="28" cy="73" rx="10" ry="6" fill="#ffb6c1" opacity="0.38" />
-      <ellipse cx="102" cy="73" rx="10" ry="6" fill="#ffb6c1" opacity="0.38" />
+      <path d="M51 74 L54 78 L57 74" fill="white" opacity="0.7" />
     </svg>
   );
 }
