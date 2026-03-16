@@ -4,6 +4,23 @@ import Link from "next/link"
 import { useState } from "react"
 import Navbar from "./components/Navbar"
 
+function PawIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+      {/* Almohadilla central */}
+      <ellipse cx="12" cy="16" rx="5" ry="4" />
+      {/* Dedo izquierdo exterior */}
+      <ellipse cx="5.5" cy="11" rx="2.2" ry="2.8" transform="rotate(-15 5.5 11)" />
+      {/* Dedo izquierdo interior */}
+      <ellipse cx="9" cy="8.5" rx="2" ry="2.6" transform="rotate(-5 9 8.5)" />
+      {/* Dedo derecho interior */}
+      <ellipse cx="15" cy="8.5" rx="2" ry="2.6" transform="rotate(5 15 8.5)" />
+      {/* Dedo derecho exterior */}
+      <ellipse cx="18.5" cy="11" rx="2.2" ry="2.8" transform="rotate(15 18.5 11)" />
+    </svg>
+  )
+}
+
 function LucyCat({ isHovered }: { isHovered: boolean }) {
   return (
     <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -539,10 +556,12 @@ export default function Home() {
             Somos 4cats. Cuatro especialistas con actitud felina, listas para disenar, desarrollar y posicionar tu presencia digital.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/planes" className="px-8 py-3 bg-[#7C5CBF] text-white font-semibold rounded-md hover:bg-[#6B4DAE] transition-all text-center">
+            <Link href="/planes" className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#7C5CBF] text-white font-semibold rounded-md hover:bg-[#6B4DAE] transition-all">
+              <PawIcon className="w-4 h-4" />
               Ver planes
             </Link>
-            <Link href="/cotizar" className="px-8 py-3 border border-[#E4E4E7] text-[#18181B] font-semibold rounded-md hover:bg-[#FAFAFA] transition-all text-center">
+            <Link href="/cotizar" className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-[#E4E4E7] text-[#18181B] font-semibold rounded-md hover:bg-[#FAFAFA] transition-all">
+              <PawIcon className="w-4 h-4 text-[#7C5CBF]" />
               Cotizar gratis
             </Link>
           </div>
@@ -614,9 +633,10 @@ export default function Home() {
             </p>
             <Link
               href="/cotizar"
-              className="inline-block px-8 py-3 bg-[#7C5CBF] text-white font-semibold rounded-md hover:bg-[#6B4DAE] transition-all"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-[#7C5CBF] text-white font-semibold rounded-md hover:bg-[#6B4DAE] transition-all"
               style={{ boxShadow: "0 4px 14px -4px rgba(124, 92, 191, 0.5)" }}
             >
+              <PawIcon className="w-4 h-4" />
               Contactar ahora
             </Link>
           </div>

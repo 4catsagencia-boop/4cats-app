@@ -42,8 +42,15 @@ export default function Navbar() {
 
           <Link
             href="/cotizar"
-            className="text-sm font-medium bg-[#7C5CBF] text-white px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-all active:scale-95 shadow-sm shadow-[#7C5CBF]/20"
+            className="inline-flex items-center gap-1.5 text-sm font-medium bg-[#7C5CBF] text-white px-4 py-2 rounded-md hover:bg-[#6B4DAE] transition-all active:scale-95 shadow-sm shadow-[#7C5CBF]/20"
           >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="12" cy="16" rx="5" ry="4" />
+              <ellipse cx="5.5" cy="11" rx="2.2" ry="2.8" transform="rotate(-15 5.5 11)" />
+              <ellipse cx="9" cy="8.5" rx="2" ry="2.6" transform="rotate(-5 9 8.5)" />
+              <ellipse cx="15" cy="8.5" rx="2" ry="2.6" transform="rotate(5 15 8.5)" />
+              <ellipse cx="18.5" cy="11" rx="2.2" ry="2.8" transform="rotate(15 18.5 11)" />
+            </svg>
             Cotizar gratis
           </Link>
         </div>
