@@ -132,27 +132,3 @@ export const updateCotizacionStatus = async (id, estado) => {
   return data
 }
 
-/**
- * CATALOGO (Keep existing for backward compatibility or the CatalogoSection)
- */
-
-export const fetchCatalogo = async () => {
-  const { data, error } = await supabase
-    .from('catalogo')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) throw error
-  return data
-}
-
-export const getActiveCatalogo = async () => {
-  const { data, error } = await supabase
-    .from('catalogo')
-    .select('id, nombre, descripcion, precio, caracteristicas')
-    .eq('activo', true)
-    .order('precio', { ascending: true })
-
-  if (error) throw error
-  return data
-}

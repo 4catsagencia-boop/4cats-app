@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import ConditionalFooter from "./components/ConditionalFooter";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,10 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-        <ConditionalFooter />
+    <html lang="es" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+        <Providers>
+          {children}
+          <ConditionalFooter />
+        </Providers>
         <Analytics />
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 export default function InfografiaPage() {
   return (
-    <div className="min-h-screen bg-[#EEF2F7] font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <style>{`
         @media print {
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -11,19 +11,17 @@ export default function InfografiaPage() {
       `}</style>
 
       {/* ── HEADER ── */}
-      <header className="relative overflow-hidden bg-[#0D1B3E] text-white px-10 py-14">
-        {/* Grid tech pattern */}
+      <header className="relative overflow-hidden bg-[#F3EEFF] border-b border-[#E5D8FF] px-10 py-14">
+        {/* Subtle dot pattern */}
         <div
-          className="absolute inset-0 opacity-[0.07]"
+          className="absolute inset-0 opacity-[0.4]"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
-            backgroundSize: "36px 36px",
+            backgroundImage: "radial-gradient(circle, #7C5CBF 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
           }}
         />
-        {/* Glow accent */}
-        <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#7C5CBF] opacity-[0.12] blur-3xl -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-[#0EA5E9] opacity-[0.08] blur-3xl translate-y-1/2 -translate-x-1/4" />
+        {/* Glow */}
+        <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#7C5CBF] opacity-[0.08] blur-3xl -translate-y-1/2 translate-x-1/4" />
 
         <div className="relative z-10 max-w-4xl mx-auto">
           {/* Brand */}
@@ -31,7 +29,7 @@ export default function InfografiaPage() {
             <div className="w-9 h-9 bg-[#7C5CBF] rounded-lg flex items-center justify-center shrink-0">
               <span className="text-white text-sm font-bold">4c</span>
             </div>
-            <span className="text-[#A78BFA] text-xs font-bold tracking-[0.2em] uppercase">
+            <span className="text-[#7C5CBF] text-xs font-bold tracking-[0.2em] uppercase">
               4cats · Agencia Digital
             </span>
           </div>
@@ -39,24 +37,24 @@ export default function InfografiaPage() {
           {/* Title */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
-              <p className="text-[#60A5FA] text-xs font-bold tracking-widest uppercase mb-3">
+              <p className="text-[#7C5CBF] text-xs font-bold tracking-widest uppercase mb-3 opacity-70">
                 Documento Propuesta
               </p>
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
+              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-[#18181B] mb-4">
                 Propuesta de Mantenimiento<br />
-                <span className="text-[#A78BFA]">y Seguridad Web</span>
+                <span className="text-[#7C5CBF]">y Seguridad Web</span>
               </h1>
-              <p className="text-[#94A3B8] text-base max-w-xl leading-relaxed">
+              <p className="text-[#52525B] text-base max-w-xl leading-relaxed">
                 Protege tu inversión digital y asegura la continuidad de tu negocio.
               </p>
             </div>
-            {/* Tech badge cluster */}
+            {/* Badge cluster */}
             <div className="flex flex-wrap gap-2 md:flex-col md:items-end shrink-0">
               {[
-                { label: "Seguridad", color: "bg-red-500/20 text-red-300 border-red-500/30" },
-                { label: "Rendimiento", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
-                { label: "Continuidad", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
-                { label: "Soporte", color: "bg-green-500/20 text-green-300 border-green-500/30" },
+                { label: "Seguridad", color: "bg-red-50 text-red-500 border-red-200" },
+                { label: "Rendimiento", color: "bg-blue-50 text-blue-500 border-blue-200" },
+                { label: "Continuidad", color: "bg-[#F3EEFF] text-[#7C5CBF] border-[#E5D8FF]" },
+                { label: "Soporte", color: "bg-green-50 text-green-600 border-green-200" },
               ].map((t) => (
                 <span
                   key={t.label}
@@ -81,7 +79,7 @@ export default function InfografiaPage() {
             <p className="text-[10px] font-bold tracking-widest uppercase text-[#7C5CBF] mb-0.5">
               Contexto
             </p>
-            <h2 className="text-xl font-bold text-[#0D1B3E] leading-tight">
+            <h2 className="text-xl font-bold text-[#18181B] leading-tight">
               ¿Por qué es necesario un Plan de Mantención?
             </h2>
           </div>
@@ -90,7 +88,7 @@ export default function InfografiaPage() {
         {/* 3 cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
           {/* Card 1 — Seguridad */}
-          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(13,27,62,0.1)] border border-[#E2E8F0] flex flex-col gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(124,92,191,0.08)] border border-[#E2E8F0] flex flex-col gap-4">
             <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
               <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -101,7 +99,7 @@ export default function InfografiaPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-red-400 shrink-0" />
-                <h3 className="font-bold text-[#0D1B3E] text-sm">Vulnerabilidades de Seguridad</h3>
+                <h3 className="font-bold text-[#18181B] text-sm">Vulnerabilidades de Seguridad</h3>
               </div>
               <p className="text-[#475569] text-sm leading-relaxed">
                 Los sitios desactualizados son el blanco <strong>#1</strong> de los hackers.
@@ -110,7 +108,7 @@ export default function InfografiaPage() {
           </div>
 
           {/* Card 2 — Incompatibilidades */}
-          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(13,27,62,0.1)] border border-[#E2E8F0] flex flex-col gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(124,92,191,0.08)] border border-[#E2E8F0] flex flex-col gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
               <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -120,7 +118,7 @@ export default function InfografiaPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
-                <h3 className="font-bold text-[#0D1B3E] text-sm">Incompatibilidades</h3>
+                <h3 className="font-bold text-[#18181B] text-sm">Incompatibilidades</h3>
               </div>
               <p className="text-[#475569] text-sm leading-relaxed">
                 Una actualización automática puede "romper" el diseño visual o el carrito de compras.
@@ -129,7 +127,7 @@ export default function InfografiaPage() {
           </div>
 
           {/* Card 3 — Lentitud */}
-          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(13,27,62,0.1)] border border-[#E2E8F0] flex flex-col gap-4">
+          <div className="bg-white rounded-2xl p-6 shadow-[0_4px_24px_-4px_rgba(124,92,191,0.08)] border border-[#E2E8F0] flex flex-col gap-4">
             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
               <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -139,7 +137,7 @@ export default function InfografiaPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
-                <h3 className="font-bold text-[#0D1B3E] text-sm">Lentitud</h3>
+                <h3 className="font-bold text-[#18181B] text-sm">Lentitud</h3>
               </div>
               <p className="text-[#475569] text-sm leading-relaxed">
                 Sin limpieza de base de datos, la web se vuelve lenta, afectando sus ventas y posicionamiento en Google.
@@ -149,7 +147,7 @@ export default function InfografiaPage() {
         </div>
 
         {/* Highlight band */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#2563EB] to-[#4F46E5] px-8 py-5 flex items-center gap-5 shadow-lg shadow-blue-500/20">
+        <div className="relative overflow-hidden rounded-2xl bg-[#7C5CBF] px-8 py-5 flex items-center gap-5 shadow-lg shadow-[#7C5CBF]/20">
           <div
             className="absolute inset-0 opacity-[0.06]"
             style={{
@@ -190,23 +188,23 @@ export default function InfografiaPage() {
       <section className="max-w-4xl mx-auto px-8 py-12">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-10 h-10 bg-[#0D1B3E] text-white rounded-xl flex items-center justify-center font-extrabold text-lg shrink-0 shadow-lg shadow-[#0D1B3E]/30">
+          <div className="w-10 h-10 bg-[#7C5CBF] text-white rounded-xl flex items-center justify-center font-extrabold text-lg shrink-0 shadow-lg shadow-[#7C5CBF]/30">
             4
           </div>
           <div>
-            <p className="text-[10px] font-bold tracking-widest uppercase text-[#0D1B3E] mb-0.5 opacity-50">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-[#7C5CBF] mb-0.5">
               Garantía
             </p>
-            <h2 className="text-xl font-bold text-[#0D1B3E] leading-tight">
+            <h2 className="text-xl font-bold text-[#18181B] leading-tight">
               Política de "Seguro de Edición"
             </h2>
           </div>
         </div>
 
         {/* Main card */}
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_-4px_rgba(13,27,62,0.1)] border border-[#E2E8F0] overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-[0_4px_24px_-4px_rgba(124,92,191,0.08)] border border-[#E2E8F0] overflow-hidden">
           {/* Card header strip */}
-          <div className="bg-gradient-to-r from-[#0D1B3E] to-[#1E3A5F] px-8 py-4 flex items-center gap-4">
+          <div className="bg-[#7C5CBF] px-8 py-4 flex items-center gap-4">
             <div className="w-8 h-8 rounded-lg bg-[#7C5CBF] flex items-center justify-center shrink-0">
               <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -237,7 +235,7 @@ export default function InfografiaPage() {
                 Sabemos que usted quiere autonomía. Con nuestros planes{" "}
                 <span className="font-bold text-[#7C5CBF]">Pyme Activa</span> y superiores, si usted o su
                 equipo desconfiguran visualmente el sitio al intentar editarlo, nosotros lo reparamos{" "}
-                <strong className="text-[#0D1B3E]">sin costo adicional</strong> utilizando su bolsa de horas.
+                <strong className="text-[#18181B]">sin costo adicional</strong> utilizando su bolsa de horas.
                 Sin el plan, estas reparaciones tienen costo de emergencia.
               </p>
 
@@ -271,17 +269,18 @@ export default function InfografiaPage() {
 
       {/* ── FOOTER ── */}
       <footer className="max-w-4xl mx-auto px-8 pb-10">
-        <div className="bg-[#0D1B3E] rounded-2xl px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-[#F3EEFF] border border-[#E5D8FF] rounded-2xl px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-7 h-7 bg-[#7C5CBF] rounded-lg flex items-center justify-center">
               <span className="text-white text-xs font-bold">4c</span>
             </div>
-            <span className="text-[#94A3B8] text-xs font-medium">4cats · Agencia Digital</span>
+            <span className="text-[#7C5CBF] text-xs font-bold">4cats · Agencia Digital</span>
           </div>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-1">
-            <span className="text-[#475569] text-xs">luis.saez@4cats.cl</span>
-            <span className="text-[#475569] text-xs">+56 9 3481 9569</span>
-            <span className="text-[#475569] text-xs">4cats.cl</span>
+            <span className="text-[#52525B] text-xs">luis.saez@4cats.cl</span>
+            <span className="text-[#52525B] text-xs">+56 9 3481 9569</span>
+            <span className="text-[#52525B] text-xs">4cats.cl</span>
+            <span className="text-[#52525B] text-xs">Temuco, Chile</span>
           </div>
         </div>
 

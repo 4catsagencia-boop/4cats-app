@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import { fetchPlanesPublicados } from "@/utils/supabase";
+import { useLang } from "../context/LanguageContext";
+import { t } from "../translations";
+
 function RoxanneSilhouette() {
   const c = "#D4788A"
   return (
@@ -50,6 +53,8 @@ const formatCLP = (precio: number) => {
 export default function PlanesPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const { lang } = useLang();
+  const tr = t[lang].planes;
 
   useEffect(() => {
     async function loadPlans() {
@@ -74,20 +79,19 @@ export default function PlanesPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
             <p className="text-xs font-semibold tracking-widest uppercase text-[#7C5CBF] mb-4">
-              Precios
+              {tr.badge}
             </p>
             <h1 className="text-4xl font-bold tracking-tight text-[#18181B] mb-4">
-              El plan correcto para tu negocio
+              {tr.h1}
             </h1>
             <p className="text-[#52525B] text-base max-w-xl leading-relaxed">
-              Sin sorpresas. Sin letras chicas. Elige el plan que mejor se adapte
-              a tu etapa y escala cuando lo necesites.
+              {tr.subtitle}
             </p>
           </div>
           <div className="hidden md:flex flex-col items-center gap-2">
             <RoxanneSilhouette />
             <p className="text-sm text-[#7C5CBF] italic font-medium">
-              Roxanne dice: elige ya, no hay tiempo que perder 🐾
+              {tr.roxanneSays} 🐾
             </p>
           </div>
         </div>
@@ -96,11 +100,11 @@ export default function PlanesPage() {
       {/* Pricing cards */}
       <section className="max-w-5xl mx-auto px-6 pb-24">
         {loading ? (
-          <div className="py-20 text-center text-[#A1A1AA]">Cargando planes...</div>
+          <div className="py-20 text-center text-[#A1A1AA]">{tr.loading}</div>
         ) : plans.length === 0 ? (
           <div className="py-20 text-center text-[#52525B] border border-dashed border-[#E4E4E7] rounded-3xl bg-[#FAFAFA]">
-            <p className="text-xl font-bold text-[#18181B]">Próximamente</p>
-            <p className="text-sm mt-2">Estamos actualizando nuestros planes para ti.</p>
+            <p className="text-xl font-bold text-[#18181B]">{tr.soon}</p>
+            <p className="text-sm mt-2">{tr.soonDesc}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -108,14 +112,14 @@ export default function PlanesPage() {
               <div
                 key={plan.id}
                 className={`flex flex-col p-8 rounded-3xl border transition-all duration-300 ${
-                  plan.destacado 
-                    ? "bg-[#7C5CBF] text-white border-[#7C5CBF] shadow-xl shadow-[#7C5CBF]/20 scale-105 z-10" 
+                  plan.destacado
+                    ? "bg-[#7C5CBF] text-white border-[#7C5CBF] shadow-xl shadow-[#7C5CBF]/20 scale-105 z-10"
                     : "bg-white text-[#18181B] border-[#E4E4E7] hover:border-[#7C5CBF]/30"
                 }`}
               >
                 {plan.destacado && (
                   <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-white text-[#7C5CBF] rounded-full px-3 py-1 mb-6 self-start">
-                    Más popular
+                    {tr.popular}
                   </span>
                 )}
                 <p
@@ -176,7 +180,7 @@ export default function PlanesPage() {
                         : "border-2 border-[#7C5CBF] text-[#7C5CBF] hover:bg-[#F3EEFF]"
                     }`}
                   >
-                    Empezar ahora
+                    {tr.startBtn}
                   </Link>
                 </div>
               </div>
@@ -190,17 +194,17 @@ export default function PlanesPage() {
         <div className="max-w-5xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold text-[#18181B] mb-2">
-              ¿Tienes dudas sobre cuál elegir?
+              {tr.footerTitle}
             </h3>
             <p className="text-[#52525B]">
-              Cuéntanos tu caso y te recomendamos el plan ideal sin compromiso.
+              {tr.footerDesc}
             </p>
           </div>
           <Link
             href="/cotizar"
             className="shrink-0 px-8 py-3 bg-[#7C5CBF] text-white font-bold rounded-xl hover:bg-[#6B4DAE] transition-all shadow-lg shadow-[#7C5CBF]/20"
           >
-            Solicitar asesoría
+            {tr.footerBtn}
           </Link>
         </div>
       </section>

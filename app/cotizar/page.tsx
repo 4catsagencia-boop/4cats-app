@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import { fetchPlanesPublicados, supabase } from "@/utils/supabase";
+import { useLang } from "../context/LanguageContext";
+import { t } from "../translations";
 
 function PeekingCat() {
   const c = "#7C5CBF"
@@ -31,6 +33,8 @@ function PeekingCat() {
 function CotizarForm() {
   const searchParams = useSearchParams();
   const planParam = searchParams.get("plan") ?? "";
+  const { lang } = useLang();
+  const tr = t[lang].cotizar;
 
   const [planes, setPlanes] = useState<any[]>([]);
   const [form, setForm] = useState({
@@ -57,16 +61,16 @@ function CotizarForm() {
 
   function validate() {
     const errs: Partial<typeof form> = {};
-    if (!form.nombre.trim()) errs.nombre = "El nombre es requerido.";
+    if (!form.nombre.trim()) errs.nombre = tr.errNombre;
     if (!form.email.trim()) {
-      errs.email = "El email es requerido.";
+      errs.email = tr.errEmailReq;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      errs.email = "Ingresa un email válido.";
+      errs.email = tr.errEmailInvalid;
     }
     if (!form.telefono.trim()) {
-      errs.telefono = "El teléfono es requerido.";
+      errs.telefono = tr.errTelefono;
     }
-    if (!form.plan) errs.plan = "Selecciona un plan.";
+    if (!form.plan) errs.plan = tr.errPlan;
     return errs;
   }
 
@@ -113,7 +117,7 @@ function CotizarForm() {
           }])
           .select()
           .single();
-        
+
         if (clientError) throw clientError;
         clienteId = newClient.id;
       }
@@ -168,19 +172,19 @@ function CotizarForm() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-[#18181B] mb-3">
-            Cotización enviada
+            {tr.successTitle}
           </h2>
           <p className="text-[#52525B] mb-10 leading-relaxed">
-            Recibimos tu solicitud para el plan{" "}
-            <span className="font-bold text-[#7C5CBF]">{form.plan}</span>.
-            Layla y nuestro equipo revisarán los detalles y te contactaremos en menos de 24 horas.
+            {tr.successDesc}{" "}
+            <span className="font-bold text-[#7C5CBF]">{form.plan}</span>.{" "}
+            {tr.successDesc2}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/planes"
               className="px-6 py-2.5 text-sm font-bold text-[#52525B] border border-[#E4E4E7] rounded-xl hover:bg-[#FAFAFA] transition-all"
             >
-              Ver otros planes
+              {tr.successBack}
             </Link>
             <button
               onClick={() => {
@@ -189,7 +193,7 @@ function CotizarForm() {
               }}
               className="px-6 py-2.5 text-sm font-bold bg-[#7C5CBF] text-white rounded-xl hover:bg-[#6B4DAE] transition-all shadow-lg shadow-[#7C5CBF]/20"
             >
-              Nueva cotización
+              {tr.successNew}
             </button>
           </div>
         </div>
@@ -205,14 +209,15 @@ function CotizarForm() {
         {/* Left: info */}
         <div className="pt-4">
           <p className="text-xs font-bold tracking-widest uppercase text-[#7C5CBF] mb-4">
-            Cotización
+            {tr.badge}
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-[#18181B] mb-6 leading-tight">
-            Cuéntanos sobre <br className="hidden md:block" />
-            tu proyecto
+            {tr.h1.split("\n").map((line, i, arr) => (
+              <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
+            ))}
           </h1>
           <p className="text-[#52525B] text-lg leading-relaxed mb-12">
-            Layla te recibe. Cuéntanos tu proyecto y te preparamos una propuesta a medida en menos de 24 horas.
+            {tr.subtitle}
           </p>
 
           <div className="flex flex-col gap-6">
@@ -278,11 +283,11 @@ function CotizarForm() {
 
           <div className="bg-white border border-[#E4E4E7] rounded-3xl p-8 shadow-xl shadow-[#18181B]/5 relative z-10">
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
-              <Field label="Nombre completo" error={errors.nombre}>
+              <Field label={tr.labelNombre} error={errors.nombre}>
                 <input
                   name="nombre"
                   type="text"
-                  placeholder="Juan Pérez"
+                  placeholder={tr.placeholderNombre}
                   value={form.nombre}
                   onChange={handleChange}
                   disabled={loading}
@@ -290,11 +295,11 @@ function CotizarForm() {
                 />
               </Field>
 
-              <Field label="Correo electrónico" error={errors.email}>
+              <Field label={tr.labelEmail} error={errors.email}>
                 <input
                   name="email"
                   type="email"
-                  placeholder="juan@empresa.cl"
+                  placeholder={tr.placeholderEmail}
                   value={form.email}
                   onChange={handleChange}
                   disabled={loading}
@@ -302,11 +307,11 @@ function CotizarForm() {
                 />
               </Field>
 
-              <Field label="Teléfono" error={errors.telefono}>
+              <Field label={tr.labelTelefono} error={errors.telefono}>
                 <input
                   name="telefono"
                   type="tel"
-                  placeholder="+56 9 0000 0000"
+                  placeholder={tr.placeholderTelefono}
                   value={form.telefono}
                   onChange={handleChange}
                   disabled={loading}
@@ -314,7 +319,7 @@ function CotizarForm() {
                 />
               </Field>
 
-              <Field label="Plan de interés" error={errors.plan}>
+              <Field label={tr.labelPlan} error={errors.plan}>
                 <select
                   name="plan"
                   value={form.plan}
@@ -322,7 +327,7 @@ function CotizarForm() {
                   disabled={loading}
                   className={inputClass(!!errors.plan)}
                 >
-                  <option value="">Selecciona un plan</option>
+                  <option value="">{tr.placeholderPlan}</option>
                   {planes.map((p) => (
                     <option key={p.id} value={p.nombre}>
                       {p.nombre}
@@ -331,11 +336,11 @@ function CotizarForm() {
                 </select>
               </Field>
 
-              <Field label="Mensaje (opcional)">
+              <Field label={tr.labelMensaje}>
                 <textarea
                   name="mensaje"
                   rows={3}
-                  placeholder="Cuéntanos brevemente tu proyecto o necesidad…"
+                  placeholder={tr.placeholderMensaje}
                   value={form.mensaje}
                   onChange={handleChange}
                   disabled={loading}
@@ -348,11 +353,11 @@ function CotizarForm() {
                 disabled={loading}
                 className="mt-2 w-full bg-[#7C5CBF] text-white font-bold py-3.5 rounded-xl hover:bg-[#6B4DAE] transition-all disabled:opacity-50 shadow-lg shadow-[#7C5CBF]/20 active:scale-[0.98]"
               >
-                {loading ? "Enviando..." : "Enviar solicitud"}
+                {loading ? tr.sending : tr.submitBtn}
               </button>
 
               <p className="text-xs text-center text-[#A1A1AA] font-medium">
-                Tu información no será compartida con terceros.
+                {tr.privacy}
               </p>
             </form>
           </div>
