@@ -1,0 +1,23 @@
+{
+  "name": "4cats Agencia Digital",
+  "short_name": "4cats",
+  "description": "Agencia digital en Chile. Diseño, desarrollo y posicionamiento.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7C5CBF",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
