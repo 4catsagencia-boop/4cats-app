@@ -4,6 +4,7 @@ type View = "dashboard" | "cotizaciones" | "clientes" | "planes";
 
 interface SidebarProps {
   activeView: View;
+  userName: string;
   onNavigate: (view: View) => void;
 }
 
@@ -46,7 +47,13 @@ const items: { view: View; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
+function userEmoji(name: string) {
+  if (name.toLowerCase().includes("luis")) return "👑";
+  if (name.toLowerCase().includes("maría") || name.toLowerCase().includes("majo")) return "🌷";
+  return "🐱";
+}
+
+export default function Sidebar({ activeView, userName, onNavigate }: SidebarProps) {
   return (
     <aside className="w-60 shrink-0 bg-white dark:bg-[#0F0F12] border-r border-[#E4E4E7] dark:border-[#2A2A35] flex flex-col">
       <div className="px-5 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35]">
@@ -85,6 +92,11 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
       </nav>
 
       <div className="px-5 py-4 border-t border-[#E4E4E7] dark:border-[#2A2A35]">
+        {userName && (
+          <p className="text-xs font-semibold text-[#52525B] dark:text-[#A1A1AA] mb-1">
+            {userEmoji(userName)} {userName}
+          </p>
+        )}
         <p className="text-[10px] text-[#A1A1AA]">4cats Studio · 2026</p>
       </div>
     </aside>

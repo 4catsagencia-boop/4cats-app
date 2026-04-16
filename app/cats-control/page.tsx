@@ -11,28 +11,33 @@ type View = "dashboard" | "cotizaciones" | "clientes" | "planes";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
   const [activeView, setActiveView] = useState<View>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem("cats_control_auth") === "true") {
-      setAuth(true);
+    if (typeof window !== "undefined") {
+      const stored = sessionStorage.getItem("cats_control_user");
+      if (stored) { setAuth(true); setUserName(stored); }
     }
   }, []);
 
   async function handleLogin() {
     try {
-      const res = await fetch("/api/admin/auth", {
+      const res = await fetch("/api/cats-control/auth", {
         method: "POST",
-        body: JSON.stringify({ password: pw }),
+        body: JSON.stringify({ username, password: pw }),
         headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
+        const { name } = await res.json();
         setAuth(true);
+        setUserName(name);
         setErr(false);
-        if (typeof window !== "undefined") sessionStorage.setItem("cats_control_auth", "true");
+        if (typeof window !== "undefined") sessionStorage.setItem("cats_control_user", name);
       } else {
         setErr(true);
         setPw("");
@@ -66,6 +71,14 @@ export default function CatsControlPage() {
 
           <div className="flex flex-col gap-4">
             <input
+              type="text"
+              value={username}
+              onChange={(e) => { setUsername(e.target.value); setErr(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter") handleLogin(); }}
+              placeholder="Usuario (luis / majo)"
+              className="w-full border border-[#E4E4E7] dark:border-[#3F3F46] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF] focus:border-[#7C5CBF] transition-all bg-white dark:bg-[#27272A] text-[#18181B] dark:text-white"
+            />
+            <input
               type="password"
               value={pw}
               onChange={(e) => { setPw(e.target.value); setErr(false); }}
@@ -75,7 +88,7 @@ export default function CatsControlPage() {
                 err ? "border-red-400" : "border-[#E4E4E7] dark:border-[#3F3F46]"
               }`}
             />
-            {err && <p className="text-xs text-red-500 font-medium -mt-2">Contraseña incorrecta.</p>}
+            {err && <p className="text-xs text-red-500 font-medium -mt-2">Usuario o contraseña incorrectos.</p>}
             <button
               onClick={handleLogin}
               className="w-full bg-[#7C5CBF] text-white font-bold py-3 rounded-xl hover:bg-[#6B4DAE] transition-all active:scale-[0.98] shadow-lg shadow-[#7C5CBF]/20"
@@ -109,6 +122,7 @@ export default function CatsControlPage() {
       <div className={`fixed md:static inset-y-0 left-0 z-30 transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <Sidebar
           activeView={activeView}
+          userName={userName}
           onNavigate={(view) => { setActiveView(view); setSidebarOpen(false); }}
         />
       </div>
