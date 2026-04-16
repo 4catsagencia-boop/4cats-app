@@ -42,8 +42,8 @@ const css = `
     50%      { transform:scale(1.05) translateY(-10px); }
   }
   @keyframes pulseGlow {
-    0%,100% { box-shadow:0 0 0 0 rgba(245,158,11,0.45); }
-    50%     { box-shadow:0 0 32px 8px rgba(245,158,11,0.2); }
+    0%,100% { box-shadow:0 0 0 0 rgba(124,92,191,0.45); }
+    50%     { box-shadow:0 0 32px 8px rgba(124,92,191,0.2); }
   }
   @keyframes pulseRing {
     0%  { box-shadow:0 0 0 0 rgba(124,92,191,0.55); }
@@ -205,7 +205,7 @@ export default function MantenimientoPage() {
           </p>
           <h1 data-anim="left" className="d100 text-5xl font-bold tracking-tight text-[#18181B] leading-tight">
             {tr.h1} <br />
-            tu <span className="text-[#7C5CBF]">{tr.h1accent}</span>
+            <span className="text-[#7C5CBF]">{tr.h1accent}</span>
           </h1>
           <p data-anim="left" className="d200 text-[#52525B] text-lg leading-relaxed">
             {tr.subtitle}
@@ -333,7 +333,7 @@ export default function MantenimientoPage() {
                 features={[...tr.plans[1].features]}
                 buttonText={tr.plans[1].btn}
                 planMonthly={tr.planMonthly}
-                color="bg-[#F59E0B]"
+                color="bg-[#7C5CBF]"
               />
             </div>
             <div data-anim="scale" className="d300">
@@ -343,9 +343,10 @@ export default function MantenimientoPage() {
                 features={[...tr.plans[2].features]}
                 buttonText={tr.plans[2].btn}
                 planMonthly={tr.planMonthly}
-                color="bg-[#7C5CBF]"
+                color="bg-[#09090B]"
               />
             </div>
+
           </div>
         </div>
       </section>
@@ -427,12 +428,12 @@ function PriceCard({ title, price, features, buttonText, planMonthly, color, rec
   return (
     <div className={`bg-white rounded-3xl border ${
       recommended
-        ? "border-2 border-[#F59E0B] float-featured z-10 relative"
+        ? "border-2 border-[#7C5CBF] float-featured z-10 relative"
         : "border-[#E4E4E7] lift"
     } flex flex-col h-full`}>
       <div className={`${color} p-6 text-center rounded-t-[22px] relative`}>
         {recommended && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-[#F59E0B] text-[10px] font-bold px-3 py-1 rounded-full border border-[#F59E0B] uppercase tracking-widest">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-[#7C5CBF] text-[10px] font-bold px-3 py-1 rounded-full border border-[#7C5CBF] uppercase tracking-widest">
             Recomendado
           </div>
         )}
@@ -457,7 +458,7 @@ function PriceCard({ title, price, features, buttonText, planMonthly, color, rec
           href={`/cotizar?plan=Mantenimiento ${title}`}
           className={`block text-center py-4 rounded-xl font-bold text-sm ${
             recommended
-              ? "btn-amber bg-[#F59E0B] text-white"
+              ? "btn-glow bg-[#7C5CBF] text-white"
               : "btn-outline border-2 border-[#52525B] text-[#52525B]"
           }`}
         >

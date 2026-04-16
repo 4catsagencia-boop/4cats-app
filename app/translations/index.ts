@@ -108,9 +108,9 @@ export const t = {
       ],
       respTitle: "Nuestra Responsabilidad (Riesgo Crítico)",
       respItems: [
-        { title: "Núcleo y Seguridad",   desc: "Actualización del core, PHP y base de datos." },
-        { title: "Conflictos de Código", desc: "Resolvemos roturas visuales por actualizaciones de componentes." },
-        { title: "Blindaje Anti-Hackeo", desc: "Firewalls, monitoreo 24/7 y limpieza de malware activa." },
+        { title: "Infraestructura y Runtime", desc: "Actualización de dependencias, Node.js y bases de datos." },
+        { title: "Conflictos de Código",       desc: "Resolvemos roturas visuales por actualizaciones de componentes." },
+        { title: "Seguridad y SSL",            desc: "Políticas de RLS, monitoreo 24/7 y blindaje de endpoints." },
       ],
       reportTitle: "No solo reparamos,",
       reportAccent: "analizamos tu éxito",
@@ -138,7 +138,7 @@ export const t = {
       ctaBtn: "Activar Plan por WhatsApp",
       plans: [
         { title: "Emprendedor",  price: 35000, features: ["Seguridad + Actualizaciones", "Respaldos Semanales", "Reporte Básico Mensual", "Soporte vía Email", "Sin bolsa de horas"], btn: "CONTRATAR AHORA" },
-        { title: "Profesional",  price: 65000, features: ["Todo lo del plan anterior", "Respaldos Diarios", "1.5 Horas de cambios incl.", "Actualización de stock (10)", "Soporte WhatsApp + Email"], btn: "ELEGIR ESTE PLAN" },
+        { title: "Profesional",  price: 65000, features: ["Todo lo del plan anterior", "Respaldos Diarios", "1.5 Horas de cambios incl.", "Actualización de contenidos", "Soporte WhatsApp + Email"], btn: "ELEGIR ESTE PLAN" },
         { title: "Corporativo",  price: 95000, features: ["Todo lo del plan anterior", "5 Horas mensuales incl.", "Firewall Avanzado DDoS", "Reunión Estratégica Mensual", "Soporte Prioritario 24/7"], btn: "SOLICITAR INFO" },
       ],
       footer: "4cats · Estudio de Desarrollo Digital",
@@ -277,9 +277,9 @@ export const t = {
       ],
       respTitle: "Our Responsibility (Critical Risk)",
       respItems: [
-        { title: "Core & Security",   desc: "Core, PHP and database updates." },
-        { title: "Code Conflicts",    desc: "We resolve visual breaks caused by component updates." },
-        { title: "Anti-Hack Shield",  desc: "Firewalls, 24/7 monitoring and active malware cleaning." },
+        { title: "Infrastructure & Runtime", desc: "Dependency, Node.js and database updates." },
+        { title: "Code Conflicts",           desc: "We resolve visual breaks caused by component updates." },
+        { title: "Security & SSL",           desc: "RLS policies, 24/7 monitoring and endpoint shielding." },
       ],
       reportTitle: "We don't just fix,",
       reportAccent: "we analyze your success",
@@ -307,7 +307,7 @@ export const t = {
       ctaBtn: "Activate Plan on WhatsApp",
       plans: [
         { title: "Starter",      price: 35000, features: ["Security + Updates", "Weekly Backups", "Basic Monthly Report", "Email Support", "No support hours included"], btn: "GET STARTED" },
-        { title: "Professional", price: 65000, features: ["Everything in previous plan", "Daily Backups", "1.5 included change hours", "Stock updates (10 products)", "WhatsApp + Email Support"], btn: "CHOOSE THIS PLAN" },
+        { title: "Professional", price: 65000, features: ["Everything in previous plan", "Daily Backups", "1.5 included change hours", "Content updates", "WhatsApp + Email Support"], btn: "CHOOSE THIS PLAN" },
         { title: "Corporate",    price: 95000, features: ["Everything in previous plan", "5 monthly hours included", "Advanced DDoS Firewall", "Monthly Strategy Meeting", "24/7 Priority Support"], btn: "REQUEST INFO" },
       ],
       footer: "4cats · Digital Development Studio",
