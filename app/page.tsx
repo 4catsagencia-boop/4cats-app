@@ -2,8 +2,10 @@
 
 import Link from "next/link"
 import { useState, useRef, useEffect, type MouseEvent } from "react"
-import Navbar from "./components/Navbar"
-import { FadeUp } from "./components/FadeUp"
+import LucyCat from "./components/cats/LucyCat"
+import BillieCat from "./components/cats/BillieCat"
+import LaylaCat from "./components/cats/LaylaCat"
+import RoxanneCat from "./components/cats/RoxanneCat"
 import { useAnimatedCounter } from "./hooks/useAnimatedCounter"
 import { useLang } from "./context/LanguageContext"
 import { t } from "./translations"
@@ -25,166 +27,10 @@ function PawIcon({ className = "w-4 h-4" }: { className?: string }) {
   )
 }
 
-function LucyCat({ isHovered }: { isHovered: boolean }) {
-  const c = "#F5A855"
-  return (
-    <svg width="130" height="156" viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Sombra */}
-      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
-      {/* Cola — forma C rellena que abraza el lado derecho */}
-      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
-      {/* Cuerpo */}
-      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
-      {/* Cuello — une cabeza y cuerpo sin costura */}
-      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
-      {/* Cabeza */}
-      <circle cx="47" cy="66" r="27" fill={c} />
-      {/* Orejas */}
-      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
-      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
-      {/* Patas */}
-      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
-      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
-      {/* Ojos */}
-      <circle cx="38" cy="64" r="6.5" fill="white" />
-      <circle cx="56" cy="64" r="6.5" fill="white" />
-      <circle cx="39" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="57" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="40" cy="63" r="1.2" fill="white" />
-      <circle cx="58" cy="63" r="1.2" fill="white" />
-      {/* Nariz */}
-      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
-      {/* Corona */}
-      <path d="M22 46 L26 27 L36 38 L47 19 L58 38 L68 27 L72 46 Z" fill="#FFD700" />
-      <rect x="22" y="44" width="50" height="5" rx="2.5" fill="#FFD700" />
-      <circle cx="47" cy="20" r="3.5" fill="white" opacity="0.9" />
-      <circle cx="27" cy="28" r="2.5" fill="white" opacity="0.85" />
-      <circle cx="67" cy="28" r="2.5" fill="white" opacity="0.85" />
-    </svg>
-  )
-}
-
-function BillieCatCard({ isHovered }: { isHovered: boolean }) {
-  const c = "#9B8EB2"
-  return (
-    <svg width="130" height="156" viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Sombra */}
-      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
-      {/* Cola */}
-      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
-      {/* Cuerpo */}
-      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
-      {/* Cuello */}
-      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
-      {/* Cabeza */}
-      <circle cx="47" cy="66" r="27" fill={c} />
-      {/* Orejas */}
-      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
-      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
-      {/* Patas */}
-      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
-      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
-      {/* Ojos */}
-      <circle cx="38" cy="64" r="6.5" fill="white" />
-      <circle cx="56" cy="64" r="6.5" fill="white" />
-      <circle cx="39" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="57" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="40" cy="63" r="1.2" fill="white" />
-      <circle cx="58" cy="63" r="1.2" fill="white" />
-      {/* Nariz */}
-      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
-      {/* Boina */}
-      <ellipse cx="49" cy="42" rx="26" ry="10" fill="#E84393" />
-      <ellipse cx="49" cy="40" rx="21" ry="7" fill="#FF6EB3" />
-      {/* Pompón */}
-      <circle cx="35" cy="32" r="8" fill="#E84393" />
-      <circle cx="35" cy="32" r="4" fill="#FF99CC" />
-    </svg>
-  )
-}
-
-function LaylaCatCard({ isHovered }: { isHovered: boolean }) {
-  const c = "#7C5CBF"
-  return (
-    <svg width="130" height="156" viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Sombra */}
-      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
-      {/* Cola */}
-      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
-      {/* Cuerpo */}
-      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
-      {/* Cuello */}
-      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
-      {/* Cabeza */}
-      <circle cx="47" cy="66" r="27" fill={c} />
-      {/* Orejas */}
-      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
-      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
-      {/* Patas */}
-      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
-      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
-      {/* Ojos */}
-      <circle cx="38" cy="64" r="6.5" fill="white" />
-      <circle cx="56" cy="64" r="6.5" fill="white" />
-      <circle cx="39" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="57" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="40" cy="63" r="1.2" fill="white" />
-      <circle cx="58" cy="63" r="1.2" fill="white" />
-      {/* Nariz */}
-      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
-      {/* Audífonos — banda */}
-      <path d="M10 66 Q10 28 47 26 Q84 28 84 66" stroke="#FFD700" strokeWidth="6" strokeLinecap="round" fill="none" />
-      {/* Copa izquierda */}
-      <rect x="2" y="59" width="16" height="22" rx="6" fill="#FFD700" />
-      <rect x="5" y="62" width="10" height="16" rx="3" fill="#FFF0A0" />
-      {/* Copa derecha */}
-      <rect x="82" y="59" width="16" height="22" rx="6" fill="#FFD700" />
-      <rect x="85" y="62" width="10" height="16" rx="3" fill="#FFF0A0" />
-    </svg>
-  )
-}
-
-function RoxanneCat({ isHovered }: { isHovered: boolean }) {
-  const c = "#D4788A"
-  return (
-    <svg width="130" height="156" viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Sombra */}
-      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
-      {/* Cola */}
-      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
-      {/* Cuerpo */}
-      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
-      {/* Cuello */}
-      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
-      {/* Cabeza */}
-      <circle cx="47" cy="66" r="27" fill={c} />
-      {/* Orejas */}
-      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
-      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
-      {/* Patas */}
-      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
-      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
-      {/* Ojos */}
-      <circle cx="38" cy="64" r="6.5" fill="white" />
-      <circle cx="56" cy="64" r="6.5" fill="white" />
-      <circle cx="39" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="57" cy="64" r={isHovered ? 4.5 : 3.5} fill={c} />
-      <circle cx="40" cy="63" r="1.2" fill="white" />
-      <circle cx="58" cy="63" r="1.2" fill="white" />
-      {/* Nariz */}
-      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
-      {/* Moño — alas de diamante + nudo */}
-      <path d="M47 42 L30 30 L24 42 L30 54 Z" fill="white" opacity="0.9" />
-      <path d="M47 42 L64 30 L70 42 L64 54 Z" fill="white" opacity="0.9" />
-      <circle cx="47" cy="42" r="6" fill="white" />
-    </svg>
-  )
-}
-
 const catComponents = {
   lucy: LucyCat,
-  billie: BillieCatCard,
-  layla: LaylaCatCard,
+  billie: BillieCat,
+  layla: LaylaCat,
   roxanne: RoxanneCat,
 } as const
 
@@ -236,7 +82,7 @@ function CatCard({ catKey, index, greeting }: { catKey: CatKey; index: number; g
           }}
         />
         <div className="relative flex justify-center mb-6">
-          <Component isHovered={isHovered} />
+          <Component isHovered={isHovered} className="w-[130px] h-[156px]" />
         </div>
         <div className="relative text-center">
           <p className="text-xs font-semibold tracking-widest uppercase mb-2 transition-colors duration-300" style={{ color: meta.color }}>

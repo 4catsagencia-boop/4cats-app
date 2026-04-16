@@ -227,7 +227,7 @@ export default function MantenimientoPage() {
         <div data-anim="right" className="d200 flex justify-center relative">
           <div className="bg-[#F3EEFF] w-64 h-64 rounded-full absolute -z-10 blur-3xl opacity-40 animate-pulse" />
           <div className="float-cat">
-            <LucyCat className="w-64 h-64 md:w-80 md:h-80 drop-shadow-xl" />
+            <LucyCat className="w-64 h-64 md:w-80 md:h-80 drop-shadow-xl" isHovered={true} />
           </div>
         </div>
       </section>
@@ -241,10 +241,10 @@ export default function MantenimientoPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 pt-12">
-            <div data-anim="left" className="lift bg-white p-8 rounded-3xl border border-[#E4E4E7] relative">
+            <div data-anim="left" className="lift bg-white p-8 rounded-3xl border border-[#E4E4E7] relative group/auto">
               {/* Layla presentadora */}
-              <div className="absolute -top-16 -left-8 md:-left-12 drop-shadow-2xl z-20 pointer-events-none transform -rotate-12">
-                <LaylaCat className="w-28 h-28 md:w-36 md:h-36" />
+              <div className="absolute -top-16 -left-8 md:-left-12 drop-shadow-2xl z-20 pointer-events-none transform -rotate-12 transition-all duration-500 group-hover/auto:rotate-0 group-hover/auto:-translate-y-2">
+                <LaylaCat className="w-28 h-28 md:w-36 md:h-36" isHovered={true} />
               </div>
               <h3 className="text-lg font-bold text-[#18181B] mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full" />
@@ -257,10 +257,10 @@ export default function MantenimientoPage() {
               </ul>
             </div>
 
-            <div data-anim="right" className="lift-dark bg-[#18181B] p-8 rounded-3xl text-white relative mt-12 md:mt-0">
+            <div data-anim="right" className="lift-dark bg-[#18181B] p-8 rounded-3xl text-white relative mt-12 md:mt-0 group/resp">
               {/* Billie presentadora */}
-              <div className="absolute -top-16 -right-8 md:-right-12 drop-shadow-2xl z-20 pointer-events-none transform rotate-12">
-                <BillieCat className="w-28 h-28 md:w-36 md:h-36" />
+              <div className="absolute -top-16 -right-8 md:-right-12 drop-shadow-2xl z-20 pointer-events-none transform rotate-12 transition-all duration-500 group-hover/resp:rotate-0 group-hover/resp:-translate-y-2">
+                <BillieCat className="w-28 h-28 md:w-36 md:h-36" isHovered={true} />
               </div>
               <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-[#7C5CBF] rounded-full animate-pulse" />
@@ -393,9 +393,9 @@ export default function MantenimientoPage() {
 
       {/* CTA FINAL */}
       <section className="py-24 max-w-5xl mx-auto px-6">
-        <div data-anim="scale" className="lift-dark bg-[#18181B] rounded-[40px] p-12 text-center relative overflow-hidden">
-          <div className="absolute bottom-0 right-0 opacity-20 translate-y-1/4">
-            <RoxanneCat className="w-48 h-48" />
+        <div data-anim="scale" className="lift-dark bg-[#18181B] rounded-[40px] p-12 text-center relative overflow-hidden group/cta">
+          <div className="absolute bottom-0 right-0 opacity-20 translate-y-1/4 transition-all duration-700 group-hover/cta:scale-110 group-hover/cta:-translate-y-2">
+            <RoxanneCat className="w-48 h-48" isHovered={true} />
           </div>
           <h3 data-anim="up" className="d100 text-3xl font-bold text-white mb-6">{tr.ctaTitle}</h3>
           <p data-anim="up" className="d200 text-[#A1A1AA] mb-10 max-w-lg mx-auto">
