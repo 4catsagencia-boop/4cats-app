@@ -9,9 +9,6 @@ export default function Footer() {
   const { lang, toggle } = useLang();
   const tr = t[lang].footer;
 
-  const serviceHrefs = ["/planes", "/planes", "/planes", "/planes", "/planes"];
-  const companyHrefs = ["/planes", "/portafolio", "/cotizar"];
-
   const teamRoles = {
     es: ["Fundadora", "Soporte", "Diseño", "Estrategia"],
     en: ["Founder", "Support", "Design", "Strategy"],
@@ -60,10 +57,10 @@ export default function Footer() {
         <div className="flex flex-col gap-4">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#52525B]">{tr.services}</p>
           <ul className="flex flex-col gap-2.5">
-            {tr.serviceList.map((label, i) => (
+            {tr.serviceList.map((item, i) => (
               <li key={i}>
-                <Link href={serviceHrefs[i] ?? "/planes"} className="text-sm text-[#A1A1AA] hover:text-white transition-colors">
-                  {label}
+                <Link href={item.href} className="text-sm text-[#A1A1AA] hover:text-white transition-colors">
+                  {item.label}
                 </Link>
               </li>
             ))}
@@ -74,10 +71,10 @@ export default function Footer() {
         <div className="flex flex-col gap-4">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#52525B]">{tr.company}</p>
           <ul className="flex flex-col gap-2.5">
-            {tr.companyList.map((label, i) => (
+            {tr.companyList.map((item, i) => (
               <li key={i}>
-                <Link href={companyHrefs[i] ?? "/planes"} className="text-sm text-[#A1A1AA] hover:text-white transition-colors">
-                  {label}
+                <Link href={item.href} className="text-sm text-[#A1A1AA] hover:text-white transition-colors">
+                  {item.label}
                 </Link>
               </li>
             ))}

@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-import { fetchPlanesPublicados, insertCliente, insertCotizacion, findClienteByEmail, type Plan } from "@/utils/supabase";
+import { fetchPlanesPublicados, type Plan } from "@/utils/supabase";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../translations";
 
@@ -97,47 +97,33 @@ function CotizarForm() {
     setLoading(true);
 
     try {
-      // 1. Buscar o Crear Cliente
-      let clienteId: string | undefined;
-      const existingClient = await findClienteByEmail(form.email.trim());
-
-      if (existingClient) {
-        clienteId = existingClient.id;
-      } else {
-        const newClients = await insertCliente({
-          nombre: form.nombre.trim(),
-          email: form.email.trim(),
-          telefono: form.telefono.trim()
-        });
-
-        if (newClients.length === 0) throw new Error("Error al crear cliente");
-        clienteId = newClients[0].id;
-      }
-
-      // 2. Guardar Cotización
       const selectedPlan = planes.find(p => p.nombre === form.plan);
       const subtotal = selectedPlan?.precio || 0;
       const impuesto = subtotal * 0.19;
       const total = subtotal + impuesto;
 
-      await insertCotizacion({
-        cliente_id: clienteId,
-        cliente_nombre: form.nombre.trim(),
-        cliente_email: form.email.trim(),
-        cliente_telefono: form.telefono.trim(),
-        plan_nombre: form.plan,
-        items: selectedPlan ? [{ descripcion: selectedPlan.nombre, precio: selectedPlan.precio }] : [],
-        subtotal,
-        impuesto,
-        total,
-        notas: form.mensaje,
-        estado: "pendiente"
+      const res = await fetch("/api/cotizar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          items: selectedPlan ? [{ descripcion: selectedPlan.nombre, precio: selectedPlan.precio }] : [],
+          subtotal,
+          impuesto,
+          total
+        }),
       });
 
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Error al procesar la solicitud");
+      }
+
       setSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       if (process.env.NODE_ENV === "development") console.error("Error saving quote:", error);
-      alert("Hubo un error al enviar tu solicitud. Por favor intenta de nuevo.");
+      alert(error.message || "Hubo un error al enviar tu solicitud. Por favor intenta de nuevo.");
     } finally {
       setLoading(false);
     }
