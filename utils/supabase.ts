@@ -12,7 +12,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export enum Tables {
   Planes = 'planes',
   Clientes = 'clientes',
-  Cotizaciones = 'cotizaciones'
+  Cotizaciones = 'cotizaciones',
+  Pagos = 'pagos',
+  Metas = 'metas',
 }
 
 export interface Plan {
@@ -188,4 +190,89 @@ export const updateCotizacionStatus = async (id: string, estado: Cotizacion["est
 
   if (error) throw error
   return (data as Cotizacion[]) || []
+}
+
+/**
+ * CLIENTES — update
+ */
+
+export const updateCliente = async (id: string, clienteData: Partial<Cliente>): Promise<Cliente[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Clientes)
+    .update(clienteData)
+    .eq('id', id)
+    .select()
+
+  if (error) throw error
+  return (data as Cliente[]) || []
+}
+
+/**
+ * PAGOS
+ */
+
+export interface Pago {
+  id: string
+  cotizacion_id: string
+  monto: number
+  fecha: string
+  descripcion?: string
+  created_at?: string
+}
+
+export const fetchPagos = async (): Promise<Pago[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Pagos)
+    .select('*')
+    .order('fecha', { ascending: false })
+
+  if (error) throw error
+  return (data as Pago[]) || []
+}
+
+export const insertPago = async (pagoData: Partial<Pago>): Promise<Pago[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Pagos)
+    .insert([pagoData])
+    .select()
+
+  if (error) throw error
+  return (data as Pago[]) || []
+}
+
+export const deletePago = async (id: string): Promise<void> => {
+  const { error } = await supabase.from(Tables.Pagos).delete().eq('id', id)
+  if (error) throw error
+}
+
+/**
+ * METAS
+ */
+
+export interface Meta {
+  id: string
+  mes: number
+  anio: number
+  monto: number
+  created_at?: string
+}
+
+export const fetchMeta = async (mes: number, anio: number): Promise<Meta | null> => {
+  const { data, error } = await supabase
+    .from(Tables.Metas)
+    .select('*')
+    .eq('mes', mes)
+    .eq('anio', anio)
+    .single()
+
+  if (error && error.code !== 'PGRST116') throw error
+  return data as Meta | null
+}
+
+export const upsertMeta = async (mes: number, anio: number, monto: number): Promise<void> => {
+  const { error } = await supabase
+    .from(Tables.Metas)
+    .upsert({ mes, anio, monto }, { onConflict: 'mes,anio' })
+
+  if (error) throw error
 }

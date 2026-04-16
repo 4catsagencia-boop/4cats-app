@@ -6,8 +6,9 @@ import DashboardView from "./components/DashboardView";
 import CotizacionesView from "./components/CotizacionesView";
 import ClientesView from "./components/ClientesView";
 import PlanesView from "./components/PlanesView";
+import FinanzasView from "./components/FinanzasView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(false);
@@ -106,6 +107,7 @@ export default function CatsControlPage() {
     cotizaciones: <CotizacionesView />,
     clientes: <ClientesView />,
     planes: <PlanesView />,
+    finanzas: <FinanzasView />,
   };
 
   return (
