@@ -1,0 +1,44 @@
+"use client"
+
+interface CatProps { className?: string }
+
+export default function LaylaCat({ className }: CatProps) {
+  const c = "#7C5CBF"
+  return (
+    <svg viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* Sombra */}
+      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
+      {/* Cola */}
+      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
+      {/* Cuerpo */}
+      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
+      {/* Cuello */}
+      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
+      {/* Cabeza */}
+      <circle cx="47" cy="66" r="27" fill={c} />
+      {/* Orejas */}
+      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
+      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
+      {/* Patas */}
+      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
+      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
+      {/* Ojos */}
+      <circle cx="38" cy="64" r="6.5" fill="white" />
+      <circle cx="56" cy="64" r="6.5" fill="white" />
+      <circle cx="39" cy="64" r={3.5} fill={c} />
+      <circle cx="57" cy="64" r={3.5} fill={c} />
+      <circle cx="40" cy="63" r="1.2" fill="white" />
+      <circle cx="58" cy="63" r="1.2" fill="white" />
+      {/* Nariz */}
+      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
+      {/* Audífonos — banda */}
+      <path d="M10 66 Q10 28 47 26 Q84 28 84 66" stroke="#FFD700" strokeWidth="6" strokeLinecap="round" fill="none" />
+      {/* Copa izquierda */}
+      <rect x="2" y="59" width="16" height="22" rx="6" fill="#FFD700" />
+      <rect x="5" y="62" width="10" height="16" rx="3" fill="#FFF0A0" />
+      {/* Copa derecha */}
+      <rect x="82" y="59" width="16" height="22" rx="6" fill="#FFD700" />
+      <rect x="85" y="62" width="10" height="16" rx="3" fill="#FFF0A0" />
+    </svg>
+  )
+}

@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* ─── Dark mode via .dark class on <html> ─── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ─── Design tokens ─── */
+:root {
+  --bg:           #ffffff;
+  --bg-surface:   #FAFAFA;
+  --bg-elevated:  #F4F4F5;
+  --border:       #E4E4E7;
+  --text-primary: #18181B;
+  --text-secondary:#52525B;
+  --text-muted:   #A1A1AA;
+  --accent:       #7C5CBF;
+  --accent-light: #F3EEFF;
+  --accent-muted: #E5D8FF;
+}
+
+.dark {
+  --bg:           #0F0F12;
+  --bg-surface:   #141418;
+  --bg-elevated:  #1E1E26;
+  --border:       #2A2A35;
+  --text-primary: #F4F4F6;
+  --text-secondary:#9090A8;
+  --text-muted:   #5A5A6E;
+  --accent:       #9B72F0;
+  --accent-light: #1C1630;
+  --accent-muted: #2E2255;
+}
+
+/* ─── Base ─── */
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ─── Squishy button ─── */
+@keyframes squish {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(0.93, 0.96); }
+  55%  { transform: scale(1.04, 0.98); }
+  75%  { transform: scale(0.98, 1.01); }
+  100% { transform: scale(1); }
+}
+
+.btn-squish {
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-squish:active {
+  animation: squish 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* ─── Glassmorphism card ─── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Scroll fade-in ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Bento cell hover glow ─── */
+.bento-cell {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bento-cell:hover {
+  transform: translateY(-2px);
+}
