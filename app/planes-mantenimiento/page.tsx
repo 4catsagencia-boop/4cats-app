@@ -354,28 +354,38 @@ export default function MantenimientoPage() {
       {/* TABLA COMPARATIVA */}
       <section id="comparativa" className="py-24 max-w-4xl mx-auto px-6">
         <h2 data-anim="up" className="text-2xl font-bold text-[#18181B] mb-10 text-center">{tr.comparativaTitle}</h2>
-        <div data-anim="scale" className="d100 overflow-hidden rounded-3xl border border-[#E4E4E7] shadow-sm">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-[#FAFAFA] border-b border-[#E4E4E7]">
-              <tr>
-                <th className="p-4 font-bold text-[#18181B]">{tr.tableCol1}</th>
-                <th className="p-4 font-medium text-[#A1A1AA]">{tr.tableCol2}</th>
-                <th className="p-4 font-bold text-[#7C5CBF]">{tr.tableCol3}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E4E4E7]">
-              {tr.tableRows.map((row, i) => (
-                <TableRow
-                  key={i}
-                  label={row.label}
-                  val1={row.v1}
-                  val2={row.v2}
-                  highlight={row.hi ?? false}
-                  delay={i}
-                />
-              ))}
-            </tbody>
-          </table>
+        <div data-anim="scale" className="d100 relative group">
+          {/* Mobile Scroll Indicator */}
+          <div className="md:hidden absolute -top-6 right-0 flex items-center gap-1 text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest animate-pulse">
+            <span>{lang === "es" ? "Desliza para ver más" : "Scroll to see more"}</span>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
+            </svg>
+          </div>
+
+          <div className="overflow-x-auto rounded-3xl border border-[#E4E4E7] shadow-sm bg-white">
+            <table className="w-full text-left text-sm min-w-[600px] md:min-w-full">
+              <thead className="bg-[#FAFAFA] border-b border-[#E4E4E7]">
+                <tr>
+                  <th className="p-4 font-bold text-[#18181B] w-1/2">{tr.tableCol1}</th>
+                  <th className="p-4 font-medium text-[#A1A1AA] w-1/4">{tr.tableCol2}</th>
+                  <th className="p-4 font-bold text-[#7C5CBF] w-1/4">{tr.tableCol3}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E4E4E7]">
+                {tr.tableRows.map((row, i) => (
+                  <TableRow
+                    key={i}
+                    label={row.label}
+                    val1={row.v1}
+                    val2={row.v2}
+                    highlight={row.hi ?? false}
+                    delay={i}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
