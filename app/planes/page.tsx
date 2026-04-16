@@ -8,6 +8,31 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../translations";
 
 function RoxanneSilhouette() {
+  const c = "#D4788A"
+  return (
+    <svg width="120" height="144" viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
+      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
+      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
+      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
+      <circle cx="47" cy="66" r="27" fill={c} />
+      <path d="M23 52 L15 24 L39 46 Z" fill={c} />
+      <path d="M71 52 L79 24 L55 46 Z" fill={c} />
+      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
+      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
+      <circle cx="38" cy="64" r="6.5" fill="white" />
+      <circle cx="56" cy="64" r="6.5" fill="white" />
+      <circle cx="39" cy="64" r="3.5" fill={c} />
+      <circle cx="57" cy="64" r="3.5" fill={c} />
+      <circle cx="40" cy="63" r="1.2" fill="white" />
+      <circle cx="58" cy="63" r="1.2" fill="white" />
+      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
+      <path d="M47 42 L30 30 L24 42 L30 54 Z" fill="white" opacity="0.9" />
+      <path d="M47 42 L64 30 L70 42 L64 54 Z" fill="white" opacity="0.9" />
+      <circle cx="47" cy="42" r="6" fill="white" />
+    </svg>
+  )
+}
 
 const formatCLP = (precio: number) => {
   return new Intl.NumberFormat("es-CL", {
