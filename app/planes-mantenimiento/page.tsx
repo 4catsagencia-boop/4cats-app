@@ -240,10 +240,11 @@ export default function MantenimientoPage() {
             <p data-anim="up" className="d100 text-[#52525B] mt-2">{tr.libertadDesc}</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <div data-anim="left" className="lift bg-white p-8 rounded-3xl border border-[#E4E4E7] relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <LaylaCat className="w-24 h-24" />
+          <div className="grid md:grid-cols-2 gap-12 pt-12">
+            <div data-anim="left" className="lift bg-white p-8 rounded-3xl border border-[#E4E4E7] relative">
+              {/* Layla presentadora */}
+              <div className="absolute -top-16 -left-8 md:-left-12 drop-shadow-2xl z-20 pointer-events-none transform -rotate-12">
+                <LaylaCat className="w-28 h-28 md:w-36 md:h-36" />
               </div>
               <h3 className="text-lg font-bold text-[#18181B] mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full" />
@@ -256,9 +257,10 @@ export default function MantenimientoPage() {
               </ul>
             </div>
 
-            <div data-anim="right" className="lift-dark bg-[#18181B] p-8 rounded-3xl text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-20">
-                <BillieCat className="w-24 h-24" />
+            <div data-anim="right" className="lift-dark bg-[#18181B] p-8 rounded-3xl text-white relative mt-12 md:mt-0">
+              {/* Billie presentadora */}
+              <div className="absolute -top-16 -right-8 md:-right-12 drop-shadow-2xl z-20 pointer-events-none transform rotate-12">
+                <BillieCat className="w-28 h-28 md:w-36 md:h-36" />
               </div>
               <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-[#7C5CBF] rounded-full animate-pulse" />
