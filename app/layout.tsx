@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     locale: "es_CL",
     type: "website",
   },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
