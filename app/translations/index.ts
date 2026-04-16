@@ -6,6 +6,7 @@ export const t = {
       portafolio: "Portafolio",
       cotizar: "Cotizar",
       cotizarBtn: "Cotizar gratis",
+      catsControl: "Cats Control",
     },
 
     home: {
@@ -175,6 +176,7 @@ export const t = {
       portafolio: "Portfolio",
       cotizar: "Quote",
       cotizarBtn: "Get a free quote",
+      catsControl: "Cats Control",
     },
 
     home: {

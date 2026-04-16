@@ -9,6 +9,8 @@ import RoxanneCat from "./components/cats/RoxanneCat"
 import { useAnimatedCounter } from "./hooks/useAnimatedCounter"
 import { useLang } from "./context/LanguageContext"
 import { t } from "./translations"
+import Navbar from "./components/Navbar"
+import { FadeUp } from "./components/FadeUp"
 
 function PawIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -438,7 +440,7 @@ export default function Home() {
               <LucyCat isHovered={false} />
             </div>
             <div className="transform hover:scale-105 transition-transform -ml-8">
-              <BillieCatCard isHovered={false} />
+              <BillieCat isHovered={false} />
             </div>
           </div>
         </div>
