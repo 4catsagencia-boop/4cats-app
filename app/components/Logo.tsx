@@ -1,11 +1,28 @@
 "use client"
 
+import Image from "next/image";
+
 interface LogoProps {
   className?: string;
   size?: number;
+  useImage?: boolean;
 }
 
-export default function Logo({ className = "w-8 h-8", size = 512 }: LogoProps) {
+export default function Logo({ className = "w-8 h-8", size = 512, useImage = true }: LogoProps) {
+  if (useImage) {
+    return (
+      <div className={`relative ${className}`}>
+        <Image 
+          src="/logo-web.png" 
+          alt="4cats Logo" 
+          fill
+          className="object-contain"
+          priority
+        />
+      </div>
+    );
+  }
+
   return (
     <svg 
       width={size} 

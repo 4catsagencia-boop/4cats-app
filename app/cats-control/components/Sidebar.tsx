@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "../../context/ThemeContext";
 
 type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
@@ -72,14 +73,13 @@ export default function Sidebar({ activeView, userName, onNavigate }: SidebarPro
     <aside className="w-60 shrink-0 bg-white dark:bg-[#0F0F12] border-r border-[#E4E4E7] dark:border-[#2A2A35] flex flex-col">
       <div className="px-5 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35]">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-7 h-7 bg-[#7C5CBF] rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
-            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4">
-              <ellipse cx="12" cy="16" rx="5" ry="4" />
-              <ellipse cx="5.5" cy="11" rx="2.2" ry="2.8" transform="rotate(-15 5.5 11)" />
-              <ellipse cx="9" cy="8.5" rx="2" ry="2.6" transform="rotate(-5 9 8.5)" />
-              <ellipse cx="15" cy="8.5" rx="2" ry="2.6" transform="rotate(5 15 8.5)" />
-              <ellipse cx="18.5" cy="11" rx="2.2" ry="2.8" transform="rotate(15 18.5 11)" />
-            </svg>
+          <div className="w-10 h-10 relative transition-transform group-hover:scale-110">
+            <Image 
+              src="/logo-app.png" 
+              alt="4cats App" 
+              fill
+              className="object-contain"
+            />
           </div>
           <div>
             <p className="text-sm font-bold text-[#18181B] dark:text-white leading-none">Cats Control</p>
