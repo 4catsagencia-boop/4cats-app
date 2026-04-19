@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { useTheme } from "../../context/ThemeContext";
+
 type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
 
 interface SidebarProps {
@@ -62,17 +65,6 @@ function userEmoji(name: string) {
   return "🐱";
 }
 
-import Link from "next/link";
-import { useTheme } from "../../context/ThemeContext";
-
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
-
-interface SidebarProps {
-  activeView: View;
-  userName: string;
-  onNavigate: (view: View) => void;
-}
-...
 export default function Sidebar({ activeView, userName, onNavigate }: SidebarProps) {
   const { theme, toggle: toggleTheme } = useTheme();
 
