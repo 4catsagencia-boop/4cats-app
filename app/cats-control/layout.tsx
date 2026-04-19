@@ -1,15 +1,14 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin | 4cats",
-  description: "Panel de administración",
+  title: "Cats Control — Centro de Mando",
   icons: {
     icon: "/logo-app.png",
     apple: "/logo-app.png",
   },
 };
 
-export default function AdminLayout({
+export default function CatsControlLayout({
   children,
 }: {
   children: React.ReactNode;

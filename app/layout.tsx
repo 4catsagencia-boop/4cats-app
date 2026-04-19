@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/logo-web.png",
+    apple: "/logo-web.png",
   },
   manifest: "/manifest.json",
   appleWebApp: {
