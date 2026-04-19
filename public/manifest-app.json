@@ -1,20 +1,20 @@
 {
-  "name": "4cats Studio",
-  "short_name": "4cats",
-  "description": "Estudio de Software e Inteligencia Artificial.",
-  "start_url": "/",
+  "name": "Cats Control",
+  "short_name": "Control",
+  "description": "Centro de mando de 4cats digital agency.",
+  "start_url": "/cats-control",
   "display": "standalone",
-  "background_color": "#06030F",
+  "background_color": "#0F0F12",
   "theme_color": "#7C5CBF",
   "icons": [
     {
-      "src": "/logo-web.png",
+      "src": "/logo-app.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo-web.png",
+      "src": "/logo-app.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
