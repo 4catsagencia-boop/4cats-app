@@ -3,8 +3,10 @@
 ## Compact Rules (auto-resolved)
 
 ### Project Standards
-- **Zero Placeholders**: NUNCA usar `...` o comentarios de omisión en el código. Cada edición debe ser sintácticamente válida y completa.
-- **Pre-Push Build**: Es obligatorio correr `npm run build` localmente antes de pushear cambios que afecten el layout o componentes críticos.
+- **PWA Segmentation**: Usar `manifest.json` (logo-web) para landing y `manifest-app.json` (logo-app) para dashboards.
+- **Color Scheme Control**: Definir siempre `color-scheme` en el CSS para evitar que el OS sobrescriba el tema claro.
+- **Zero Placeholders**: NUNCA usar `...` en el código. Ediciones completas y válidas únicamente.
+- **Pre-Push Build**: Ejecutar `npm run build` localmente antes de cualquier push a main.
 - **React 19 Purity**: Prohibido `Math.random()` en el render. Usar LCG determinista para semillas.
 - **State Initialization**: Cargar `sessionStorage/localStorage` en el inicializador de `useState(() => ...)` (evita cascading renders).
 - **Navigation Sync**: Resetear UI durante el render comparando `pathname`, no en `useEffect`.
