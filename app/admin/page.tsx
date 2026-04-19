@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import PlanesSection from "./components/PlanesSection";
 import ClientesSection from "./components/ClientesSection";
@@ -8,17 +8,15 @@ import CotizacionesSection from "./components/CotizacionesSection";
 type Section = "planes" | "cotizaciones" | "clientes";
 
 export default function AdminPage() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("admin_auth") === "true";
+    }
+    return false;
+  });
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
   const [activeSection, setActiveSection] = useState<Section>("planes");
-
-  // Verificar si ya estaba autenticado en esta sesión
-  useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem("admin_auth") === "true") {
-      setAuth(true);
-    }
-  }, []);
 
   async function handleLogin() {
     try {

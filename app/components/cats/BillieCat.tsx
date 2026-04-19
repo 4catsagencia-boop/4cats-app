@@ -1,95 +1,51 @@
 "use client"
 
-interface CatProps { className?: string; isHovered?: boolean }
+interface CatProps { className?: string }
 
-export default function BillieCat({ className, isHovered }: CatProps) {
-  const primary = "#9B8EB2"
-  const secondary = "#7E7096"
-  const accessory = "#E84393"
-  const accessoryLight = "#FF6EB3"
-
+export default function BillieCat({ className }: CatProps) {
+  const c = "#9B8EB2"
   return (
-    <svg 
-      viewBox="0 0 108 130" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg" 
-      className={`${className} transition-transform duration-500 ${isHovered ? "scale-105" : ""}`}
-    >
-      <defs>
-        <linearGradient id="billieBodyGradient" x1="47" y1="79" x2="47" y2="125" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={primary} />
-          <stop offset="100%" stopColor={secondary} />
-        </linearGradient>
-        <radialGradient id="billieFaceHighlight" cx="47" cy="60" r="27" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="white" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="transparent" />
-        </radialGradient>
-      </defs>
-
+    <svg viewBox="0 0 108 130" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
       {/* Sombra */}
-      <ellipse cx="50" cy="126" rx="27" ry="4" fill="#000" opacity="0.1" />
-
+      <ellipse cx="50" cy="126" rx="27" ry="4" fill={c} opacity="0.2" />
       {/* Cola */}
-      <path 
-        d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" 
-        fill="url(#billieBodyGradient)"
-        className={`transition-all duration-700 origin-[70px_110px] ${isHovered ? "-rotate-6" : ""}`}
-      />
-
+      <path d="M70 98 Q102 90 100 114 Q98 130 70 128 L66 120 Q82 118 82 114 Q82 98 66 98 Z" fill={c} />
       {/* Cuerpo */}
-      <ellipse cx="47" cy="102" rx="30" ry="23" fill="url(#billieBodyGradient)" />
-      
+      <ellipse cx="47" cy="102" rx="30" ry="23" fill={c} />
       {/* Cuello */}
-      <ellipse cx="47" cy="83" rx="18" ry="12" fill={primary} />
-
+      <ellipse cx="47" cy="83" rx="18" ry="12" fill={c} />
       {/* Cabeza */}
-      <circle cx="47" cy="66" r="27" fill="url(#billieBodyGradient)" />
-      <circle cx="47" cy="66" r="27" fill="billieFaceHighlight" fillOpacity="0.3" />
-
+      <circle cx="47" cy="66" r="27" fill={c} />
       {/* Orejas */}
-      <path d="M23 52 L15 24 L39 46 Z" fill={secondary} />
-      <path d="M26 48 L20 32 L34 44 Z" fill="#D1C9DF" opacity="0.4" />
-      
-      <path d="M71 52 L79 24 L55 46 Z" fill={secondary} />
-      <path d="M68 48 L74 32 L60 44 Z" fill="#D1C9DF" opacity="0.4" />
-
-      {/* Bigotes */}
-      <g stroke="white" strokeWidth="0.5" opacity="0.3">
-        <line x1="25" y1="72" x2="12" y2="68" />
-        <line x1="25" y1="75" x2="10" y2="78" />
-        <line x1="69" y1="72" x2="82" y2="68" />
-        <line x1="69" y1="75" x2="84" y2="78" />
-      </g>
-
+      <path d="M23 52 L15 30 L39 46 Z" fill={c} />
+      <path d="M71 52 L79 30 L55 46 Z" fill={c} />
       {/* Patas */}
-      <ellipse cx="33" cy="121" rx="14" ry="7" fill={secondary} />
-      <ellipse cx="57" cy="121" rx="14" ry="7" fill={secondary} />
-
+      <ellipse cx="33" cy="121" rx="14" ry="7" fill={c} />
+      <ellipse cx="57" cy="121" rx="14" ry="7" fill={c} />
       {/* Ojos */}
-      <g className={`transition-transform duration-300 ${isHovered ? "scale-105" : ""}`} style={{ transformOrigin: "47px 64px" }}>
-        <circle cx="38" cy="64" r="6.5" fill="white" />
-        <circle cx="56" cy="64" r="6.5" fill="white" />
-        
-        <circle cx="38" cy="64" r={isHovered ? 4.5 : 4} fill={secondary} />
-        <circle cx="56" cy="64" r={isHovered ? 4.5 : 4} fill={secondary} />
-        
-        <circle cx="38" cy="64" r="2" fill="#18181B" />
-        <circle cx="56" cy="64" r="2" fill="#18181B" />
-        
-        <circle cx="40" cy="62" r="1.5" fill="white" />
-        <circle cx="58" cy="62" r="1.5" fill="white" />
-      </g>
-
+      <circle cx="38" cy="64" r="6.5" fill="white" />
+      <circle cx="56" cy="64" r="6.5" fill="white" />
+      <circle cx="39" cy="64" r={3.5} fill={c} />
+      <circle cx="57" cy="64" r={3.5} fill={c} />
+      <circle cx="40" cy="63" r="1.2" fill="white" />
+      <circle cx="58" cy="63" r="1.2" fill="white" />
       {/* Nariz */}
-      <path d="M45 72 L47 75 L49 72" fill="#D1C9DF" />
-
-      {/* Boina Hiper-Pro */}
-      <g className={`transition-transform duration-500 ${isHovered ? "translate-y-[-2px] rotate-[-2deg]" : ""}`}>
-        <ellipse cx="49" cy="42" rx="26" ry="10" fill={accessory} />
-        <ellipse cx="49" cy="40" rx="21" ry="7" fill={accessoryLight} />
-        <circle cx="35" cy="32" r="8" fill={accessory} />
-        <circle cx="35" cy="32" r="4" fill="#FF99CC" />
+      <path d="M45 72 L47 76 L49 72" fill="white" opacity="0.6" />
+      {/* Bigotes */}
+      <g stroke="white" strokeWidth="0.8" opacity="0.4" strokeLinecap="round">
+        <path d="M38 74 L25 72" />
+        <path d="M38 77 L25 79" />
+        <path d="M38 80 L28 86" />
+        <path d="M56 74 L69 72" />
+        <path d="M56 77 L69 79" />
+        <path d="M56 80 L66 86" />
       </g>
+      {/* Boina */}
+      <ellipse cx="49" cy="42" rx="26" ry="10" fill="#E84393" />
+      <ellipse cx="49" cy="40" rx="21" ry="7" fill="#FF6EB3" />
+      {/* Pompón */}
+      <circle cx="35" cy="32" r="8" fill="#E84393" />
+      <circle cx="35" cy="32" r="4" fill="#FF99CC" />
     </svg>
   )
 }

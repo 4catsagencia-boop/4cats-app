@@ -121,7 +121,7 @@ export default function InfografiaPage() {
                 <h3 className="font-bold text-[#18181B] text-sm">Incompatibilidades</h3>
               </div>
               <p className="text-[#475569] text-sm leading-relaxed">
-                Una actualización automática puede "romper" el diseño visual o el carrito de compras.
+                Una actualización automática puede &quot;romper&quot; el diseño visual o el carrito de compras.
               </p>
             </div>
           </div>
@@ -163,10 +163,10 @@ export default function InfografiaPage() {
             </svg>
           </div>
           <p className="relative z-10 text-white font-semibold text-base leading-snug">
-            "Nuestro servicio no es un gasto, es un{" "}
+            &quot;Nuestro servicio no es un gasto, es un{" "}
             <span className="font-extrabold underline decoration-white/60">
               Seguro de Continuidad Operativa
-            </span>."
+            </span>.&quot;
           </p>
         </div>
       </section>
@@ -196,7 +196,7 @@ export default function InfografiaPage() {
               Garantía
             </p>
             <h2 className="text-xl font-bold text-[#18181B] leading-tight">
-              Política de "Seguro de Edición"
+              Política de &quot;Seguro de Edición&quot;
             </h2>
           </div>
         </div>

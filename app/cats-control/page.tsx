@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import DashboardView from "./components/DashboardView";
 import CotizacionesView from "./components/CotizacionesView";
@@ -11,20 +11,23 @@ import FinanzasView from "./components/FinanzasView";
 type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
 
 export default function CatsControlPage() {
-  const [auth, setAuth] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [auth, setAuth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!sessionStorage.getItem("cats_control_user");
+    }
+    return false;
+  });
+  const [userName, setUserName] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("cats_control_user") || "";
+    }
+    return "";
+  });
   const [username, setUsername] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
   const [activeView, setActiveView] = useState<View>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("cats_control_user");
-      if (stored) { setAuth(true); setUserName(stored); }
-    }
-  }, []);
 
   async function handleLogin() {
     try {

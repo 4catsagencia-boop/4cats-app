@@ -20,13 +20,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "4cats — Agencia digital Chile",
-  description: "Diseñamos, desarrollamos y posicionamos tu presencia digital. Planes claros, sin costos ocultos, con resultados medibles.",
-  keywords: ["agencia digital", "Chile", "diseño web", "desarrollo web", "SEO", "marketing digital"],
+  title: "4cats — Estudio de Software · IA · Temuco",
+  description: "Construimos software a medida con IA integrada. Sistemas de gestión, captación de leads y automatización para empresas del sur de Chile.",
+  keywords: ["estudio de software", "inteligencia artificial", "desarrollo web", "sistemas a medida", "Temuco", "Chile", "Next.js", "Supabase"],
   authors: [{ name: "4cats" }],
   openGraph: {
-    title: "4cats — Agencia digital Chile",
-    description: "Diseñamos, desarrollamos y posicionamos tu presencia digital.",
+    title: "4cats — Estudio de Software · IA · Temuco",
+    description: "Construimos software a medida con IA integrada. Sistemas de gestión, captación de leads y automatización.",
     url: "https://4cats.cl",
     siteName: "4cats",
     locale: "es_CL",

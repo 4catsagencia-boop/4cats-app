@@ -10,9 +10,9 @@ export const t = {
     },
 
     home: {
-      badge: "Estudio tecnológico · Next.js · Supabase · Vercel",
-      h1: "Tecnología que trabaja\npor tu negocio",
-      subtitle: "Somos 4cats. Desarrollamos con Next.js y Supabase — plataformas que cargan en menos de 2 segundos, escalan sin límites y convierten visitas en clientes reales. Sin WordPress. Sin letra chica.",
+      badge: "Estudio de Software · IA · Temuco, Sur de Chile",
+      h1: "Software que resuelve\nproblemas reales",
+      subtitle: "Somos 4cats. Construimos software a medida con IA integrada — desde motores de cálculo complejos hasta sistemas de gestión empresarial. Con una identidad que conecta y código que dura.",
       cta1: "Ver planes",
       cta2: "Cotizar gratis",
       catGreeting: "¡Hola! Soy",
@@ -27,6 +27,26 @@ export const t = {
         { title: "Código propio, cero dependencias",  desc: "Sin WordPress, sin plugins que te queden grandes. Tu sitio es tuyo: React + Next.js, código abierto y escalable." },
         { title: "Precios que se entienden",           desc: "Sin letras chicas. Sin sorpresas al final del mes. Lo que ves es lo que pagas." },
         { title: "Rendimiento que se mide",            desc: "Entregamos con 95+ en PageSpeed. Analíticas reales, reportes claros. Sabes exactamente qué retorna tu inversión." },
+      ],
+      servicesBadge: "Lo que hacemos",
+      servicesTitle: "Tres niveles de impacto",
+      servicesDesc: "No vendemos páginas web. Construimos infraestructura que genera leads, automatiza procesos y posiciona tu negocio como líder tecnológico.",
+      services: [
+        {
+          title: "Sistema de Captación",
+          desc: "Plataformas conectadas a base de datos en tiempo real con automatizaciones por detrás. Vendés resultados medibles — leads calificados, no diseño web.",
+          tags: ["Next.js", "Supabase", "Automatización", "Leads"],
+        },
+        {
+          title: "Infraestructura a Medida",
+          desc: "Sistemas de gestión interna, portales corporativos y herramientas con lógica compleja. Motores de cálculo, flujos de aprobación y control total de tu operación.",
+          tags: ["React", "TypeScript", "PostgreSQL", "API REST"],
+        },
+        {
+          title: "Partner de Inteligencia Artificial",
+          desc: "Automatización de procesos con IA, integración de modelos y arquitectura cloud. Dejás de ser un cliente más y te convertís en socio tecnológico a largo plazo.",
+          tags: ["Python", "IA", "Cloud", "Automatización"],
+        },
       ],
       stackBadge: "Nuestra tecnología",
       stackTitle: "El motor detrás de cada proyecto",
@@ -138,9 +158,9 @@ export const t = {
       ctaDesc: "Activa hoy tu plan de Socio Digital y deja de preocuparte por la técnica. Nosotros cuidamos tu casa digital.",
       ctaBtn: "Activar Plan por WhatsApp",
       plans: [
-        { title: "Emprendedor",  price: 35000, features: ["Seguridad + Actualizaciones", "Respaldos Semanales", "Reporte Básico Mensual", "Soporte vía Email", "Sin bolsa de horas"], btn: "CONTRATAR AHORA" },
-        { title: "Profesional",  price: 65000, features: ["Todo lo del plan anterior", "Respaldos Diarios", "1.5 Horas de cambios incl.", "Actualización de contenidos", "Soporte WhatsApp + Email"], btn: "ELEGIR ESTE PLAN" },
-        { title: "Corporativo",  price: 95000, features: ["Todo lo del plan anterior", "5 Horas mensuales incl.", "Firewall Avanzado DDoS", "Reunión Estratégica Mensual", "Soporte Prioritario 24/7"], btn: "SOLICITAR INFO" },
+        { title: "Emprendedor",  features: ["Seguridad + Actualizaciones", "Respaldos Semanales", "Reporte Básico Mensual", "Soporte vía Email", "Sin bolsa de horas"], btn: "CONTRATAR AHORA" },
+        { title: "Profesional",  features: ["Todo lo del plan anterior", "Respaldos Diarios", "1.5 Horas de cambios incl.", "Actualización de contenidos", "Soporte WhatsApp + Email"], btn: "ELEGIR ESTE PLAN" },
+        { title: "Corporativo",  features: ["Todo lo del plan anterior", "5 Horas mensuales incl.", "Firewall Avanzado DDoS", "Reunión Estratégica Mensual", "Soporte Prioritario 24/7"], btn: "SOLICITAR INFO" },
       ],
       footer: "4cats · Estudio de Desarrollo Digital",
     },
@@ -180,9 +200,9 @@ export const t = {
     },
 
     home: {
-      badge: "Tech studio · Next.js · Supabase · Vercel",
-      h1: "Technology that works\nfor your business",
-      subtitle: "We are 4cats. We build with Next.js and Supabase — platforms that load in under 2 seconds, scale without limits, and convert visits into real clients. No WordPress. No fine print.",
+      badge: "Software Studio · AI · Temuco, Southern Chile",
+      h1: "Software that solves\nreal problems",
+      subtitle: "We are 4cats. We build custom software with integrated AI — from complex calculation engines to enterprise management systems. With an identity that connects and code that lasts.",
       cta1: "View plans",
       cta2: "Get a free quote",
       catGreeting: "Hi! I'm",
@@ -197,6 +217,26 @@ export const t = {
         { title: "Your code, zero lock-in",    desc: "No WordPress, no plugins holding you hostage. Your site is yours: React + Next.js, open and scalable." },
         { title: "Pricing you understand",     desc: "No fine print. No surprises at the end of the month. What you see is what you pay." },
         { title: "Performance you can measure", desc: "We deliver with 95+ PageSpeed. Real analytics, clear reports. You know exactly what your investment returns." },
+      ],
+      servicesBadge: "What we do",
+      servicesTitle: "Three levels of impact",
+      servicesDesc: "We don't sell websites. We build infrastructure that generates leads, automates processes, and positions your business as a tech leader.",
+      services: [
+        {
+          title: "Lead Capture System",
+          desc: "Platforms connected to a real-time database with automations running behind the scenes. You sell measurable results — qualified leads, not web design.",
+          tags: ["Next.js", "Supabase", "Automation", "Leads"],
+        },
+        {
+          title: "Custom Infrastructure",
+          desc: "Internal management systems, corporate portals, and tools with complex logic. Calculation engines, approval flows, and full operational control.",
+          tags: ["React", "TypeScript", "PostgreSQL", "REST API"],
+        },
+        {
+          title: "AI Partner",
+          desc: "Process automation with AI, model integration, and cloud architecture. You stop being just another client and become a long-term technology partner.",
+          tags: ["Python", "AI", "Cloud", "Automation"],
+        },
       ],
       stackBadge: "Our technology",
       stackTitle: "The engine behind every project",

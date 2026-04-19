@@ -3,21 +3,27 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import LucyCat from "./cats/LucyCat";
 import Logo from "./Logo";
+import { t } from "../translations";
 import { useLang } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
-import { t } from "../translations";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const { lang, toggle } = useLang();
   const { theme, toggle: toggleTheme } = useTheme();
   const tr = t[lang].nav;
 
-  // Close mobile menu on route change
-  useEffect(() => { setOpen(false); }, [pathname]);
+  const [open, setOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  // Patrón React 19: Reset de estado durante renderizado al cambiar props/navigation
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setOpen(false);
+  }
+
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Close on outside scroll (UX)
   useEffect(() => {
@@ -27,6 +33,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", close);
   }, [open]);
 
+  // Track page scroll for transparent to solid bg effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    handleScroll(); // Init
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const navLinks = [
     { href: "/planes", label: tr.planes },
     { href: "/planes-mantenimiento", label: tr.mantenimiento },
@@ -35,8 +51,12 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-[#0F0F12]/85 backdrop-blur-md border-b border-[#E4E4E7] dark:border-[#2A2A35] transition-colors">
-      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
+      isScrolled 
+        ? "bg-white/85 dark:bg-[#0F0F12]/85 backdrop-blur-md border-b border-[#E4E4E7] dark:border-[#2A2A35] py-0" 
+        : "bg-transparent border-b border-transparent py-2"
+    }`}>
+      <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">

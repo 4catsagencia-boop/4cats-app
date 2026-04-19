@@ -10,16 +10,17 @@ const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light")
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("4cats-theme") as Theme | null;
+      return stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    }
+    return "light";
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem("4cats-theme") as Theme | null
-    const preferred =
-      stored ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-    setTheme(preferred)
-    document.documentElement.classList.toggle("dark", preferred === "dark")
-  }, [])
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   const toggle = () => {
     const next: Theme = theme === "light" ? "dark" : "light"

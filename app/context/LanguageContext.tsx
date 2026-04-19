@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 export type Lang = "es" | "en";
 
@@ -12,12 +12,13 @@ interface LangCtx {
 const LanguageContext = createContext<LangCtx>({ lang: "es", toggle: () => {} });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>("es");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("4cats_lang") as Lang | null;
-    if (saved === "es" || saved === "en") setLang(saved);
-  }, []);
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("4cats_lang") as Lang | null;
+      if (saved === "es" || saved === "en") return saved;
+    }
+    return "es";
+  });
 
   function toggle() {
     const next: Lang = lang === "es" ? "en" : "es";

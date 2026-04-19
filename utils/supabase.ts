@@ -11,6 +11,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export enum Tables {
   Planes = 'planes',
+  PlanesMantenimiento = 'planes_mantenimiento',
   Clientes = 'clientes',
   Cotizaciones = 'cotizaciones',
   Pagos = 'pagos',
@@ -28,12 +29,37 @@ export interface Plan {
   created_at?: string
 }
 
+export interface PlanMantenimiento {
+  id: string
+  nombre: string
+  precio: number
+  publicado: boolean
+  destacado: boolean
+  caracteristicas: string[]
+  created_at?: string
+}
+
 export interface Cliente {
   id: string
   nombre: string
   email: string
   telefono?: string
   sitio_web?: string
+  persona_encargada?: string
+  razon_social?: string
+  rut?: string
+  giro?: string
+  direccion_facturacion?: string
+  comuna?: string
+  ciudad?: string
+  clasificacion?: string
+  condicion_pago?: string
+  tipo_documento?: string
+  instagram?: string
+  linkedin?: string
+  facebook?: string
+  tiktok?: string
+  twitter?: string
   created_at?: string
 }
 
@@ -48,6 +74,8 @@ export interface Cotizacion {
   cliente_nombre: string
   cliente_email: string
   cliente_telefono?: string
+  cliente_rut?: string
+  cliente_razon_social?: string
   plan_nombre: string
   notas?: string
   estado: "pendiente" | "aprobada" | "rechazada"
@@ -107,6 +135,61 @@ export const updatePlan = async (id: string, planData: Partial<Plan>): Promise<P
 export const deletePlan = async (id: string): Promise<void> => {
   const { error } = await supabase
     .from(Tables.Planes)
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+/**
+ * PLANES MANTENIMIENTO
+ */
+
+export const fetchPlanesMantenimiento = async (): Promise<PlanMantenimiento[]> => {
+  const { data, error } = await supabase
+    .from(Tables.PlanesMantenimiento)
+    .select('*')
+    .order('precio', { ascending: true })
+
+  if (error) throw error
+  return (data as PlanMantenimiento[]) || []
+}
+
+export const fetchPlanesMantenimientoPublicados = async (): Promise<PlanMantenimiento[]> => {
+  const { data, error } = await supabase
+    .from(Tables.PlanesMantenimiento)
+    .select('*')
+    .eq('publicado', true)
+    .order('precio', { ascending: true })
+
+  if (error) throw error
+  return (data as PlanMantenimiento[]) || []
+}
+
+export const insertPlanMantenimiento = async (planData: Partial<PlanMantenimiento>): Promise<PlanMantenimiento[]> => {
+  const { data, error } = await supabase
+    .from(Tables.PlanesMantenimiento)
+    .insert([planData])
+    .select()
+
+  if (error) throw error
+  return (data as PlanMantenimiento[]) || []
+}
+
+export const updatePlanMantenimiento = async (id: string, planData: Partial<PlanMantenimiento>): Promise<PlanMantenimiento[]> => {
+  const { data, error } = await supabase
+    .from(Tables.PlanesMantenimiento)
+    .update(planData)
+    .eq('id', id)
+    .select()
+
+  if (error) throw error
+  return (data as PlanMantenimiento[]) || []
+}
+
+export const deletePlanMantenimiento = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from(Tables.PlanesMantenimiento)
     .delete()
     .eq('id', id)
 

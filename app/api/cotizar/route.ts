@@ -80,8 +80,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
 
-  } catch (error: any) {
-    console.error("Error in cotizar API:", error);
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Error desconocido";
+    console.error("Error in cotizar API:", errorMsg);
     return NextResponse.json(
       { error: "Error interno al procesar la cotización" },
       { status: 500 }
