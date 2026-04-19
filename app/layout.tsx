@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import ConditionalFooter from "./components/ConditionalFooter";
+import FloatingContact from "./components/FloatingContact";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <ConditionalFooter />
+          <FloatingContact />
         </Providers>
         <Analytics />
       </body>
