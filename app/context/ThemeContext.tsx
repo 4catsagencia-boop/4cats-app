@@ -19,14 +19,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    // Sincronizar clase .dark con el estado del tema
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [theme]);
 
   const toggle = () => {
     const next: Theme = theme === "light" ? "dark" : "light"
     setTheme(next)
     localStorage.setItem("4cats-theme", next)
-    document.documentElement.classList.toggle("dark", next === "dark")
   }
 
   return (

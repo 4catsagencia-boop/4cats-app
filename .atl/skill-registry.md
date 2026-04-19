@@ -3,6 +3,10 @@
 ## Compact Rules (auto-resolved)
 
 ### Project Standards
+- **React 19 Purity**: Prohibido `Math.random()` en el render. Usar LCG determinista para semillas.
+- **State Initialization**: Cargar `sessionStorage/localStorage` en el inicializador de `useState(() => ...)` (evita cascading renders).
+- **Navigation Sync**: Resetear UI durante el render comparando `pathname`, no en `useEffect`.
+- **Zero Any Policy**: No usar `any`. En `catch`, usar `error: unknown` y verificar con `instanceof Error`.
 - **Supabase**: NEVER use `supabase.from()` directly in components. Use `utils/supabase.ts`.
 - **Typing**: Use global interfaces from `utils/supabase.ts`.
 - **Admin**: Server-side auth check via `/api/admin/auth`.

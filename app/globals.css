@@ -5,6 +5,7 @@
 
 /* ─── Design tokens ─── */
 :root {
+  color-scheme: light;
   --bg:           #ffffff;
   --bg-surface:   #FAFAFA;
   --bg-elevated:  #F4F4F5;
@@ -18,6 +19,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --bg:           #0F0F12;
   --bg-surface:   #141418;
   --bg-elevated:  #1E1E26;
