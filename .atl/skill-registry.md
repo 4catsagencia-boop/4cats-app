@@ -3,6 +3,8 @@
 ## Compact Rules (auto-resolved)
 
 ### Project Standards
+- **Zero Placeholders**: NUNCA usar `...` o comentarios de omisión en el código. Cada edición debe ser sintácticamente válida y completa.
+- **Pre-Push Build**: Es obligatorio correr `npm run build` localmente antes de pushear cambios que afecten el layout o componentes críticos.
 - **React 19 Purity**: Prohibido `Math.random()` en el render. Usar LCG determinista para semillas.
 - **State Initialization**: Cargar `sessionStorage/localStorage` en el inicializador de `useState(() => ...)` (evita cascading renders).
 - **Navigation Sync**: Resetear UI durante el render comparando `pathname`, no en `useEffect`.
