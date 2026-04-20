@@ -486,6 +486,17 @@ export const fetchColaboradores = async (): Promise<Colaborador[]> => {
   return (data as Colaborador[]) || []
 }
 
+export const insertColaborador = async (colaborador: Omit<Colaborador, 'id' | 'created_at'>): Promise<Colaborador> => {
+  const { data, error } = await supabase
+    .from(Tables.Colaboradores)
+    .insert([colaborador])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Colaborador
+}
+
 export const fetchComisiones = async (colaboradorId?: string): Promise<Comision[]> => {
   let query = supabase.from('comisiones').select('*')
   if (colaboradorId) query = query.eq('colaborador_id', colaboradorId)
