@@ -10,7 +10,7 @@ type Section = "planes" | "cotizaciones" | "clientes";
 export default function AdminPage() {
   const [auth, setAuth] = useState(() => {
     if (typeof window !== "undefined") {
-      return sessionStorage.getItem("admin_auth") === "true";
+      return localStorage.getItem("admin_auth") === "true";
     }
     return false;
   });
@@ -29,7 +29,7 @@ export default function AdminPage() {
         setAuth(true);
         setErr(false);
         if (typeof window !== "undefined") {
-          sessionStorage.setItem("admin_auth", "true");
+          localStorage.setItem("admin_auth", "true");
         }
       } else {
         setErr(true);
@@ -116,7 +116,7 @@ export default function AdminPage() {
           <button
             onClick={() => {
               setAuth(false);
-              if (typeof window !== "undefined") sessionStorage.removeItem("admin_auth");
+              if (typeof window !== "undefined") localStorage.removeItem("admin_auth");
             }}
             className="mt-8 text-xs text-[#A1A1AA] hover:text-red-400 transition-colors"
           >

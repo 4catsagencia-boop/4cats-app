@@ -7,19 +7,20 @@ import CotizacionesView from "./components/CotizacionesView";
 import ClientesView from "./components/ClientesView";
 import PlanesView from "./components/PlanesView";
 import FinanzasView from "./components/FinanzasView";
+import PropuestaView from "./components/PropuestaView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(() => {
     if (typeof window !== "undefined") {
-      return !!sessionStorage.getItem("cats_control_user");
+      return !!localStorage.getItem("cats_control_user");
     }
     return false;
   });
   const [userName, setUserName] = useState(() => {
     if (typeof window !== "undefined") {
-      return sessionStorage.getItem("cats_control_user") || "";
+      return localStorage.getItem("cats_control_user") || "";
     }
     return "";
   });
@@ -41,7 +42,7 @@ export default function CatsControlPage() {
         setAuth(true);
         setUserName(name);
         setErr(false);
-        if (typeof window !== "undefined") sessionStorage.setItem("cats_control_user", name);
+        if (typeof window !== "undefined") localStorage.setItem("cats_control_user", name);
       } else {
         setErr(true);
         setPw("");
@@ -111,6 +112,7 @@ export default function CatsControlPage() {
     clientes: <ClientesView />,
     planes: <PlanesView />,
     finanzas: <FinanzasView />,
+    propuesta: <PropuestaView />,
   };
 
   return (
