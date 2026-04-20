@@ -16,7 +16,14 @@ export enum Tables {
   Cotizaciones = 'cotizaciones',
   Pagos = 'pagos',
   Metas = 'metas',
+  Servicios = 'servicios',
+  Facturas = 'facturas',
+  HitosPago = 'hitos_pago',
+  Colaboradores = 'colaboradores',
 }
+
+export type Moneda = 'CLP' | 'BRL' | 'USD'
+export type MetodoPago = 'transferencia' | 'tarjeta_credito' | 'efectivo' | 'otros'
 
 export interface Plan {
   id: string
@@ -83,6 +90,64 @@ export interface Cotizacion {
   subtotal: number
   impuesto: number
   total: number
+  moneda?: Moneda
+  created_at?: string
+}
+
+export interface Servicio {
+  id: string
+  nombre: string
+  tipo: 'web_dev' | 'mantenimiento' | 'asesoria' | 'otros'
+  capacidad_mensual: number
+  cupos_ocupados: number
+  created_at?: string
+}
+
+export interface Factura {
+  id: string
+  cotizacion_id: string
+  cliente_id: string
+  numero_factura?: string
+  monto_total: number
+  moneda: Moneda
+  estado: 'pendiente' | 'pagada' | 'anulada'
+  created_at?: string
+}
+
+export interface HitoPago {
+  id: string
+  factura_id: string
+  nombre: string
+  monto: number
+  moneda: Moneda
+  estado: 'pendiente' | 'pagado'
+  fecha_pago?: string
+  metodo_pago?: MetodoPago
+  created_at?: string
+}
+
+export interface Colaborador {
+  id: string
+  nombre: string
+  email: string
+  rol: string
+  rut?: string
+  telefono?: string
+  direccion?: string
+  banco?: string
+  tipo_cuenta?: string
+  numero_cuenta?: string
+  comision_porcentaje: number
+  activo: boolean
+  created_at?: string
+}
+
+export interface Comision {
+  id: string
+  colaborador_id: string
+  hito_pago_id: string
+  monto: number
+  estado: 'pendiente' | 'pagada'
   created_at?: string
 }
 
@@ -358,4 +423,111 @@ export const upsertMeta = async (mes: number, anio: number, monto: number): Prom
     .upsert({ mes, anio, monto }, { onConflict: 'mes,anio' })
 
   if (error) throw error
+}
+
+/**
+ * SERVICIOS (CAPACITY)
+ */
+
+export const fetchServicios = async (): Promise<Servicio[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Servicios)
+    .select('*')
+    .order('nombre', { ascending: true })
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as Servicio[]) || []
+}
+
+/**
+ * FACTURAS & HITOS
+ */
+
+export const fetchFacturas = async (): Promise<Factura[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Facturas)
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as Factura[]) || []
+}
+
+export const fetchHitosPago = async (facturaId?: string): Promise<HitoPago[]> => {
+  let query = supabase.from(Tables.HitosPago).select('*')
+  if (facturaId) query = query.eq('factura_id', facturaId)
+  
+  const { data, error } = await query.order('created_at', { ascending: true })
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as HitoPago[]) || []
+}
+
+export const updateHitoStatus = async (id: string, estado: HitoPago['estado'], fecha_pago?: string, metodo_pago?: MetodoPago): Promise<void> => {
+  const { error } = await supabase
+    .from(Tables.HitosPago)
+    .update({ estado, fecha_pago, metodo_pago })
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+/**
+ * COLABORADORES & COMISIONES
+ */
+
+export const fetchColaboradores = async (): Promise<Colaborador[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Colaboradores)
+    .select('*')
+    .eq('activo', true)
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as Colaborador[]) || []
+}
+
+export const fetchComisiones = async (colaboradorId?: string): Promise<Comision[]> => {
+  let query = supabase.from('comisiones').select('*')
+  if (colaboradorId) query = query.eq('colaborador_id', colaboradorId)
+
+  const { data, error } = await query.order('created_at', { ascending: false })
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as Comision[]) || []
+}
+
+export interface Gasto {
+  id: string
+  descripcion: string
+  monto: number
+  moneda: Moneda
+  categoria: 'ia' | 'nube' | 'hosting' | 'infraestructura' | 'marketing' | 'otros'
+  tipo: 'fijo' | 'variable'
+  fecha: string
+  estado: 'pendiente' | 'pagado'
+  created_at?: string
+}
+
+/**
+ * GASTOS
+ */
+
+export const fetchGastos = async (): Promise<Gasto[]> => {
+  const { data, error } = await supabase
+    .from('gastos')
+    .select('*')
+    .order('fecha', { ascending: false })
+
+  if (error && error.code !== 'PGRST116') throw error
+  return (data as Gasto[]) || []
+}
+
+export const insertGasto = async (gastoData: Partial<Gasto>): Promise<Gasto[]> => {
+  const { data, error } = await supabase
+    .from('gastos')
+    .insert([gastoData])
+    .select()
+
+  if (error) throw error
+  return (data as Gasto[]) || []
 }

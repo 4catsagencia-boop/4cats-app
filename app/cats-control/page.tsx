@@ -8,8 +8,12 @@ import ClientesView from "./components/ClientesView";
 import PlanesView from "./components/PlanesView";
 import FinanzasView from "./components/FinanzasView";
 import PropuestaView from "./components/PropuestaView";
+import InventoryView from "./components/InventoryView";
+import BillingView from "./components/BillingView";
+import HRView from "./components/HRView";
+import ExpensesView from "./components/ExpensesView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(() => {
@@ -113,6 +117,10 @@ export default function CatsControlPage() {
     planes: <PlanesView />,
     finanzas: <FinanzasView />,
     propuesta: <PropuestaView />,
+    inventory: <InventoryView />,
+    billing: <BillingView />,
+    hr: <HRView />,
+    expenses: <ExpensesView />,
   };
 
   return (

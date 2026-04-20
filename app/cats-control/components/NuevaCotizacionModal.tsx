@@ -8,7 +8,8 @@ import {
   type Cliente, 
   type Plan, 
   type Cotizacion,
-  type CotizacionItem 
+  type CotizacionItem,
+  type Moneda
 } from "../../../utils/supabase";
 
 interface Props {
@@ -26,6 +27,7 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
   const [clienteSeleccionado, setClienteSeleccionado] = useState<string>("");
   const [clienteManual, setClienteManual] = useState({ nombre: "", email: "", telefono: "" });
   const [planSeleccionado, setPlanSeleccionado] = useState<string>("");
+  const [moneda, setMoneda] = useState<Moneda>("CLP");
   const [items, setItems] = useState<CotizacionItem[]>([{ descripcion: "", precio: 0 }]);
   const [notas, setNotas] = useState("");
 
@@ -107,6 +109,7 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
         impuesto,
         total,
         estado: "pendiente",
+        moneda,
         notas,
       };
 
@@ -172,8 +175,8 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
               )}
             </div>
 
-            {/* Plan y Notas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Plan, Moneda y Notas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Plan Sugerido</label>
                 <select
@@ -185,6 +188,18 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
                   {planes.map(p => (
                     <option key={p.id} value={p.id}>{p.nombre}</option>
                   ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Moneda</label>
+                <select
+                  value={moneda}
+                  onChange={(e) => setMoneda(e.target.value as Moneda)}
+                  className="w-full bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
+                >
+                  <option value="CLP">Pesos (CLP)</option>
+                  <option value="BRL">Reales (BRL)</option>
+                  <option value="USD">Dólares (USD)</option>
                 </select>
               </div>
               <div className="space-y-2">

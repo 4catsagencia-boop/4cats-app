@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCotizaciones, fetchMeta, upsertMeta, type Cotizacion, type Meta } from "../../../utils/supabase";
+import { fetchCotizaciones, fetchMeta, upsertMeta, fetchHitosPago, fetchGastos, type Cotizacion, type Meta, type HitoPago, type Gasto } from "../../../utils/supabase";
 
 const clp = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 
 export default function FinanzasView() {
   const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([]);
+  const [hitos, setHitos] = useState<HitoPago[]>([]);
+  const [gastos, setGastos] = useState<Gasto[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
@@ -17,10 +19,14 @@ export default function FinanzasView() {
   useEffect(() => {
     Promise.all([
       fetchCotizaciones(),
-      fetchMeta(selectedMonth, selectedYear)
-    ]).then(([cots, m]) => {
+      fetchMeta(selectedMonth, selectedYear),
+      fetchHitosPago(),
+      fetchGastos()
+    ]).then(([cots, m, h, g]) => {
       setCotizaciones(cots);
       setMeta(m);
+      setHitos(h);
+      setGastos(g);
       setNewMeta(m?.monto.toString() || "");
     }).finally(() => setLoading(false));
   }, [selectedMonth, selectedYear]);
@@ -36,14 +42,14 @@ export default function FinanzasView() {
     }
   };
 
-  // Cálculos de ingresos por mes (últimos 6 meses)
+  // Cálculos de ingresos y gastos por mes (últimos 6 meses)
   const chartData = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - i));
     const m = d.getMonth() + 1;
     const y = d.getFullYear();
     
-    const total = cotizaciones
+    const projected = cotizaciones
       .filter(c => c.estado === "aprobada" && c.created_at)
       .filter(c => {
         const cd = new Date(c.created_at!);
@@ -51,16 +57,34 @@ export default function FinanzasView() {
       })
       .reduce((acc, c) => acc + c.total, 0);
 
+    const real = hitos
+      .filter(h => h.estado === "pagado" && h.fecha_pago)
+      .filter(h => {
+        const hd = new Date(h.fecha_pago!);
+        return hd.getMonth() + 1 === m && hd.getFullYear() === y;
+      })
+      .reduce((acc, h) => acc + h.monto, 0);
+
+    const expense = gastos
+      .filter(g => {
+        const gd = new Date(g.fecha);
+        return gd.getMonth() + 1 === m && gd.getFullYear() === y;
+      })
+      .reduce((acc, g) => acc + g.monto, 0); // Simplificación: asume CLP para el gráfico rápido
+
     return {
       name: d.toLocaleDateString("es-CL", { month: "short" }),
-      total,
+      projected,
+      real,
+      expense,
       month: m,
       year: y
     };
   });
 
-  const maxIncome = Math.max(...chartData.map(d => d.total), 1);
-  const currentMonthIncome = cotizaciones
+  const maxIncome = Math.max(...chartData.map(d => Math.max(d.projected, d.real, d.expense)), 1);
+  
+  const currentMonthProjected = cotizaciones
     .filter(c => c.estado === "aprobada" && c.created_at)
     .filter(c => {
       const cd = new Date(c.created_at!);
@@ -68,14 +92,31 @@ export default function FinanzasView() {
     })
     .reduce((acc, c) => acc + c.total, 0);
 
+  const currentMonthReal = hitos
+    .filter(h => h.estado === "pagado" && h.fecha_pago)
+    .filter(h => {
+      const hd = new Date(h.fecha_pago!);
+      return hd.getMonth() + 1 === selectedMonth && hd.getFullYear() === selectedYear;
+    })
+    .reduce((acc, h) => acc + h.monto, 0);
+
+  const currentMonthExpense = gastos
+    .filter(g => {
+      const gd = new Date(g.fecha);
+      return gd.getMonth() + 1 === selectedMonth && gd.getFullYear() === selectedYear;
+    })
+    .reduce((acc, g) => acc + g.monto, 0);
+
+  const netProfit = currentMonthReal - currentMonthExpense;
+
   if (loading) return null;
 
   return (
     <div className="p-6 flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-[#18181B] dark:text-white">Finanzas</h1>
-          <p className="text-sm text-[#A1A1AA] mt-0.5">Control de ingresos y metas</p>
+          <h1 className="text-xl font-bold text-[#18181B] dark:text-white">Finanzas y Utilidad</h1>
+          <p className="text-sm text-[#A1A1AA] mt-0.5">Control de ingresos, gastos y margen neto</p>
         </div>
         <div className="flex gap-2">
           <select 
@@ -98,20 +139,53 @@ export default function FinanzasView() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6">
+          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Ingreso Real</p>
+          <p className="text-2xl font-black text-[#18181B] dark:text-white">{clp.format(currentMonthReal)}</p>
+        </div>
+        <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6 text-red-500">
+          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Egresos Totales</p>
+          <p className="text-2xl font-black">{clp.format(currentMonthExpense)}</p>
+        </div>
+        <div className="bg-[#7C5CBF] rounded-3xl p-6 text-white shadow-xl shadow-[#7C5CBF]/20">
+          <p className="text-[10px] font-bold text-[#E5D8FF] uppercase tracking-widest mb-1">Utilidad Neta (Margen)</p>
+          <p className="text-2xl font-black">{clp.format(netProfit)}</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Gráfico Histórico */}
         <div className="lg:col-span-2 bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6">
-          <h2 className="text-sm font-bold text-[#18181B] dark:text-white mb-8 uppercase tracking-widest">Ingresos Históricos</h2>
-          <div className="h-48 flex items-end justify-between gap-2">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-sm font-bold text-[#18181B] dark:text-white uppercase tracking-widest">Balance Histórico</h2>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-[#7C5CBF]" />
+                <span className="text-[10px] font-bold text-[#A1A1AA] uppercase">Ingreso</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-red-400" />
+                <span className="text-[10px] font-bold text-[#A1A1AA] uppercase">Gasto</span>
+              </div>
+            </div>
+          </div>
+          <div className="h-48 flex items-end justify-between gap-4">
             {chartData.map((d, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative">
-                <div className="absolute -top-8 bg-[#18181B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                  {clp.format(d.total)}
+                <div className="absolute -top-12 bg-[#18181B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 text-center">
+                  I: {clp.format(d.real)}<br/>G: {clp.format(d.expense)}
                 </div>
-                <div 
-                  className="w-full bg-[#7C5CBF]/20 hover:bg-[#7C5CBF] rounded-t-lg transition-all duration-500 cursor-help"
-                  style={{ height: `${(d.total / maxIncome) * 100}%` }}
-                />
+                <div className="w-full flex items-end justify-center gap-1 h-full">
+                  <div 
+                    className="w-1/3 bg-[#7C5CBF] rounded-t-sm transition-all duration-500 cursor-help"
+                    style={{ height: `${(d.real / maxIncome) * 100}%` }}
+                  />
+                  <div 
+                    className="w-1/3 bg-red-400/50 rounded-t-sm transition-all duration-500 cursor-help"
+                    style={{ height: `${(d.expense / maxIncome) * 100}%` }}
+                  />
+                </div>
                 <span className="text-[10px] font-bold text-[#A1A1AA] uppercase">{d.name}</span>
               </div>
             ))}
@@ -119,63 +193,28 @@ export default function FinanzasView() {
         </div>
 
         {/* Meta del Mes */}
-        <div className="bg-[#7C5CBF] rounded-3xl p-6 text-white flex flex-col justify-between shadow-xl shadow-[#7C5CBF]/20">
+        <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6 flex flex-col justify-between shadow-sm">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#E5D8FF] mb-1">Meta del Mes</p>
-            <h3 className="text-2xl font-bold">{clp.format(currentMonthIncome)} <span className="text-sm font-normal text-[#E5D8FF]">/ {meta ? clp.format(meta.monto) : "—"}</span></h3>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#A1A1AA] mb-1">Configurar Meta de Ingresos</p>
+            <h3 className="text-xl font-bold text-[#18181B] dark:text-white">{meta ? clp.format(meta.monto) : "Sin meta"}</h3>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-3 mt-6">
             <input 
               type="number" 
               placeholder="Nueva meta CLP"
               value={newMeta}
               onChange={(e) => setNewMeta(e.target.value)}
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-white/50 outline-none focus:bg-white/20 transition-all"
+              className="w-full bg-[#FAFAFA] dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF] transition-all text-[#18181B] dark:text-white"
             />
             <button 
               onClick={handleSaveMeta}
               disabled={savingMeta}
-              className="w-full bg-white text-[#7C5CBF] font-bold py-3 rounded-xl hover:bg-[#F4F4F5] transition-all disabled:opacity-50"
+              className="w-full bg-[#7C5CBF] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
             >
               {savingMeta ? "Guardando..." : "Actualizar Meta"}
             </button>
           </div>
-        </div>
-      </div>
-
-      {/* Tabla de ingresos del mes seleccionado */}
-      <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl overflow-hidden shadow-sm">
-        <div className="px-6 py-4 border-b border-[#E4E4E7] dark:border-[#2A2A35]">
-          <h2 className="text-sm font-bold text-[#18181B] dark:text-white uppercase tracking-widest">Detalle de Ingresos ({new Date(selectedYear, selectedMonth - 1).toLocaleDateString("es-CL", { month: "long" })})</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-[#FAFAFA] dark:bg-[#1C1C1E]">
-                <th className="text-left text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest px-6 py-4">Fecha</th>
-                <th className="text-left text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest px-6 py-4">Cliente</th>
-                <th className="text-left text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest px-6 py-4">Concepto</th>
-                <th className="text-right text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest px-6 py-4">Monto</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F4F4F5] dark:divide-[#2A2A35]">
-              {cotizaciones
-                .filter(c => c.estado === "aprobada" && c.created_at)
-                .filter(c => {
-                  const cd = new Date(c.created_at!);
-                  return cd.getMonth() + 1 === selectedMonth && cd.getFullYear() === selectedYear;
-                })
-                .map(c => (
-                  <tr key={c.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#1C1C1E] transition-colors">
-                    <td className="px-6 py-4 text-[#A1A1AA]">{new Date(c.created_at!).toLocaleDateString("es-CL")}</td>
-                    <td className="px-6 py-4 font-medium text-[#18181B] dark:text-white">{c.cliente_nombre}</td>
-                    <td className="px-6 py-4 text-[#52525B] dark:text-[#A1A1AA]">{c.plan_nombre}</td>
-                    <td className="px-6 py-4 text-right font-bold text-[#18181B] dark:text-white">{clp.format(c.total)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
