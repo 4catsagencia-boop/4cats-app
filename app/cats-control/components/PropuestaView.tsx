@@ -1,29 +1,24 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Propuesta, LinkRecurso } from "@/utils/supabase";
+import { 
+  Propuesta, 
+  LinkRecurso, 
+  METRIC_HIGHER_IS_BETTER,
+  METRICAS_ROI_TEMPLATE 
+} from "@/utils/supabase";
 import { BarChart3, Target, ExternalLink, ShieldCheck, FileText, Monitor, Users, Zap } from "lucide-react";
 
-const METRIC_HIGHER_IS_BETTER: Record<string, boolean> = {
-  'PageSpeed Mobile':    true,
-  'PageSpeed Desktop':   true,
-  'CTR (Click-to-Call)': true,
-  'Tasa Conversión':     true,
-  'Engagement Rate':     true,
-  'Scroll Depth':        true,
-  'Ranking Keywords':    false,
-  'Visibilidad Maps':    true,
-  'Autoridad Dominio':   true,
-  'Uptime (24/7)':       true,
-  'Accesibilidad (A11y)': true,
-  'Security Score':      true,
-  'Tiempo Tarea Crítica': false,
-  'Costo por Lead':      false,
-  'FCP (mobile)':        false,
-  'LCP (mobile)':        false,
-  'TBT (mobile)':        false,
-  'CLS (mobile)':        false,
-  'Speed Index (mobile)':false,
+// Mapeo de iconos y descripciones de impacto para la tabla estratégica
+const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string }> = {
+  'CTR (Click-to-Call)': { impact: 'Más servicios facturados', icon: '📲', dim: 'Conversión' },
+  'Tasa Conversión':      { impact: 'Mejor retorno de inversión', icon: '💰', dim: 'Ventas' },
+  'Ranking Keywords':     { impact: 'Menos gasto en publicidad', icon: '📍', dim: 'Visibilidad' },
+  'PageSpeed Mobile':     { impact: 'Retención inmediata', icon: '⚡', dim: 'UX' },
+  'Uptime (24/7)':        { impact: 'Disponibilidad total', icon: '🔌', dim: 'Estabilidad' },
+  'Security Score':       { impact: 'Blindaje de marca', icon: '🛡️', dim: 'Confianza' },
+  'Accesibilidad (A11y)': { impact: 'Inclusión y mejor SEO', icon: '♿', dim: 'Calidad' },
+  'Tiempo Tarea Crítica': { impact: 'Fricción mínima', icon: '⏱️', dim: 'UX' },
+  'Costo por Lead':       { impact: 'Eficiencia publicitaria', icon: '📉', dim: 'Finanzas' },
 };
 
 function scoreColor(val: number, ref: number, higherBetter: boolean) {

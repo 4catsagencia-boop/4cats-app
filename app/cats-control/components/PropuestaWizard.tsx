@@ -205,29 +205,6 @@ export default function PropuestaWizard({ clienteId, onSuccess, onCancel }: Prop
   );
 }
 
-// For each metric: true = higher is better, false = lower is better
-const METRIC_HIGHER_IS_BETTER: Record<string, boolean> = {
-  'PageSpeed Mobile':    true,
-  'PageSpeed Desktop':   true,
-  'CTR (Click-to-Call)': true,
-  'Tasa Conversión':     true,
-  'Engagement Rate':     true,
-  'Scroll Depth':        true,
-  'Ranking Keywords':    false,
-  'Visibilidad Maps':    true,
-  'Autoridad Dominio':   true,
-  'Uptime (24/7)':       true,
-  'Accesibilidad (A11y)': true,
-  'Security Score':      true,
-  'Tiempo Tarea Crítica': false,
-  'Costo por Lead':      false,
-  'FCP (mobile)':        false,
-  'LCP (mobile)':        false,
-  'TBT (mobile)':        false,
-  'CLS (mobile)':        false,
-  'Speed Index (mobile)':false,
-};
-
 function scoreColor(val: number, ref: number, higherBetter: boolean) {
   if (val === 0 && ref === 0) return '';
   const wins = higherBetter ? val > ref : val < ref;
