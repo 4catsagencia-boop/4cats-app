@@ -168,59 +168,68 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
       </div>
 
       {/* Impact Table */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="space-y-8"
-      >
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter">Resumen de Impacto Estratégico</h2>
-          <p className="text-gray-500 text-sm">Proyección de resultados basada en optimización técnica y experiencia de usuario.</p>
-        </div>
+      {(() => {
+        // Filtramos las métricas que tienen definición de impacto y valores cargados
+        const roiMetrics = propuesta.metricas
+          .filter(m => ROI_IMPACT_MAP[m.nombre] && (m.actual > 0 || m.propuesta > 0))
+          .map(m => ({
+            ...m,
+            ...ROI_IMPACT_MAP[m.nombre]
+          }));
 
-        <div className="overflow-hidden rounded-[2.5rem] border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] shadow-2xl shadow-[#7C5CBF]/5">
-          <div className="grid grid-cols-4 bg-gray-50 dark:bg-[#16161D]/80 px-8 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35]">
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Dimensión</span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Estado Actual</span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#7C5CBF] text-center">Propuesta 4cats</span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 text-right">Impacto en Negocio</span>
-          </div>
+        if (roiMetrics.length === 0) return null;
 
-          <div className="divide-y divide-[#E4E4E7] dark:divide-[#2A2A35]">
-            {[
-              { dim: "Conversión", met: "Clics a Llamada (CTR)", actual: "2.1%", prop: "12.5% (est.)", impact: "Más servicios facturados", icon: "📲" },
-              { dim: "Visibilidad", met: "SEO Local (Top 3)", actual: "No Visible", prop: "Posicionamiento Activo", impact: "Menos gasto en publicidad", icon: "📍" },
-              { dim: "UX", met: "Carga en Móvil", actual: "4.8s", prop: "0.9s", impact: "Retención Inmediata", icon: "⚡" },
-              { dim: "Confianza", met: "Seguridad SSL/HTTPS", actual: "Vulnerable", prop: "Grado A+", impact: "Blindaje de Marca", icon: "🛡️" }
-            ].map((row, i) => (
-              <div key={i} className="grid grid-cols-4 px-8 py-6 items-center hover:bg-gray-50/50 dark:hover:bg-[#1C1630]/20 transition-all group">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-[#7C5CBF] uppercase mb-1">{row.dim}</span>
-                  <span className="text-sm font-black dark:text-white flex items-center gap-2">
-                    <span className="text-lg">{row.icon}</span> {row.met}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <span className="px-3 py-1 rounded-full bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 text-xs font-bold border border-red-100 dark:border-red-900/20">
-                    {row.actual}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-100 dark:border-emerald-900/20 shadow-sm shadow-emerald-500/10">
-                    {row.prop}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase italic">
-                    {row.impact}
-                  </span>
-                </div>
+        return (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter">Resumen de Impacto Estratégico</h2>
+              <p className="text-gray-500 text-sm">Proyección de resultados basada en optimización técnica y experiencia de usuario.</p>
+            </div>
+
+            <div className="overflow-hidden rounded-[2.5rem] border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] shadow-2xl shadow-[#7C5CBF]/5">
+              <div className="grid grid-cols-4 bg-gray-50 dark:bg-[#16161D]/80 px-8 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35]">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Dimensión</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Estado Actual</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#7C5CBF] text-center">Propuesta 4cats</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 text-right">Impacto en Negocio</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+
+              <div className="divide-y divide-[#E4E4E7] dark:divide-[#2A2A35]">
+                {roiMetrics.map((row, i) => (
+                  <div key={i} className="grid grid-cols-4 px-8 py-6 items-center hover:bg-gray-50/50 dark:hover:bg-[#1C1630]/20 transition-all group">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-[#7C5CBF] uppercase mb-1">{row.dim}</span>
+                      <span className="text-sm font-black dark:text-white flex items-center gap-2">
+                        <span className="text-lg">{row.icon}</span> {row.nombre}
+                      </span>
+                    </div>
+                    <div className="text-center">
+                      <span className="px-3 py-1 rounded-full bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 text-xs font-bold border border-red-100 dark:border-red-900/20">
+                        {row.actual}{row.unidad}
+                      </span>
+                    </div>
+                    <div className="text-center">
+                      <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-100 dark:border-emerald-900/20 shadow-sm shadow-emerald-500/10">
+                        {row.propuesta}{row.unidad}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase italic">
+                        {row.impact}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+        );
+      })()}
 
       {/* Benchmarking Table */}
       {propuesta.metricas.length > 0 && (() => {

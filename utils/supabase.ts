@@ -20,10 +20,62 @@ export enum Tables {
   Facturas = 'facturas',
   HitosPago = 'hitos_pago',
   Colaboradores = 'colaboradores',
+  Propuestas = 'propuestas',
+  AccesosPropuesta = 'accesos_propuesta',
 }
 
 export type Moneda = 'CLP' | 'BRL' | 'USD'
 export type MetodoPago = 'transferencia' | 'tarjeta_credito' | 'efectivo' | 'otros'
+
+export interface AccesosPropuesta {
+  id: string
+  propuesta_id: string
+  ip: string
+  user_agent: string
+  creado_at?: string
+}
+
+export interface MetricaBenchmark {
+  nombre: string
+  actual: number
+  competidor: number
+  propuesta: number
+  unidad: string
+}
+
+export interface Ventaja {
+  icono: string
+  titulo: string
+  descripcion: string
+}
+
+export interface LinkRecurso {
+  label: string
+  url: string
+  tipo: 'cliente' | 'competidor' | 'prototipo' | 'reporte'
+}
+
+export interface Propuesta {
+  id: string
+  cliente_id: string
+  slug: string
+  titulo: string
+  subtitulo?: string
+  estado: 'borrador' | 'enviada' | 'vista' | 'aprobada'
+  tipo: 'web' | 'app' | 'crm' | 'erp' | 'saas'
+  problema?: string
+  competidor_nombre?: string
+  competidor_url?: string
+  solucion_titulo?: string
+  solucion_descripcion?: string
+  metricas: MetricaBenchmark[]
+  ventajas: Ventaja[]
+  links: LinkRecurso[]
+  vistas: number
+  expira_at?: string
+  created_at?: string
+  updated_at?: string
+}
 
 export interface Plan {
   id: string
@@ -542,3 +594,112 @@ export const insertGasto = async (gastoData: Partial<Gasto>): Promise<Gasto[]> =
   if (error) throw error
   return (data as Gasto[]) || []
 }
+
+
+/**
+ * PROPUESTAS
+ */
+
+export const METRICAS_ROI_TEMPLATE: MetricaBenchmark[] = [
+  { nombre: "PageSpeed Mobile",   actual: 0, competidor: 0, propuesta: 0, unidad: "/100" },
+  { nombre: "CTR (Click-to-Call)", actual: 0, competidor: 0, propuesta: 0, unidad: "%" },
+  { nombre: "Tasa Conversión",     actual: 0, competidor: 0, propuesta: 0, unidad: "%" },
+  { nombre: "Ranking Keywords",    actual: 0, competidor: 0, propuesta: 0, unidad: "pos" },
+  { nombre: "Uptime (24/7)",       actual: 0, competidor: 0, propuesta: 0, unidad: "%" },
+  { nombre: "Accesibilidad (A11y)", actual: 0, competidor: 0, propuesta: 0, unidad: "/100" },
+  { nombre: "Security Score",      actual: 0, competidor: 0, propuesta: 0, unidad: "/100" },
+  { nombre: "Tiempo Tarea Crítica", actual: 0, competidor: 0, propuesta: 0, unidad: "s" },
+  { nombre: "Costo por Lead",      actual: 0, competidor: 0, propuesta: 0, unidad: "CLP" },
+];
+
+export const METRIC_HIGHER_IS_BETTER: Record<string, boolean> = {
+  'PageSpeed Mobile':    true,
+  'PageSpeed Desktop':   true,
+  'CTR (Click-to-Call)': true,
+  'Tasa Conversión':     true,
+  'Engagement Rate':     true,
+  'Scroll Depth':        true,
+  'Ranking Keywords':    false,
+  'Visibilidad Maps':    true,
+  'Autoridad Dominio':   true,
+  'Uptime (24/7)':       true,
+  'Accesibilidad (A11y)': true,
+  'Security Score':      true,
+  'Tiempo Tarea Crítica': false,
+  'Costo por Lead':      false,
+  'FCP (mobile)':        false,
+  'LCP (mobile)':        false,
+  'TBT (mobile)':        false,
+  'CLS (mobile)':        false,
+  'Speed Index (mobile)':false,
+};
+
+export const fetchPropuestas = async (): Promise<Propuesta[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Propuestas)
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data as Propuesta[]) || []
+}
+
+export const fetchPropuestasByCliente = async (clienteId: string): Promise<Propuesta[]> => {
+  const { data, error } = await supabase
+    .from(Tables.Propuestas)
+    .select('*')
+    .eq('cliente_id', clienteId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data as Propuesta[]) || []
+}
+
+export const fetchPropuestaBySlug = async (slug: string): Promise<Propuesta | null> => {
+  const { data, error } = await supabase
+    .from(Tables.Propuestas)
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error && error.code !== 'PGRST116') throw error
+  return data as Propuesta | null
+}
+
+export const insertPropuesta = async (propuestaData: Partial<Propuesta>): Promise<Propuesta> => {
+  const { data, error } = await supabase
+    .from(Tables.Propuestas)
+    .insert([propuestaData])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Propuesta
+}
+
+export const updatePropuesta = async (id: string, propuestaData: Partial<Propuesta>): Promise<Propuesta> => {
+  const { data, error } = await supabase
+    .from(Tables.Propuestas)
+    .update(propuestaData)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Propuesta
+}
+
+export const deletePropuesta = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from(Tables.Propuestas)
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+export const incrementVistas = async (id: string): Promise<void> => {
+  const { error } = await supabase.rpc('increment_vistas', { propuesta_id: id })
+  if (error) console.error('Error incrementing vistas:', error)
+}
+

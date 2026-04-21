@@ -28,7 +28,9 @@ import {
   MetricaBenchmark, 
   Ventaja, 
   LinkRecurso, 
-  insertPropuesta 
+  insertPropuesta,
+  METRICAS_ROI_TEMPLATE,
+  METRIC_HIGHER_IS_BETTER
 } from "@/utils/supabase";
 
 interface PropuestaWizardProps {
@@ -67,16 +69,7 @@ export default function PropuestaWizard({ clienteId, onSuccess, onCancel }: Prop
     competidor_url: '',
     solucion_titulo: '',
     solucion_descripcion: '',
-    metricas: [
-      { nombre: "PageSpeed Mobile",   actual: 0, competidor: 0, propuesta: 0, unidad: "/100" },
-      { nombre: "CTR (Click-to-Call)", actual: 0, competidor: 0, propuesta: 0, unidad: "%" },
-      { nombre: "Tasa Conversión",     actual: 0, competidor: 0, propuesta: 0, unidad: "%" },
-      { nombre: "Ranking Keywords",    actual: 0, competidor: 0, propuesta: 0, unidad: "pos" },
-      { nombre: "Visibilidad Maps",    actual: 0, competidor: 0, propuesta: 0, unidad: "vistas" },
-      { nombre: "Autoridad Dominio",   actual: 0, competidor: 0, propuesta: 0, unidad: "DA" },
-      { nombre: "Tiempo Tarea Crítica", actual: 0, competidor: 0, propuesta: 0, unidad: "s" },
-      { nombre: "Costo por Lead",      actual: 0, competidor: 0, propuesta: 0, unidad: "CLP" },
-    ],
+    metricas: [...METRICAS_ROI_TEMPLATE],
     ventajas: [],
     links: []
   });

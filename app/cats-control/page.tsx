@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import DashboardView from "./components/DashboardView";
 import CotizacionesView from "./components/CotizacionesView";
 import ClientesView from "./components/ClientesView";
 import PlanesView from "./components/PlanesView";
 import FinanzasView from "./components/FinanzasView";
-import PropuestaView from "./components/PropuestaView";
+import PropuestasManager from "./components/PropuestasManager";
 import InventoryView from "./components/InventoryView";
 import BillingView from "./components/BillingView";
 import HRView from "./components/HRView";
@@ -16,18 +16,16 @@ import ExpensesView from "./components/ExpensesView";
 type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses";
 
 export default function CatsControlPage() {
-  const [auth, setAuth] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("cats_control_user");
+  const [auth, setAuth] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("cats_control_user");
+    if (stored) {
+      setAuth(true);
+      setUserName(stored);
     }
-    return false;
-  });
-  const [userName, setUserName] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("cats_control_user") || "";
-    }
-    return "";
-  });
+  }, []);
   const [username, setUsername] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
@@ -116,7 +114,7 @@ export default function CatsControlPage() {
     clientes: <ClientesView />,
     planes: <PlanesView />,
     finanzas: <FinanzasView />,
-    propuesta: <PropuestaView />,
+    propuesta: <PropuestasManager />,
     inventory: <InventoryView />,
     billing: <BillingView />,
     hr: <HRView />,
