@@ -7,10 +7,11 @@ import {
   Ventaja, 
   LinkRecurso,
   insertPropuesta,
-  updatePropuesta
+  updatePropuesta,
+  METRICAS_ROI_TEMPLATE
 } from "@/utils/supabase";
 import { motion } from "framer-motion";
-import { Plus, Trash2, Save, X, Link as LinkIcon, BarChart3, Star } from "lucide-react";
+import { Plus, Trash2, Save, X, Link as LinkIcon, BarChart3, Star, Zap } from "lucide-react";
 
 interface PropuestaFormProps {
   propuesta?: Propuesta;
@@ -66,6 +67,13 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
     } else {
       setFormData({ ...formData, titulo, slug: generateSlug(titulo) });
     }
+  };
+
+  const loadRoiTemplate = () => {
+    setFormData({
+      ...formData,
+      metricas: [...METRICAS_ROI_TEMPLATE]
+    });
   };
 
   const addItem = (type: "metricas" | "ventajas" | "links") => {
@@ -445,14 +453,6 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
           type="submit"
           disabled={loading}
           className="flex-1 bg-[#7C5CBF] text-white py-3 rounded-2xl font-bold shadow-lg shadow-[#7C5CBF]/20 hover:bg-[#6B4DAE] disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-        >
-          {loading ? "Guardando..." : <><Save className="w-5 h-5" /> Guardar Propuesta</>}
-        </button>
-      </div>
-    </form>
-  );
-}
--50 transition-all flex items-center justify-center gap-2"
         >
           {loading ? "Guardando..." : <><Save className="w-5 h-5" /> Guardar Propuesta</>}
         </button>
