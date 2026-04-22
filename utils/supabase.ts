@@ -32,7 +32,10 @@ export interface AccesosPropuesta {
   propuesta_id: string
   ip: string
   user_agent: string
-  creado_at?: string
+  dispositivo?: string
+  tiempo_permanencia?: number
+  cta_click?: boolean
+  created_at?: string
 }
 
 export interface MetricaBenchmark {
