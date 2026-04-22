@@ -11,6 +11,7 @@
 - **Zero Placeholders**: NUNCA usar `...` en el código. Ediciones completas y válidas únicamente.
 - **Pre-Push Build**: Ejecutar `npm run build` localmente antes de cualquier push a main.
 - **React 19 Purity**: Prohibido `Math.random()` en el render. Usar LCG determinista para semillas.
+- **Next.js 15 IP Handling**: Para obtener la IP en Route Handlers, priorizar `headers.get('x-forwarded-for')`. Usar `(req as any).ip` como fallback para evitar errores de tipo en la propiedad `ip` de `NextRequest`.
 - **State Initialization**: Cargar `sessionStorage/localStorage` en el inicializador de `useState(() => ...)` (evita cascading renders).
 - **Navigation Sync**: Resetear UI durante el render comparando `pathname`, no en `useEffect`.
 - **Zero Any Policy**: No usar `any`. En `catch`, usar `error: unknown` y verificar con `instanceof Error`.

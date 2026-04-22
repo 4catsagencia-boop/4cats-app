@@ -10,7 +10,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Obtener IP y User Agent
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip || 'unknown';
+    const forwarded = req.headers.get('x-forwarded-for');
+    const ip = forwarded ? forwarded.split(',')[0] : (req as any).ip || 'unknown';
     const ua = req.headers.get('user-agent') || 'unknown';
 
     // 1. Registrar el acceso detallado
