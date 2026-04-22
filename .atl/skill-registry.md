@@ -3,6 +3,9 @@
 ## Compact Rules (auto-resolved)
 
 ### Project Standards
+- **Contexto Alpha**: El cache se optimiza asumiendo que la información estática (Supabase DDL, reglas de negocio de Plus Gráfica/4cats) está cargada. Usar la referencia "Contexto Alpha cargado" para ahorrar tokens.
+- **Prompting Declarativo**: Usar estructuras JSON para instrucciones complejas (Action/Target/Goal).
+- **Schema Check-in**: Validar siempre el DDL en `utils/supabase.ts` antes de cualquier operación de base de datos.
 - **PWA Segmentation**: Usar `manifest.json` (logo-web) para landing y `manifest-app.json` (logo-app) para dashboards.
 - **Color Scheme Control**: Definir siempre `color-scheme` en el CSS para evitar que el OS sobrescriba el tema claro.
 - **Zero Placeholders**: NUNCA usar `...` en el código. Ediciones completas y válidas únicamente.
@@ -19,8 +22,8 @@
 - **Hybrid Components**: Para trackers o efectos de cliente en Server Components, extraer a un archivo independiente (ej: `Tracker.tsx`) para no romper la jerarquía de Next.js.
 - **Atomic Counters**: Usar funciones RPC en Supabase para incrementar contadores (`vistas`, `puntos`) y evitar race conditions.
 - **RAG**: Use `bash /mnt/c/Users/Luis/Documents/supabase-keepalive/rag/rag-query.sh` for semantic search.
-- **ROI-Centric Components**: Las herramientas para clientes (dashboards/propuestas) siempre deben incluir métricas de negocio (CTR, Conversión) junto con métricas técnicas (PageSpeed), conectando explícitamente tecnología con rentabilidad (ej: "Menor carga = Menor Costo en Ads").
-- **Replace Tool Safety**: En archivos grandes, evitar el uso de 'allow_multiple' con la herramienta de 'replace' para prevenir la duplicación del final del archivo (tail duplication). Siempre verificar la integridad de cierre de llave ('}') si hay errores de sintaxis post-edición.
+- **ROI-Centric Components**: Las herramientas para clientes siempre deben incluir métricas de negocio conectando tecnología con rentabilidad. **Regla de Oro**: La lógica de métricas (templates y sentido de éxito) DEBE residir exclusivamente en `utils/supabase.ts`.
+- **Replace Tool Safety**: En archivos grandes, evitar 'allow_multiple'. **AST Integrity**: Después de un replace, verificar que los imports de librerías externas (Framer Motion, Lucide) no se hayan perdido y que los object literals no estén anidados incorrectamente.
 
 ## User Skills
 
