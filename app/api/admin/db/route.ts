@@ -7,7 +7,7 @@ import { getServiceSupabase, Tables } from "@/utils/supabase";
  */
 export async function POST(req: NextRequest) {
   try {
-    const { password, table, action, data, id } = await req.json();
+    const { password, table, action, data, id, filterColumn, filterValue } = await req.json();
     
     // Capturar IP para auditoría según estándar del proyecto
     const forwarded = req.headers.get('x-forwarded-for');
@@ -33,11 +33,8 @@ export async function POST(req: NextRequest) {
     // 2. Ejecución de Operaciones
     switch (action) {
       case "SELECT": {
-        // Soporte para filtros básicos vía proxy
-        const { filterColumn, filterValue } = await req.json().catch(() => ({}));
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const queryBuilder: any = supabaseAdmin.from(table).select("*");
-
         result = filterColumn && filterValue !== undefined
           ? await queryBuilder.eq(filterColumn, filterValue).order("created_at", { ascending: false })
           : await queryBuilder.order("created_at", { ascending: false });
