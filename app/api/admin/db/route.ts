@@ -34,10 +34,13 @@ export async function POST(req: NextRequest) {
     switch (action) {
       case "SELECT": {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const queryBuilder: any = supabaseAdmin.from(table).select("*");
-        result = filterColumn && filterValue !== undefined
-          ? await queryBuilder.eq(filterColumn, filterValue).order("created_at", { ascending: false })
-          : await queryBuilder.order("created_at", { ascending: false });
+        let queryBuilder: any = supabaseAdmin.from(table).select("*");
+        
+        if (filterColumn && filterValue !== undefined) {
+          queryBuilder = queryBuilder.eq(filterColumn, filterValue);
+        }
+        
+        result = await queryBuilder.order("created_at", { ascending: false });
         break;
       }
       
