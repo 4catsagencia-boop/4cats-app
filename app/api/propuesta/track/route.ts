@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, Tables } from '@/utils/supabase';
+import { getServiceSupabase, Tables } from '@/utils/supabase';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const supabaseAdmin = getServiceSupabase();
 
     // Exit update: Tracker sends acceso_id on visibilitychange
     if (body.acceso_id) {
       const { acceso_id, tiempo_permanencia, cta_click } = body;
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from(Tables.AccesosPropuesta)
         .update({ tiempo_permanencia, cta_click })
         .eq('id', acceso_id);
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     const ip = forwarded ? forwarded.split(',')[0] : (req as any).ip || 'unknown';
     const ua = req.headers.get('user-agent') || 'unknown';
 
-    const { data: acceso, error: accessError } = await supabase
+    const { data: acceso, error: accessError } = await supabaseAdmin
       .from(Tables.AccesosPropuesta)
       .insert([{ propuesta_id, ip, user_agent: ua, dispositivo }])
       .select('id')
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     if (accessError) console.error('Error recording access:', accessError);
 
-    const { error: rpcError } = await supabase.rpc('increment_vistas', { propuesta_id });
+    const { error: rpcError } = await supabaseAdmin.rpc('increment_vistas', { propuesta_id });
     if (rpcError) console.error('Error incrementing vistas:', rpcError);
 
     return NextResponse.json({ success: true, acceso_id: acceso?.id });

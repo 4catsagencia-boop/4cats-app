@@ -1,9 +1,21 @@
+/**
+ * SCRIPT DE ACTUALIZACIÓN DE PLANES
+ * Uso: SUPABASE_SERVICE_ROLE_KEY=tu_llave node update-planes.mjs
+ */
+
 const URL = 'https://adebzdrdwqwlskylrgiu.supabase.co/rest/v1/planes';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkZWJ6ZHJkd3F3bHNreWxyZ2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODMyNDcsImV4cCI6MjA4OTE1OTI0N30.vPIvr2y47E3FqYcXywmQNhM8luzQFkNlBC486i1ntJc';
+const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!KEY) {
+  console.error('❌ ERROR: Debes configurar la variable de entorno SUPABASE_SERVICE_ROLE_KEY');
+  process.exit(1);
+}
 
 async function update() {
-  console.log('Limpiando planes antiguos...');
+  console.log('🚀 Iniciando actualización de planes con privilegios de servicio...');
+  
   try {
+    console.log('Limpiando planes antiguos...');
     const delRes = await fetch(URL + '?id=neq.0', {
       method: 'DELETE',
       headers: {
@@ -12,7 +24,11 @@ async function update() {
         'Content-Type': 'application/json'
       }
     });
-    if (!delRes.ok) console.warn('Aviso al limpiar:', await delRes.text());
+    
+    if (!delRes.ok) {
+      console.error('❌ Error al limpiar:', await delRes.text());
+      return;
+    }
 
     const planes = [
       {
@@ -47,7 +63,7 @@ async function update() {
       },
       {
         nombre: 'Lucy (Partner Tecnológico)',
-        precio: 560000, // Referencia base (15 UF aprox)
+        precio: 560000, 
         descripcion: 'High-Ticket. Dominio total del mercado con IA y automatización. Escala industrial para empresas ambiciosas.',
         publicado: true,
         destacado: false,
@@ -75,12 +91,12 @@ async function update() {
     });
 
     if (res.ok) {
-      console.log('¡Planes actualizados con éxito!');
+      console.log('✅ ¡Planes actualizados con éxito!');
     } else {
-      console.error('Error al insertar:', await res.text());
+      console.error('❌ Error al insertar:', await res.text());
     }
   } catch (err) {
-    console.error('Error fatal:', err);
+    console.error('💥 Error fatal:', err);
   }
 }
 

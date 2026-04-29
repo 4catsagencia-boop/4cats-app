@@ -1,53 +1,72 @@
-const URL_PLANES = 'https://adebzdrdwqwlskylrgiu.supabase.co/rest/v1/planes';
-const URL_MANT = 'https://adebzdrdwqwlskylrgiu.supabase.co/rest/v1/planes_mantenimiento';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkZWJ6ZHJkd3F3bHNreWxyZ2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODMyNDcsImV4cCI6MjA4OTE1OTI0N30.vPIvr2y47E3FqYcXywmQNhM8luzQFkNlBC486i1ntJc';
+/**
+ * SCRIPT DE ACTUALIZACIÓN DE PLANES DE MANTENIMIENTO
+ * Uso: SUPABASE_SERVICE_ROLE_KEY=tu_llave node update-mant.mjs
+ */
+
+const URL = 'https://adebzdrdwqwlskylrgiu.supabase.co/rest/v1/planes_mantenimiento';
+const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!KEY) {
+  console.error('❌ ERROR: Debes configurar la variable de entorno SUPABASE_SERVICE_ROLE_KEY');
+  process.exit(1);
+}
 
 async function update() {
-  const headers = {
-    'apikey': KEY,
-    'Authorization': 'Bearer ' + KEY,
-    'Content-Type': 'application/json',
-    'Prefer': 'return=representation'
-  };
-
+  console.log('🚀 Iniciando actualización de planes de mantenimiento...');
+  
   try {
-    // 1. Limpiar Mantenimiento
-    console.log('Limpiando planes de mantenimiento...');
-    await fetch(URL_MANT + '?id=not.is.null', { method: 'DELETE', headers });
+    console.log('Limpiando planes antiguos...');
+    const delRes = await fetch(URL + '?id=neq.0', {
+      method: 'DELETE',
+      headers: {
+        'apikey': KEY,
+        'Authorization': 'Bearer ' + KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!delRes.ok) console.warn('Aviso al limpiar:', await delRes.text());
 
-    // 2. Insertar Mantenimiento
-    const planesMant = [
+    const planes = [
       {
-        nombre: 'Emprendedor',
+        nombre: 'Cuidado Esencial',
         precio: 35000,
-        publicado: true,
-        destacado: false,
-        caracteristicas: ["Seguridad + Actualizaciones", "Respaldos Semanales", "Reporte Básico Mensual", "Soporte vía Email", "Sin bolsa de horas"]
+        descripcion: 'Ideal para sitios informativos que necesitan estar siempre arriba y seguros.',
+        publicado: true
       },
       {
-        nombre: 'Profesional',
-        precio: 65000,
-        publicado: true,
-        destacado: true,
-        caracteristicas: ["Todo lo del plan anterior", "Respaldos Diarios", "1.5 Horas de cambios incl.", "Actualización de contenidos", "Soporte WhatsApp + Email"]
+        nombre: 'Soporte Pro',
+        precio: 75000,
+        descripcion: 'Para sitios que generan leads constantes y requieren actualizaciones mensuales.',
+        publicado: true
       },
       {
-        nombre: 'Corporativo',
-        precio: 95000,
-        publicado: true,
-        destacado: false,
-        caracteristicas: ["Todo lo del plan anterior", "5 Horas mensuales incl.", "Firewall Avanzado DDoS", "Reunión Estratégica Mensual", "Soporte Prioritario 24/7"]
+        nombre: 'Mantenimiento Premium',
+        precio: 150000,
+        descripcion: 'Gestión total, optimización continua de performance y soporte prioritario.',
+        publicado: true
       }
     ];
 
-    console.log('Insertando planes de mantenimiento...');
-    const resMant = await fetch(URL_MANT, { method: 'POST', headers, body: JSON.stringify(planesMant) });
-    if (resMant.ok) console.log('Planes de mantenimiento actualizados.');
-    else console.error('Error Mant:', await resMant.text());
+    console.log('Insertando planes...');
+    const res = await fetch(URL, {
+      method: 'POST',
+      headers: {
+        'apikey': KEY,
+        'Authorization': 'Bearer ' + KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(planes)
+    });
 
-    console.log('Todo listo.');
+    if (res.ok) {
+      console.log('✅ ¡Planes de mantenimiento actualizados!');
+    } else {
+      console.error('❌ Error al insertar:', await res.text());
+    }
   } catch (err) {
-    console.error('Error fatal:', err);
+    console.error('💥 Error fatal:', err);
   }
 }
 
