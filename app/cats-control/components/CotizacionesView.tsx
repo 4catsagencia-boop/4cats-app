@@ -77,7 +77,7 @@ export default function CotizacionesView() {
       fecha: c.created_at ? new Date(c.created_at).toLocaleDateString("es-CL") : new Date().toLocaleDateString("es-CL"),
       cliente: {
         nombre: c.cliente_nombre,
-        email: c.cliente_email,
+        email: "",
         telefono: c.cliente_id || "", // Usamos el ID como fallback si no hay teléfono directo
         empresa: "",
         rut: ""
