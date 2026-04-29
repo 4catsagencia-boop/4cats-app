@@ -33,15 +33,14 @@ export async function POST(req: NextRequest) {
     // 2. Ejecución de Operaciones
     switch (action) {
       case "SELECT": {
-        let queryBuilder = supabaseAdmin.from(table).select("*");
-        
         // Soporte para filtros básicos vía proxy
         const { filterColumn, filterValue } = await req.json().catch(() => ({}));
-        if (filterColumn && filterValue !== undefined) {
-          queryBuilder = queryBuilder.eq(filterColumn, filterValue);
-        }
-        
-        result = await queryBuilder.order("created_at", { ascending: false });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const queryBuilder: any = supabaseAdmin.from(table).select("*");
+
+        result = filterColumn && filterValue !== undefined
+          ? await queryBuilder.eq(filterColumn, filterValue).order("created_at", { ascending: false })
+          : await queryBuilder.order("created_at", { ascending: false });
         break;
       }
       

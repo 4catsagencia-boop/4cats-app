@@ -53,6 +53,8 @@ export interface Plan {
   precio: number
   destacado: boolean
   publicado: boolean
+  descripcion?: string
+  caracteristicas?: string[]
   created_at?: string
 }
 
@@ -61,7 +63,9 @@ export interface PlanMantenimiento {
   nombre: string
   precio: number
   publicado: boolean
+  destacado?: boolean
   descripcion?: string
+  caracteristicas?: string[]
   created_at?: string
 }
 
@@ -165,6 +169,8 @@ export interface Gasto {
   moneda: Moneda
   categoria: string
   fecha: string
+  tipo?: string
+  estado?: string
   pago_id?: string
   created_at?: string
 }

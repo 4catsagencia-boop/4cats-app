@@ -56,7 +56,7 @@ export default function PlanesView() {
         nombre: item.nombre,
         precio: item.precio,
         publicado: item.publicado,
-        destacado: item.destacado,
+        destacado: item.destacado ?? false,
         descripcion: (item as Plan).descripcion || "",
         caracteristicas: item.caracteristicas || [""]
       });

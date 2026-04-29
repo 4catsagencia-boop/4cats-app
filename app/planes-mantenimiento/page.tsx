@@ -143,7 +143,7 @@ function PriceCard({ plan, idx, buttonText, planMonthly }: {
         </p>
 
         <ul className="space-y-3 flex-1 mb-8">
-          {plan.caracteristicas.map((f, i) => (
+          {(plan.caracteristicas ?? []).map((f, i) => (
             <li key={i} className="flex items-start gap-3">
               <svg className="mt-0.5 shrink-0 w-4 h-4" fill="none" viewBox="0 0 20 20" stroke="currentColor" strokeWidth={2.5} style={{ color: cfg.color }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 10L8 14L16 6" />
