@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { motion } from "framer-motion";
 import {
-  fetchPropuestas,
-  fetchClientes,
-  deletePropuesta,
-  insertPropuesta,
   Propuesta,
   Cliente,
 } from "@/utils/supabase";
-import PropuestaView from "./PropuestaView";
+import PropuestaView from "@/app/components/PropuestaView";
 import PropuestaForm from "./PropuestaForm";
 import PropuestaWizard from "./PropuestaWizard";
 import { Plus, Pencil, Copy, Trash2, Mail, MessageCircle, CopyPlus, Check } from "lucide-react";
@@ -20,6 +17,7 @@ const PUBLIC_BASE = "https://4cats.cl/propuesta";
 type Screen = "list" | "view" | "create" | "edit";
 
 export default function PropuestasManager() {
+  const adminDB = useAdminDB();
   const [propuestas, setPropuestas] = useState<Propuesta[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [selected, setSelected] = useState<Propuesta | null>(null);
@@ -31,7 +29,10 @@ export default function PropuestasManager() {
 
   const load = () => {
     setLoading(true);
-    Promise.all([fetchPropuestas(), fetchClientes()])
+    Promise.all([
+      adminDB.select("propuestas"),
+      adminDB.select("clientes")
+    ])
       .then(([p, c]) => { setPropuestas(p); setClientes(c); })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -65,7 +66,7 @@ export default function PropuestasManager() {
     try {
       const { id: _id, created_at: _ca, updated_at: _ua, ...rest } = p as Propuesta & { updated_at?: string };
       const newSlug = `${rest.slug}-copia-${Date.now().toString(36)}`;
-      await insertPropuesta({ ...rest, slug: newSlug, titulo: `${rest.titulo} (copia)`, estado: "borrador" });
+      await adminDB.insert("propuestas", { ...rest, slug: newSlug, titulo: `${rest.titulo} (copia)`, estado: "borrador" });
       load();
       setScreen("list");
       setSelected(null);
@@ -81,7 +82,7 @@ export default function PropuestasManager() {
     if (!confirm(`¿Eliminar "${p.titulo}"? Esta acción no se puede deshacer.`)) return;
     setActionLoading("delete");
     try {
-      await deletePropuesta(p.id);
+      await adminDB.remove("propuestas", p.id);
       load();
       setScreen("list");
       setSelected(null);

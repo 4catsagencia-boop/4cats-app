@@ -1,5 +1,5 @@
 import { fetchPropuestaBySlug } from "@/utils/supabase";
-import PropuestaView from "@/app/cats-control/components/PropuestaView";
+import PropuestaView from "@/app/components/PropuestaView";
 import PrintButton from "./PrintButton";
 import Tracker from "./Tracker";
 import CTAButton from "./CTAButton";

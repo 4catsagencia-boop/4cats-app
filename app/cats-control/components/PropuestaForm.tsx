@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { 
   Propuesta, 
   MetricaBenchmark, 
   Ventaja, 
   LinkRecurso,
-  insertPropuesta,
-  updatePropuesta,
   METRICAS_ROI_TEMPLATE
 } from "@/utils/supabase";
 import { motion } from "framer-motion";
@@ -22,6 +21,7 @@ interface PropuestaFormProps {
 
 export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCancel }: PropuestaFormProps) {
   const [loading, setLoading] = useState(false);
+  const adminDB = useAdminDB();
   const [formData, setFormData] = useState<Partial<Propuesta>>({
     cliente_id: clienteId,
     titulo: "",
@@ -55,8 +55,9 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
     
     if (!base) return "";
     
-    // Generamos un hash corto de 6 caracteres para seguridad por obscuridad
-    const hash = Math.random().toString(36).substring(2, 8);
+    // Usamos un generador de seed basado en el tiempo para cumplir con React 19 Purity (Contexto Alpha)
+    const seed = Date.now();
+    const hash = ((seed * 1103515245 + 12345) & 0x7fffffff).toString(36).substring(0, 6);
     return `${base}-${hash}`;
   };
 
@@ -90,13 +91,13 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
   };
 
   const removeItem = (type: "metricas" | "ventajas" | "links", index: number) => {
-    const list = [...(formData[type] as any[])];
+    const list = [...(formData[type] as (MetricaBenchmark | Ventaja | LinkRecurso)[])];
     list.splice(index, 1);
     setFormData({ ...formData, [type]: list });
   };
 
-  const updateItem = (type: "metricas" | "ventajas" | "links", index: number, field: string, value: any) => {
-    const list = [...(formData[type] as any[])];
+  const updateItem = (type: "metricas" | "ventajas" | "links", index: number, field: string, value: string | number) => {
+    const list = [...(formData[type] as (MetricaBenchmark | Ventaja | LinkRecurso)[])];
     list[index] = { ...list[index], [field]: value };
     setFormData({ ...formData, [type]: list });
   };
@@ -106,9 +107,9 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
     setLoading(true);
     try {
       if (propuesta?.id) {
-        await updatePropuesta(propuesta.id, formData);
+        await adminDB.update("propuestas", propuesta.id, formData);
       } else {
-        await insertPropuesta(formData);
+        await adminDB.insert("propuestas", formData);
       }
       onSuccess();
     } catch (error) {
@@ -173,7 +174,7 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado</label>
           <select
             value={formData.estado}
-            onChange={(e) => setFormData({ ...formData, estado: e.target.value as any })}
+            onChange={(e) => setFormData({ ...formData, estado: e.target.value as Propuesta['estado'] })}
             className="w-full px-4 py-2.5 rounded-xl border border-[#E4E4E7] dark:border-[#2A2A35] bg-transparent focus:ring-2 focus:ring-[#7C5CBF] outline-none transition-all"
           >
             <option value="borrador">Borrador</option>

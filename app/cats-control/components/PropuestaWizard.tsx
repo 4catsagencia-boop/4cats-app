@@ -23,12 +23,11 @@ import {
   Star,
   Link as LinkIcon
 } from "lucide-react";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { 
   Propuesta, 
-  MetricaBenchmark, 
   Ventaja, 
-  LinkRecurso, 
-  insertPropuesta,
+  LinkRecurso,
   METRICAS_ROI_TEMPLATE,
   METRIC_HIGHER_IS_BETTER
 } from "@/utils/supabase";
@@ -57,6 +56,7 @@ const VENTAJAS_PREDEFINIDAS: Ventaja[] = [
 export default function PropuestaWizard({ clienteId, onSuccess, onCancel }: PropuestaWizardProps) {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const adminDB = useAdminDB();
   const [formData, setFormData] = useState<Partial<Propuesta>>({
     cliente_id: clienteId,
     tipo: 'web',
@@ -88,8 +88,9 @@ export default function PropuestaWizard({ clienteId, onSuccess, onCancel }: Prop
     
     if (!base) return "";
     
-    // Generamos un hash corto de 6 caracteres para seguridad por obscuridad
-    const hash = Math.random().toString(36).substring(2, 8);
+    // Usamos un generador de seed basado en el tiempo para cumplir con React 19 Purity (Contexto Alpha)
+    const seed = Date.now();
+    const hash = ((seed * 1103515245 + 12345) & 0x7fffffff).toString(36).substring(0, 6);
     return `${base}-${hash}`;
   };
 
@@ -104,7 +105,7 @@ export default function PropuestaWizard({ clienteId, onSuccess, onCancel }: Prop
         finalData.expira_at = expDate.toISOString();
       }
 
-      await insertPropuesta(finalData);
+      await adminDB.insert("propuestas", finalData);
       onSuccess();
     } catch (error) {
       console.error("Error guardando propuesta:", error);
@@ -244,10 +245,14 @@ function BenchmarkingStep({ data, setData, Help }: { data: Partial<Propuesta>; s
     if (!url) return;
     setAnalyzing(campo);
     setErrors(e => ({ ...e, [campo]: '' }));
+    
+    // Obtenemos la contraseña para autorizar el análisis
+    const pw = localStorage.getItem("admin_pw") || localStorage.getItem("cats_control_pw");
+    
     try {
       const [mobile, desktop] = await Promise.all([
-        fetch(`/api/pagespeed?url=${encodeURIComponent(url)}&strategy=mobile`).then(r => r.json()),
-        fetch(`/api/pagespeed?url=${encodeURIComponent(url)}&strategy=desktop`).then(r => r.json()),
+        fetch(`/api/pagespeed?url=${encodeURIComponent(url)}&strategy=mobile&pw=${pw}`).then(r => r.json()),
+        fetch(`/api/pagespeed?url=${encodeURIComponent(url)}&strategy=desktop&pw=${pw}`).then(r => r.json()),
       ]);
       if (mobile.error) throw new Error(mobile.error);
 
@@ -446,9 +451,9 @@ function isStepValid(step: number, formData: Partial<Propuesta>) {
 function renderStep(
   step: number, 
   data: Partial<Propuesta>, 
-  setData: any, 
-  genSlug: any,
-  Help: any
+  setData: (d: Partial<Propuesta>) => void, 
+  genSlug: (t: string) => string,
+  Help: React.ComponentType<{ title: string; children: React.ReactNode }>
 ) {
   switch(step) {
     case 0:
@@ -458,7 +463,7 @@ function renderStep(
             <button
               key={t.id}
               disabled={!t.active}
-              onClick={() => setData({ ...data, tipo: t.id as any })}
+              onClick={() => setData({ ...data, tipo: t.id as Propuesta['tipo'] })}
               className={`p-6 rounded-3xl border-2 text-left transition-all relative group ${
                 data.tipo === t.id 
                   ? 'border-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630]' 
@@ -522,7 +527,7 @@ function renderStep(
           </div>
           <Help title="¿Qué va acá?">
             <p>El título debe describir el proyecto del cliente de forma aspiracional.</p>
-            <p className="bg-white/50 dark:bg-black/20 p-2 rounded-lg italic">"Optimización Digital Grúas Hardy"</p>
+            <p className="bg-white/50 dark:bg-black/20 p-2 rounded-lg italic">&quot;Optimización Digital Grúas Hardy&quot;</p>
             <p>El slug es la URL que verá el cliente. Tratá de que sea corto y sin caracteres raros.</p>
           </Help>
         </div>
@@ -575,8 +580,8 @@ function renderStep(
             )}
           </div>
           <Help title="🔍 Cómo encontrar al competidor">
-            <p>Buscá en Google el servicio principal del cliente (ej: 'grúas Temuco').</p>
-            <p>El primero en los resultados orgánicos (los que no dicen "Patrocinado") es el competidor a analizar.</p>
+            <p>Buscá en Google el servicio principal del cliente (ej: &apos;grúas Temuco&apos;).</p>
+            <p>El primero en los resultados orgánicos (los que no dicen &quot;Patrocinado&quot;) es el competidor a analizar.</p>
             <p>Ese es nuestro punto de referencia para superarlos técnicamente.</p>
           </Help>
         </div>
@@ -687,7 +692,7 @@ function renderStep(
                 </li>
               ))}
             </ul>
-            <p className="mt-4 pt-4 border-t border-[#7C5CBF]/20 font-bold text-xs">Usa el botón "Cargar predefinidas" para ahorrar tiempo.</p>
+            <p className="mt-4 pt-4 border-t border-[#7C5CBF]/20 font-bold text-xs">Usa el botón &quot;Cargar predefinidas&quot; para ahorrar tiempo.</p>
           </Help>
         </div>
       );
@@ -736,7 +741,7 @@ function renderStep(
                       value={l.tipo}
                       onChange={(e) => {
                         const newL = [...data.links!];
-                        newL[idx].tipo = e.target.value as any;
+                        newL[idx].tipo = e.target.value as LinkRecurso['tipo'];
                         setData({ ...data, links: newL });
                       }}
                       className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-[#0F0F12] border border-gray-200 dark:border-[#2A2A35] text-xs appearance-none"
@@ -818,7 +823,7 @@ function renderStep(
           </div>
           <Help title="🚀 ¡Casi listo!">
             <p>Revisá que el título sea pegajoso y que el slug no tenga errores.</p>
-            <p>Si marcás como <strong>"Lista para enviar"</strong>, se asume que el contenido ya está validado técnicamente.</p>
+            <p>Si marcás como <strong>&quot;Lista para enviar&quot;</strong>, se asume que el contenido ya está validado técnicamente.</p>
             <p>Una vez guardada, podrás ver la vista previa real y descargar el PDF si es necesario.</p>
           </Help>
         </div>
