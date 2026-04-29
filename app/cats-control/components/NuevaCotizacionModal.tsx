@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { 
-  fetchClientes, 
-  fetchPlanesPublicados, 
-  insertCotizacion, 
   type Cliente, 
   type Plan, 
   type Cotizacion,
@@ -22,6 +20,7 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const adminDB = useAdminDB();
 
   // Form state
   const [clienteSeleccionado, setClienteSeleccionado] = useState<string>("");
@@ -32,10 +31,16 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
   const [notas, setNotas] = useState("");
 
   useEffect(() => {
-    Promise.all([fetchClientes(), fetchPlanesPublicados()])
+    // Usamos adminDB para cargar clientes y planes publicados
+    // Nota: Aunque los planes publicados son visibles por RLS, 
+    // usamos el proxy para mantener consistencia en el panel administrativo.
+    Promise.all([
+      adminDB.select("clientes"),
+      adminDB.select("planes")
+    ])
       .then(([c, p]) => {
-        setClientes(c);
-        setPlanes(p);
+        setClientes(c || []);
+        setPlanes((p || []).filter((plan: Plan) => plan.publicado));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -45,81 +50,64 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
     setPlanSeleccionado(planId);
     const plan = planes.find(p => p.id === planId);
     if (plan) {
-      // Si el primer ítem está vacío o es de un plan anterior, lo reemplazamos
       const newItems = [...items];
       newItems[0] = { descripcion: `Plan ${plan.nombre}`, precio: plan.precio };
       setItems(newItems);
     }
   };
 
-  const handleAddItem = () => {
-    setItems([...items, { descripcion: "", precio: 0 }]);
-  };
-
-  const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
-  };
-
-  const handleItemChange = (index: number, field: keyof CotizacionItem, value: string | number) => {
+  const addItem = () => setItems([...items, { descripcion: "", precio: 0 }]);
+  const removeItem = (index: number) => setItems(items.filter((_, i) => i !== index));
+  const updateItem = (index: number, field: keyof CotizacionItem, value: any) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
   };
 
-  const subtotal = items.reduce((acc, item) => acc + (Number(item.precio) || 0), 0);
-  const impuesto = subtotal * 0.19; // IVA 19%
-  const total = subtotal + impuesto;
+  const total = items.reduce((acc, item) => acc + item.precio, 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!clienteSeleccionado && !clienteManual.nombre) {
+      alert("Debes seleccionar un cliente o ingresar uno nuevo.");
+      return;
+    }
+    
     setSaving(true);
-
     try {
-      let cNombre = clienteManual.nombre;
-      let cEmail = clienteManual.email;
-      let cTel = clienteManual.telefono;
-      let cRut = "";
-      let cRazonSocial = "";
-      let cId = undefined;
+      let cliente_id = clienteSeleccionado;
+      let cliente_nombre = "";
 
-      if (clienteSeleccionado) {
-        const client = clientes.find(c => c.id === clienteSeleccionado);
-        if (client) {
-          cNombre = client.nombre;
-          cEmail = client.email;
-          cTel = client.telefono || "";
-          cRut = client.rut || "";
-          cRazonSocial = client.razon_social || "";
-          cId = client.id;
-        }
+      if (cliente_id) {
+        const c = clientes.find(cl => cl.id === cliente_id);
+        cliente_nombre = c?.nombre || "";
+      } else {
+        // Si es manual, primero creamos el cliente
+        const [nuevoCliente] = await adminDB.insert("clientes", clienteManual);
+        cliente_id = nuevoCliente.id;
+        cliente_nombre = nuevoCliente.nombre;
       }
 
       const plan = planes.find(p => p.id === planSeleccionado);
 
-      const cotizacionData: Partial<Cotizacion> = {
-        cliente_id: cId,
-        cliente_nombre: cNombre,
-        cliente_email: cEmail,
-        cliente_telefono: cTel,
-        cliente_rut: cRut,
-        cliente_razon_social: cRazonSocial,
-        plan_nombre: plan?.nombre || "Personalizado",
-        items,
-        subtotal,
-        impuesto,
+      const cotizacionData = {
+        cliente_id,
+        cliente_nombre,
+        plan_id: planSeleccionado || null,
+        plan_nombre: plan?.nombre || "Personalizada",
         total,
-        estado: "pendiente",
         moneda,
         notas,
+        estado: "pendiente",
+        items
       };
 
-      await insertCotizacion(cotizacionData);
+      await adminDB.insert("cotizaciones", cotizacionData);
       onSuccess();
       onClose();
-    } catch (error: unknown) {
-      console.error("Error al crear cotización:", error);
-      const msg = error instanceof Error ? error.message : "Error desconocido";
-      alert(`Error al crear la cotización: ${msg}`);
+    } catch (err) {
+      console.error("Error al crear cotización:", err);
+      alert("Hubo un error al crear la cotización.");
     } finally {
       setSaving(false);
     }
@@ -129,148 +117,186 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#18181B] w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#E4E4E7] dark:border-[#2A2A35] shadow-2xl">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-[#18181B] dark:text-white">Nueva Cotización</h2>
-            <button onClick={onClose} className="p-2 hover:bg-[#F4F4F5] dark:hover:bg-[#27272A] rounded-full transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+      <div className="relative bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-[#18181B] dark:text-white">Nueva Cotización</h2>
+            <p className="text-sm text-[#A1A1AA] mt-1">Generar presupuesto para cliente</p>
           </div>
+          <button onClick={onClose} className="p-2 hover:bg-[#F4F4F5] dark:hover:bg-[#27272A] rounded-full transition-colors text-[#A1A1AA]">✕</button>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Cliente */}
-            <div className="space-y-4">
-              <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Cliente</label>
-              <select
-                value={clienteSeleccionado}
-                onChange={(e) => setClienteSeleccionado(e.target.value)}
-                className="w-full bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white focus:ring-2 focus:ring-[#7C5CBF] transition-all"
-              >
-                <option value="">-- Nuevo Cliente / Manual --</option>
-                {clientes.map(c => (
-                  <option key={c.id} value={c.id}>{c.nombre} ({c.email})</option>
-                ))}
-              </select>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Sección Cliente */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#7C5CBF]">Cliente</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Seleccionar Existente</label>
+                <select
+                  value={clienteSeleccionado}
+                  onChange={(e) => { setClienteSeleccionado(e.target.value); if(e.target.value) setClienteManual({nombre:"", email:"", telefono:""}); }}
+                  className="border border-[#E4E4E7] dark:border-[#2A2A35] bg-[#F4F4F5] dark:bg-[#27272A] text-sm text-[#18181B] dark:text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#7C5CBF] transition-all"
+                >
+                  <option value="">-- Nuevo Cliente --</option>
+                  {clientes.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                </select>
+              </div>
+            </div>
 
-              {!clienteSeleccionado && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {!clienteSeleccionado && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-[#F4F4F5] dark:bg-[#27272A] rounded-2xl">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Nombre *</label>
                   <input
                     type="text"
-                    placeholder="Nombre"
                     required
                     value={clienteManual.nombre}
                     onChange={(e) => setClienteManual({ ...clienteManual, nombre: e.target.value })}
-                    className="bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
+                    className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF]"
                   />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Email *</label>
                   <input
                     type="email"
-                    placeholder="Email"
                     required
                     value={clienteManual.email}
                     onChange={(e) => setClienteManual({ ...clienteManual, email: e.target.value })}
-                    className="bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
+                    className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF]"
                   />
                 </div>
-              )}
-            </div>
-
-            {/* Plan, Moneda y Notas */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Plan Sugerido</label>
-                <select
-                  value={planSeleccionado}
-                  onChange={(e) => handlePlanChange(e.target.value)}
-                  className="w-full bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
-                >
-                  <option value="">Personalizado</option>
-                  {planes.map(p => (
-                    <option key={p.id} value={p.id}>{p.nombre}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Moneda</label>
-                <select
-                  value={moneda}
-                  onChange={(e) => setMoneda(e.target.value as Moneda)}
-                  className="w-full bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
-                >
-                  <option value="CLP">Pesos (CLP)</option>
-                  <option value="BRL">Reales (BRL)</option>
-                  <option value="USD">Dólares (USD)</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Notas</label>
-                <input
-                  type="text"
-                  value={notas}
-                  onChange={(e) => setNotas(e.target.value)}
-                  className="w-full bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-3 text-[#18181B] dark:text-white"
-                />
-              </div>
-            </div>
-
-            {/* Ítems */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-semibold text-[#52525B] dark:text-[#A1A1AA]">Detalle de Cobro</label>
-                <button type="button" onClick={handleAddItem} className="text-[#7C5CBF] text-xs font-bold hover:underline">+ Agregar Ítem</button>
-              </div>
-              {items.map((item, index) => (
-                <div key={index} className="flex gap-2 items-center">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Teléfono</label>
                   <input
                     type="text"
-                    placeholder="Descripción"
-                    required
-                    value={item.descripcion}
-                    onChange={(e) => handleItemChange(index, "descripcion", e.target.value)}
-                    className="flex-1 bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-2 text-sm text-[#18181B] dark:text-white"
+                    value={clienteManual.telefono}
+                    onChange={(e) => setClienteManual({ ...clienteManual, telefono: e.target.value })}
+                    className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF]"
                   />
-                  <input
-                    type="number"
-                    placeholder="Precio"
-                    required
-                    value={item.precio}
-                    onChange={(e) => handleItemChange(index, "precio", e.target.value)}
-                    className="w-24 bg-[#F4F4F5] dark:bg-[#27272A] border-none rounded-xl px-4 py-2 text-sm text-[#18181B] dark:text-white"
-                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sección Plan y Moneda */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Plan Base (Opcional)</label>
+              <select
+                value={planSeleccionado}
+                onChange={(e) => handlePlanChange(e.target.value)}
+                className="border border-[#E4E4E7] dark:border-[#2A2A35] bg-[#F4F4F5] dark:bg-[#27272A] text-sm text-[#18181B] dark:text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#7C5CBF] transition-all"
+              >
+                <option value="">Personalizada / Ninguno</option>
+                {planes.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Moneda</label>
+              <div className="flex gap-2">
+                {["CLP", "USD"].map(m => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setMoneda(m as Moneda)}
+                    className={`flex-1 py-3 rounded-xl border font-bold text-xs transition-all ${moneda === m ? 'bg-[#7C5CBF] border-[#7C5CBF] text-white shadow-lg shadow-[#7C5CBF]/20' : 'bg-white dark:bg-[#18181B] border-[#E4E4E7] dark:border-[#2A2A35] text-[#71717A]'}`}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sección Ítems */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[#7C5CBF]">Servicios Incluidos</h3>
+              <button
+                type="button"
+                onClick={addItem}
+                className="text-xs font-bold text-[#7C5CBF] hover:text-[#6B4DAE] flex items-center gap-1"
+              >
+                + Agregar Ítem
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {items.map((item, idx) => (
+                <div key={idx} className="flex gap-3 items-start">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="Descripción del servicio"
+                      value={item.descripcion}
+                      onChange={(e) => updateItem(idx, "descripcion", e.target.value)}
+                      required
+                      className="w-full border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#18181B] rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF]"
+                    />
+                  </div>
+                  <div className="w-32">
+                    <input
+                      type="number"
+                      placeholder="Precio"
+                      value={item.precio}
+                      onChange={(e) => updateItem(idx, "precio", Number(e.target.value))}
+                      required
+                      className="w-full border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#18181B] rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#7C5CBF]"
+                    />
+                  </div>
                   {items.length > 1 && (
-                    <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 p-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(idx)}
+                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+                    >
+                      ✕
                     </button>
                   )}
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Totales */}
-            <div className="bg-[#F4F4F5] dark:bg-[#27272A] p-4 rounded-2xl space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-[#52525B] dark:text-[#A1A1AA]">Subtotal</span>
-                <span className="font-semibold text-[#18181B] dark:text-white">{new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" }).format(subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-[#52525B] dark:text-[#A1A1AA]">IVA (19%)</span>
-                <span className="font-semibold text-[#18181B] dark:text-white">{new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" }).format(impuesto)}</span>
-              </div>
-              <div className="flex justify-between text-base border-t border-[#E4E4E7] dark:border-[#3F3F46] pt-2">
-                <span className="font-bold text-[#18181B] dark:text-white">Total</span>
-                <span className="font-bold text-[#7C5CBF]">{new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" }).format(total)}</span>
-              </div>
+          {/* Notas */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Notas Adicionales</label>
+            <textarea
+              value={notas}
+              onChange={(e) => setNotas(e.target.value)}
+              rows={3}
+              className="border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#18181B] text-sm text-[#18181B] dark:text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#7C5CBF] transition-all resize-none"
+              placeholder="Ej: Incluye 3 meses de soporte, validez 15 días..."
+            />
+          </div>
+
+          {/* Footer del Form */}
+          <div className="flex items-center justify-between pt-6 border-t border-[#E4E4E7] dark:border-[#2A2A35]">
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Total estimado</p>
+              <p className="text-2xl font-black text-[#7C5CBF]">
+                {moneda === "CLP" ? `$${total.toLocaleString("es-CL")}` : `USD ${total.toLocaleString("en-US")}`}
+              </p>
             </div>
-
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-[#7C5CBF] hover:bg-[#6D4EB0] text-white font-bold py-4 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? "Creando..." : "Crear Cotización"}
-            </button>
-          </form>
-        </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-3 rounded-xl font-bold text-sm text-[#71717A] hover:bg-[#F4F4F5] dark:hover:bg-[#27272A] transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="bg-[#7C5CBF] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-[#6B4DAE] transition-all active:scale-[0.98] shadow-lg shadow-[#7C5CBF]/20 disabled:opacity-50"
+              >
+                {saving ? "Generando..." : "Crear Cotización"}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

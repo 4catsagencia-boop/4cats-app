@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  fetchCotizaciones, fetchClientes, fetchMeta,
-  type Cotizacion, type Cliente, type Meta
-} from "../../../utils/supabase";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
+import { type Cotizacion, type Cliente, type Meta } from "../../../utils/supabase";
 
 const clp = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 
@@ -49,15 +47,35 @@ export default function DashboardView() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
+  const adminDB = useAdminDB();
 
   const now = new Date();
   const mes = now.getMonth() + 1;
   const anio = now.getFullYear();
 
   useEffect(() => {
-    Promise.all([fetchCotizaciones(), fetchClientes(), fetchMeta(mes, anio)])
-      .then(([cots, cls, m]) => { setCotizaciones(cots); setClientes(cls); setMeta(m); })
-      .finally(() => setLoading(false));
+    const fetchData = async () => {
+      try {
+        const [cots, cls, metas] = await Promise.all([
+          adminDB.select("cotizaciones"),
+          adminDB.select("clientes"),
+          adminDB.select("metas")
+        ]);
+        
+        setCotizaciones(cots || []);
+        setClientes(cls || []);
+        
+        // El proxy devuelve toda la tabla 'metas', buscamos la del mes/año actual
+        const metaActual = (metas || []).find((m: Meta) => m.mes === mes && m.anio === anio);
+        setMeta(metaActual || null);
+      } catch (err) {
+        console.error("Error al cargar dashboard:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [mes, anio]);
 
   const aprobadas = cotizaciones.filter((c) => c.estado === "aprobada");

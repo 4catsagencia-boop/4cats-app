@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { 
-  fetchPlanes, insertPlan, updatePlan, deletePlan, type Plan,
-  fetchPlanesMantenimiento, insertPlanMantenimiento, updatePlanMantenimiento, deletePlanMantenimiento, type PlanMantenimiento
+  type Plan,
+  type PlanMantenimiento
 } from "../../../utils/supabase";
 
 const clpFormatter = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 
 export default function PlanesView() {
+  const adminDB = useAdminDB();
   const [activeTab, setActiveTab] = useState<"diseno" | "mantenimiento">("diseno");
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [planesMant, setPlanesMant] = useState<PlanMantenimiento[]>([]);
@@ -30,7 +32,10 @@ export default function PlanesView() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [p, pm] = await Promise.all([fetchPlanes(), fetchPlanesMantenimiento()]);
+      const [p, pm] = await Promise.all([
+        adminDB.select("planes"),
+        adminDB.select("planes_mantenimiento")
+      ]);
       setPlanes(p);
       setPlanesMant(pm);
     } catch (error) {
@@ -74,12 +79,12 @@ export default function PlanesView() {
     setSaving(true);
     try {
       if (activeTab === "diseno") {
-        if (editingItem) await updatePlan(editingItem.id, formData);
-        else await insertPlan(formData);
+        if (editingItem) await adminDB.update("planes", editingItem.id, formData);
+        else await adminDB.insert("planes", formData);
       } else {
         const { descripcion, ...mantData } = formData; // Mantenimiento no usa descripción en este diseño
-        if (editingItem) await updatePlanMantenimiento(editingItem.id, mantData);
-        else await insertPlanMantenimiento(mantData);
+        if (editingItem) await adminDB.update("planes_mantenimiento", editingItem.id, mantData);
+        else await adminDB.insert("planes_mantenimiento", mantData);
       }
       setShowModal(false);
       loadData();
@@ -93,8 +98,8 @@ export default function PlanesView() {
   const handleDelete = async (id: string) => {
     if (!confirm("¿Seguro de eliminar?")) return;
     try {
-      if (activeTab === "diseno") await deletePlan(id);
-      else await deletePlanMantenimiento(id);
+      if (activeTab === "diseno") await adminDB.remove("planes", id);
+      else await adminDB.remove("planes_mantenimiento", id);
       loadData();
     } catch (error) {
       alert("Error al eliminar");

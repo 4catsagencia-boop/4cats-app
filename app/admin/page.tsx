@@ -30,6 +30,7 @@ export default function AdminPage() {
         setErr(false);
         if (typeof window !== "undefined") {
           localStorage.setItem("admin_auth", "true");
+          localStorage.setItem("admin_pw", pw); // Guardamos la pw para las peticiones a la DB
         }
       } else {
         setErr(true);
@@ -116,7 +117,10 @@ export default function AdminPage() {
           <button
             onClick={() => {
               setAuth(false);
-              if (typeof window !== "undefined") localStorage.removeItem("admin_auth");
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("admin_auth");
+                localStorage.removeItem("admin_pw");
+              }
             }}
             className="mt-8 text-xs text-[#A1A1AA] hover:text-red-400 transition-colors"
           >

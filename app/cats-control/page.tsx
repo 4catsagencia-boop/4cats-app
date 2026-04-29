@@ -44,7 +44,10 @@ export default function CatsControlPage() {
         setAuth(true);
         setUserName(name);
         setErr(false);
-        if (typeof window !== "undefined") localStorage.setItem("cats_control_user", name);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cats_control_user", name);
+          localStorage.setItem("cats_control_pw", pw);
+        }
       } else {
         setErr(true);
         setPw("");
@@ -137,6 +140,13 @@ export default function CatsControlPage() {
           activeView={activeView}
           userName={userName}
           onNavigate={(view) => { setActiveView(view); setSidebarOpen(false); }}
+          onLogout={() => {
+            setAuth(false);
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("cats_control_user");
+              localStorage.removeItem("cats_control_pw");
+            }
+          }}
         />
       </div>
 

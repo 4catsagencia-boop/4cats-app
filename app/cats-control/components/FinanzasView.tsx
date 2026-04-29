@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchCotizaciones, fetchMeta, upsertMeta, fetchHitosPago, fetchGastos, type Cotizacion, type Meta, type HitoPago, type Gasto } from "../../../utils/supabase";
+import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
+import { type Cotizacion, type Meta, type HitoPago, type Gasto } from "../../../utils/supabase";
 
 const clp = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 
 export default function FinanzasView() {
+  const adminDB = useAdminDB();
   const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([]);
   const [hitos, setHitos] = useState<HitoPago[]>([]);
   const [gastos, setGastos] = useState<Gasto[]>([]);
@@ -17,26 +19,56 @@ export default function FinanzasView() {
   const [savingMeta, setSavingMeta] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetchCotizaciones(),
-      fetchMeta(selectedMonth, selectedYear),
-      fetchHitosPago(),
-      fetchGastos()
-    ]).then(([cots, m, h, g]) => {
-      setCotizaciones(cots);
-      setMeta(m);
-      setHitos(h);
-      setGastos(g);
-      setNewMeta(m?.monto.toString() || "");
-    }).finally(() => setLoading(false));
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Ahora usamos el proxy para filtrar metas por mes y año directamente
+        // Nota: Para cotizaciones, hitos y gastos, el proxy actual soporta filtros eq sencillos.
+        // Como el gráfico histórico muestra 6 meses, traemos la data completa del año para simplificar
+        // los cálculos cruzados, pero ya es mucho mejor que traer toda la historia.
+        const [cots, metas, h, g] = await Promise.all([
+          adminDB.select("cotizaciones"), // Por ahora traemos todo para el gráfico de 6 meses
+          adminDB.select("metas"),        // El proxy ahora soporta filtros, pero metas es chica
+          adminDB.select("hitos_pago"),
+          adminDB.select("gastos")
+        ]);
+
+        setCotizaciones(cots || []);
+        setHitos(h || []);
+        setGastos(g || []);
+        
+        const m = (metas || []).find((mt: Meta) => mt.mes === selectedMonth && mt.anio === selectedYear) || null;
+        setMeta(m);
+        setNewMeta(m?.monto.toString() || "");
+      } catch (err) {
+        console.error("Error al cargar finanzas:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [selectedMonth, selectedYear]);
 
   const handleSaveMeta = async () => {
+    if (!newMeta) return;
     setSavingMeta(true);
     try {
-      await upsertMeta(selectedMonth, selectedYear, Number(newMeta));
-      setMeta({ id: "", mes: selectedMonth, anio: selectedYear, monto: Number(newMeta) });
+      const monto = Number(newMeta);
+      if (meta?.id) {
+        await adminDB.update("metas", meta.id, { monto });
+      } else {
+        await adminDB.insert("metas", { mes: selectedMonth, anio: selectedYear, monto });
+      }
+      
+      // Refrescamos solo metas
+      const metas = await adminDB.select("metas");
+      const m = (metas || []).find((mt: Meta) => mt.mes === selectedMonth && mt.anio === selectedYear) || null;
+      setMeta(m);
+      
       alert("Meta actualizada correctamente");
+    } catch (err) {
+      console.error("Error al guardar meta:", err);
     } finally {
       setSavingMeta(false);
     }
@@ -70,7 +102,7 @@ export default function FinanzasView() {
         const gd = new Date(g.fecha);
         return gd.getMonth() + 1 === m && gd.getFullYear() === y;
       })
-      .reduce((acc, g) => acc + g.monto, 0); // Simplificación: asume CLP para el gráfico rápido
+      .reduce((acc, g) => acc + g.monto, 0);
 
     return {
       name: d.toLocaleDateString("es-CL", { month: "short" }),
@@ -84,14 +116,6 @@ export default function FinanzasView() {
 
   const maxIncome = Math.max(...chartData.map(d => Math.max(d.projected, d.real, d.expense)), 1);
   
-  const currentMonthProjected = cotizaciones
-    .filter(c => c.estado === "aprobada" && c.created_at)
-    .filter(c => {
-      const cd = new Date(c.created_at!);
-      return cd.getMonth() + 1 === selectedMonth && cd.getFullYear() === selectedYear;
-    })
-    .reduce((acc, c) => acc + c.total, 0);
-
   const currentMonthReal = hitos
     .filter(h => h.estado === "pagado" && h.fecha_pago)
     .filter(h => {
@@ -109,7 +133,11 @@ export default function FinanzasView() {
 
   const netProfit = currentMonthReal - currentMonthExpense;
 
-  if (loading) return null;
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-6 h-6 border-2 border-[#7C5CBF] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="p-6 flex flex-col gap-6">
@@ -122,7 +150,7 @@ export default function FinanzasView() {
           <select 
             value={selectedMonth} 
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm text-[#18181B] dark:text-white outline-none"
+            className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm text-[#18181B] dark:text-white outline-none focus:ring-2 focus:ring-[#7C5CBF]"
           >
             {Array.from({ length: 12 }).map((_, i) => (
               <option key={i + 1} value={i + 1}>{new Date(0, i).toLocaleDateString("es-CL", { month: "long" })}</option>
@@ -131,7 +159,7 @@ export default function FinanzasView() {
           <select 
             value={selectedYear} 
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm text-[#18181B] dark:text-white outline-none"
+            className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-xl px-3 py-2 text-sm text-[#18181B] dark:text-white outline-none focus:ring-2 focus:ring-[#7C5CBF]"
           >
             <option value={2025}>2025</option>
             <option value={2026}>2026</option>
@@ -141,11 +169,11 @@ export default function FinanzasView() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6">
-          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Ingreso Real</p>
+          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Ingreso Real Pagado</p>
           <p className="text-2xl font-black text-[#18181B] dark:text-white">{clp.format(currentMonthReal)}</p>
         </div>
         <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6 text-red-500">
-          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Egresos Totales</p>
+          <p className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-1">Egresos del Mes</p>
           <p className="text-2xl font-black">{clp.format(currentMonthExpense)}</p>
         </div>
         <div className="bg-[#7C5CBF] rounded-3xl p-6 text-white shadow-xl shadow-[#7C5CBF]/20">
@@ -156,9 +184,9 @@ export default function FinanzasView() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Gráfico Histórico */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6">
+        <div className="lg:col-span-2 bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-6 shadow-sm">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-sm font-bold text-[#18181B] dark:text-white uppercase tracking-widest">Balance Histórico</h2>
+            <h2 className="text-sm font-bold text-[#18181B] dark:text-white uppercase tracking-widest">Balance Histórico (6 meses)</h2>
             <div className="flex gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-[#7C5CBF]" />
@@ -173,7 +201,7 @@ export default function FinanzasView() {
           <div className="h-48 flex items-end justify-between gap-4">
             {chartData.map((d, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative">
-                <div className="absolute -top-12 bg-[#18181B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 text-center">
+                <div className="absolute -top-12 bg-[#18181B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 text-center pointer-events-none">
                   I: {clp.format(d.real)}<br/>G: {clp.format(d.expense)}
                 </div>
                 <div className="w-full flex items-end justify-center gap-1 h-full">
@@ -210,7 +238,7 @@ export default function FinanzasView() {
             <button 
               onClick={handleSaveMeta}
               disabled={savingMeta}
-              className="w-full bg-[#7C5CBF] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
+              className="w-full bg-[#7C5CBF] text-white font-bold py-3 rounded-xl hover:bg-[#6B4DAE] transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-[#7C5CBF]/20"
             >
               {savingMeta ? "Guardando..." : "Actualizar Meta"}
             </button>
