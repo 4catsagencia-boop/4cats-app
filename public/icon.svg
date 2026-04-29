@@ -1,21 +1,14 @@
-<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  {/* Orejas */}
-  <path d="M140 220 L110 100 L220 180 Z" fill="#7C5CBF" />
-  <path d="M372 220 L402 100 L292 180 Z" fill="#7C5CBF" />
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo con esquinas redondeadas (estilo App Icon moderno) -->
+  <rect width="512" height="512" rx="128" fill="#7C5CBF"/>
   
-  {/* Cabeza */}
-  <circle cx="256" cy="280" r="140" fill="#7C5CBF" />
-  
-  {/* Ojos */}
-  <circle cx="210" cy="270" r="20" fill="white" />
-  <circle cx="302" cy="270" r="20" fill="white" />
-  
-  {/* Nariz */}
-  <path 
-    d="M245 310 L256 325 L267 310" 
-    stroke="white" 
-    stroke-width="8" 
-    stroke-linecap="round" 
-    stroke-linejoin="round" 
-  />
+  <!-- El "4" estilizado con orejas -->
+  <g fill="white">
+    <!-- Cuerpo del 4 -->
+    <path d="M340 140V410" stroke="white" stroke-width="60" stroke-linecap="round"/>
+    <path d="M340 290H140L340 140" stroke="white" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Las Orejas (el detalle sutil en el tope del 4) -->
+    <path d="M310 145L340 75L370 145H310Z" />
+  </g>
 </svg>
