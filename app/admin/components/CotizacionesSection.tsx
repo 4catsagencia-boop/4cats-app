@@ -102,7 +102,6 @@ export default function CotizacionesSection() {
               <tr key={cot.id} className={`group hover:bg-[#FAFAFA] dark:hover:bg-[#1C1C1E] transition-colors ${updating === cot.id ? 'opacity-40' : ''}`}>
                 <td className="py-5 pr-4">
                   <p className="text-[#18181B] dark:text-white font-bold">{cot.cliente_nombre}</p>
-                  <p className="text-[11px] text-[#A1A1AA] font-medium">{cot.cliente_email}</p>
                 </td>
                 <td className="py-5 pr-4">
                   <span className="text-[10px] font-black uppercase tracking-tighter text-[#7C5CBF] bg-[#7C5CBF]/10 px-2 py-0.5 rounded">
