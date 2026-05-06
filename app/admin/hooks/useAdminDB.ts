@@ -1,13 +1,21 @@
 import { Tables } from "@/utils/supabase";
 
 export function useAdminDB() {
-  const adminRequest = async (action: "SELECT" | "INSERT" | "UPDATE" | "DELETE", table: string, options: { data?: any, id?: string } = {}) => {
-    // Obtenemos la contraseña del localStorage (guardada en el login del admin)
-    // Nota: en un sistema ideal usaríamos cookies seguras o Supabase Auth, 
-    // pero mantenemos la lógica actual del proyecto de forma segura vía API Proxy.
-    const password = typeof window !== "undefined" 
-      ? (localStorage.getItem("admin_pw") || localStorage.getItem("cats_control_pw")) 
-      : null;
+  const adminRequest = async (action: "SELECT" | "INSERT" | "UPDATE" | "DELETE", table: string, options: { data?: any, id?: string, filterColumn?: string, filterValue?: any } = {}) => {
+    let password = null;
+    
+    if (typeof window !== "undefined") {
+      const isCatsControl = window.location.pathname.includes('/cats-control');
+      const catsPw = localStorage.getItem("cats_control_pw");
+      const adminPw = localStorage.getItem("admin_pw");
+      
+      // Priorizamos la contraseña según el módulo en el que estamos
+      if (isCatsControl) {
+        password = catsPw || adminPw;
+      } else {
+        password = adminPw || catsPw;
+      }
+    }
 
     if (!password) {
       throw new Error("No hay sesión administrativa activa.");
@@ -20,7 +28,9 @@ export function useAdminDB() {
         table,
         action,
         data: options.data,
-        id: options.id
+        id: options.id,
+        filterColumn: options.filterColumn,
+        filterValue: options.filterValue
       }),
       headers: { "Content-Type": "application/json" }
     });
@@ -34,7 +44,8 @@ export function useAdminDB() {
   return {
     select: (table: string, filter?: { column: string, value: any }) => 
       adminRequest("SELECT", table, { 
-        data: filter ? { filterColumn: filter.column, filterValue: filter.value } : undefined 
+        filterColumn: filter?.column, 
+        filterValue: filter?.value 
       }),
     insert: (table: string, data: any) => adminRequest("INSERT", table, { data }),
     update: (table: string, id: string, data: any) => adminRequest("UPDATE", table, { id, data }),

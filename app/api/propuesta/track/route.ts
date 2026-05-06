@@ -27,9 +27,26 @@ export async function POST(req: NextRequest) {
     const ip = forwarded ? forwarded.split(',')[0] : (req as any).ip || 'unknown';
     const ua = req.headers.get('user-agent') || 'unknown';
 
+    // IP Geolocation (External Service)
+    let ciudad = 'unknown';
+    let pais = 'unknown';
+    
+    if (ip !== 'unknown' && ip !== '127.0.0.1' && ip !== '::1') {
+      try {
+        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+        if (geoRes.ok) {
+          const geoData = await geoRes.json();
+          ciudad = geoData.city || 'unknown';
+          pais = geoData.country_name || 'unknown';
+        }
+      } catch (e) {
+        console.error('Geo API error:', e);
+      }
+    }
+
     const { data: acceso, error: accessError } = await supabaseAdmin
       .from(Tables.AccesosPropuesta)
-      .insert([{ propuesta_id, ip, user_agent: ua, dispositivo }])
+      .insert([{ propuesta_id, ip, user_agent: ua, dispositivo, ciudad, pais }])
       .select('id')
       .single();
 

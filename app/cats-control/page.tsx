@@ -12,18 +12,26 @@ import InventoryView from "./components/InventoryView";
 import BillingView from "./components/BillingView";
 import HRView from "./components/HRView";
 import ExpensesView from "./components/ExpensesView";
+import HardyView from "./components/HardyView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses" | "hardy";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(false);
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    const stored = localStorage.getItem("cats_control_user");
-    if (stored) {
+    const storedUser = localStorage.getItem("cats_control_user");
+    const storedPw = localStorage.getItem("cats_control_pw");
+    if (storedUser && storedPw) {
       setAuth(true);
-      setUserName(stored);
+      setUserName(storedUser);
+    } else {
+      setAuth(false);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cats_control_user");
+        localStorage.removeItem("cats_control_pw");
+      }
     }
   }, []);
   const [username, setUsername] = useState("");
@@ -41,13 +49,13 @@ export default function CatsControlPage() {
       });
       if (res.ok) {
         const { name } = await res.json();
-        setAuth(true);
-        setUserName(name);
-        setErr(false);
         if (typeof window !== "undefined") {
           localStorage.setItem("cats_control_user", name);
           localStorage.setItem("cats_control_pw", pw);
         }
+        setAuth(true);
+        setUserName(name);
+        setErr(false);
       } else {
         setErr(true);
         setPw("");
@@ -122,6 +130,7 @@ export default function CatsControlPage() {
     billing: <BillingView />,
     hr: <HRView />,
     expenses: <ExpensesView />,
+    hardy: <HardyView />,
   };
 
   return (

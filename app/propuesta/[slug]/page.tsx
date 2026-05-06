@@ -33,6 +33,26 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
 
   if (!propuesta) notFound();
 
+  // Verificar si está bloqueada manualmente (Kill Switch)
+  if (propuesta.estado === 'bloqueada') {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] flex flex-col items-center justify-center p-12 text-center">
+        <div className="bg-red-100 dark:bg-red-900/20 p-8 rounded-full mb-8">
+           <svg className="w-16 h-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+           </svg>
+        </div>
+        <h1 className="text-4xl font-black text-slate-800 dark:text-white mb-4 tracking-tighter uppercase">ENLACE DESACTIVADO</h1>
+        <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto text-lg">
+          Este documento ya no está disponible por decisión del propietario o el periodo de revisión ha concluido.
+        </p>
+        <div className="mt-12">
+            <p className="text-sm font-bold text-[#7C5CBF] uppercase tracking-widest">4cats Studio</p>
+        </div>
+      </div>
+    );
+  }
+
   // Verificar expiración
   const ahora = new Date();
   const expiracion = propuesta.expira_at ? new Date(propuesta.expira_at) : null;
@@ -63,17 +83,39 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
           .print-hide { display: none !important; }
           body { background: white !important; }
           @page { margin: 1.5cm; }
+          ${propuesta.modo_seguro ? '.secure-lock { display: block !important; } .main-content { display: none !important; }' : ''}
         }
+        ${propuesta.modo_seguro ? '.user-select-none { user-select: none !important; -webkit-user-select: none !important; }' : ''}
       `}</style>
+
+      {propuesta.modo_seguro && (
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.addEventListener('contextmenu', event => event.preventDefault());
+          document.addEventListener('keydown', event => {
+            if ((event.ctrlKey || event.metaKey) && (event.key === 'p' || event.key === 's' || event.key === 'c')) {
+              event.preventDefault();
+            }
+          });
+        `}} />
+      )}
 
       {/* Tracking de vistas (Client-side trigger) */}
       <Tracker id={propuesta.id} />
 
-      <PrintButton />
+      {!propuesta.modo_seguro && <PrintButton />}
 
-      <main className="min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] py-12">
-        <PropuestaView propuesta={propuesta} />
+      <main className={`min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] py-12 ${propuesta.modo_seguro ? 'user-select-none' : ''}`}>
+        <div className="main-content">
+          <PropuestaView propuesta={propuesta} />
+        </div>
         
+        {propuesta.modo_seguro && (
+            <div className="secure-lock hidden text-center p-20">
+                <h1 className="text-2xl font-bold">Documento Protegido</h1>
+                <p>La impresión y descarga están desactivadas para este enlace estratégico.</p>
+            </div>
+        )}
+
         {/* Call to Action Final */}
         <section className="max-w-5xl mx-auto px-4 sm:px-8 mt-12 mb-20 text-center space-y-6 print-hide">
           <div className="h-px bg-gradient-to-r from-transparent via-[#E4E4E7] dark:via-[#2A2A35] to-transparent w-full mb-12"></div>

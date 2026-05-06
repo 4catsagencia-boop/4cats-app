@@ -10,7 +10,7 @@ import {
   METRICAS_ROI_TEMPLATE
 } from "@/utils/supabase";
 import { motion } from "framer-motion";
-import { Plus, Trash2, Save, X, Link as LinkIcon, BarChart3, Star, Zap } from "lucide-react";
+import { Plus, Trash2, Save, X, Link as LinkIcon, BarChart3, Star, Zap, Shield, ShieldAlert } from "lucide-react";
 
 interface PropuestaFormProps {
   propuesta?: Propuesta;

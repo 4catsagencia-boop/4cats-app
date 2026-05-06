@@ -10,7 +10,9 @@ type Section = "planes" | "cotizaciones" | "clientes";
 export default function AdminPage() {
   const [auth, setAuth] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("admin_auth") === "true";
+      const isAuth = localStorage.getItem("admin_auth") === "true";
+      const hasPw = !!localStorage.getItem("admin_pw");
+      return isAuth && hasPw;
     }
     return false;
   });
@@ -26,12 +28,12 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
-        setAuth(true);
-        setErr(false);
         if (typeof window !== "undefined") {
           localStorage.setItem("admin_auth", "true");
           localStorage.setItem("admin_pw", pw); // Guardamos la pw para las peticiones a la DB
         }
+        setAuth(true);
+        setErr(false);
       } else {
         setErr(true);
         setPw("");

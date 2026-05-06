@@ -97,13 +97,18 @@ export interface Cotizacion {
   id: string
   cliente_id: string
   cliente_nombre: string
+  cliente_email?: string
+  cliente_telefono?: string
   plan_id?: string
   plan_nombre: string
+  subtotal?: number
+  impuesto?: number
   total: number
   moneda: Moneda
   estado: 'pendiente' | 'aprobada' | 'rechazada'
   notas?: string
   items?: CotizacionItem[]
+  metadata?: any
   created_at?: string
 }
 
@@ -206,6 +211,8 @@ export interface AccesosPropuesta {
   ip: string
   user_agent: string
   dispositivo?: string
+  ciudad?: string
+  pais?: string
   tiempo_permanencia?: number
   cta_click?: boolean
   created_at?: string
@@ -237,7 +244,7 @@ export interface Propuesta {
   slug: string
   titulo: string
   subtitulo?: string
-  estado: 'borrador' | 'enviada' | 'vista' | 'aprobada'
+  estado: 'borrador' | 'enviada' | 'vista' | 'aprobada' | 'bloqueada'
   tipo: 'web' | 'app' | 'crm' | 'erp' | 'saas'
   problema?: string
   competidor_nombre?: string
@@ -249,6 +256,7 @@ export interface Propuesta {
   links: LinkRecurso[]
   vistas: number
   expira_at?: string
+  modo_seguro?: boolean
   created_at?: string
   updated_at?: string
 }
