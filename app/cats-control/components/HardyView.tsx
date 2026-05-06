@@ -49,13 +49,18 @@ const HardyView = () => {
     if (propuestas.length === 0) setLoading(true);
     try {
       const data = await adminDB.select(Tables.Propuestas);
+      console.log("[HardyView] Propuestas loaded:", data);
       setPropuestas(data);
       if (data.length > 0 && !selectedId) {
         setSelectedId(data[0].id);
       }
       setLastRefresh(new Date());
     } catch (error) {
-      console.error("Error loading propuestas:", error);
+      console.error("[HardyView] Error loading propuestas:", error);
+      if (error instanceof Error) {
+        console.error("[HardyView] Error message:", error.message);
+        console.error("[HardyView] Error stack:", error.stack);
+      }
     } finally {
       setLoading(false);
     }
