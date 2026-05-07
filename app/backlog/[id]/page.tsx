@@ -1,19 +1,21 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Backlog } from "@/utils/supabase";
+import { Backlog, getServiceSupabase } from "@/utils/supabase";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 async function getBacklog(id: string): Promise<Backlog | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : "http://localhost:3000";
+  const supabase = getServiceSupabase();
+  const { data, error } = await supabase
+    .from("backlogs")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-  const res = await fetch(`${baseUrl}/api/backlog/${id}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  return res.json();
+  if (error || !data) return null;
+  return data as Backlog;
 }
 
 export default async function BacklogPublicPage({ params }: PageProps) {

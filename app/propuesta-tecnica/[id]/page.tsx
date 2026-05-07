@@ -1,18 +1,25 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { getServiceSupabase } from "@/utils/supabase";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getPropuesta(id: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : "http://localhost:3000";
+async function getPropuesta(clienteId: string) {
+  const supabase = getServiceSupabase();
+  const { data, error } = await supabase
+    .from("propuestas_tecnicas")
+    .select("*")
+    .eq("cliente_id", clienteId)
+    .eq("estado", "activo")
+    .single();
 
-  const res = await fetch(`${baseUrl}/api/propuestas-tecnicas/${id}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  return res.json();
+  if (error || !data) return null;
+
+  if (data.expira_at && new Date(data.expira_at) < new Date()) return null;
+
+  return { ...data, contenido: data.contenido_json };
 }
 
 export default async function PropuestaTecnicaPublicPage({ params }: PageProps) {

@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Faltan variables de entorno de Supabase");
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { getServiceSupabase } from "@/utils/supabase";
 
 export async function GET(
   request: NextRequest,
@@ -17,7 +8,7 @@ export async function GET(
   const { id: clienteId } = await params;
 
   try {
-    // Fetch the technical proposal
+    const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("propuestas_tecnicas")
       .select("*")
@@ -72,6 +63,7 @@ async function logAccess(clienteId: string, request: NextRequest) {
       "unknown";
     const userAgent = request.headers.get("user-agent") || "unknown";
 
+    const supabase = getServiceSupabase();
     const { error } = await supabase
       .from("propuesta_tecnica_accesos")
       .insert({
