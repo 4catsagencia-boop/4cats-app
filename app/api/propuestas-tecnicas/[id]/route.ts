@@ -72,23 +72,18 @@ async function logAccess(clienteId: string, request: NextRequest) {
       "unknown";
     const userAgent = request.headers.get("user-agent") || "unknown";
 
-    // Insert access log asynchronously without blocking the response
-    supabase
+    const { error } = await supabase
       .from("propuesta_tecnica_accesos")
       .insert({
-        propuesta_tecnica_id: undefined, // We'll query by cliente_id
         cliente_id: clienteId,
         ip_address: ipAddress,
         user_agent: userAgent,
-        duracion_seg: 0, // Will be updated when user closes
+        duracion_seg: 0,
         accessed_at: new Date().toISOString(),
-      })
-      .then(() => {
-        console.log(`Access logged for cliente ${clienteId}`);
-      })
-      .catch((err) => {
-        console.error("Error logging access:", err);
       });
+
+    if (error) console.error("Error logging access:", error);
+    else console.log(`Access logged for cliente ${clienteId}`);
   } catch (err) {
     console.error("Error in logAccess:", err);
   }
