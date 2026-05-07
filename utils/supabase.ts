@@ -27,6 +27,32 @@ export const getServiceSupabase = () => {
   })
 }
 
+export interface UserStory {
+  id: string
+  codigo: string
+  descripcion: string
+  notas?: string
+}
+
+export interface Epica {
+  id: string
+  codigo: string
+  nombre: string
+  descripcion?: string
+  historias: UserStory[]
+}
+
+export interface Backlog {
+  id: string
+  nombre: string
+  cliente_id?: string
+  cliente_nombre: string
+  descripcion?: string
+  notas?: string
+  epicas: Epica[]
+  created_at?: string
+}
+
 export enum Tables {
   Planes = 'planes',
   PlanesMantenimiento = 'planes_mantenimiento',
@@ -41,7 +67,8 @@ export enum Tables {
   Propuestas = 'propuestas',
   AccesosPropuesta = 'accesos_propuesta',
   Gastos = 'gastos',
-  Comisiones = 'comisiones'
+  Comisiones = 'comisiones',
+  Backlogs = 'backlogs'
 }
 
 export type Moneda = 'CLP' | 'BRL' | 'USD'

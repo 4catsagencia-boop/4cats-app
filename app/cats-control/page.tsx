@@ -13,8 +13,9 @@ import BillingView from "./components/BillingView";
 import HRView from "./components/HRView";
 import ExpensesView from "./components/ExpensesView";
 import HardyView from "./components/HardyView";
+import BacklogsView from "./components/BacklogsView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses" | "backlogs";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(false);
@@ -130,6 +131,7 @@ export default function CatsControlPage() {
     billing: <BillingView />,
     hr: <HRView />,
     expenses: <ExpensesView />,
+    backlogs: <BacklogsView />,
   };
 
   return (
