@@ -76,12 +76,12 @@ export default function CotizacionesView() {
     }
   }
 
-  const handleDownloadPDF = (c: Cotizacion, index: number) => {
-    const items = c.items && c.items.length > 0 
-      ? c.items 
+  const handleDownloadPDF = async (c: Cotizacion, index: number) => {
+    const items = c.items && c.items.length > 0
+      ? c.items
       : [{ descripcion: `Plan ${c.plan_nombre}`, precio: c.total }];
 
-    generateQuotePDF({
+    await generateQuotePDF({
       numero: cotizaciones.length - index,
       fecha: c.created_at ? new Date(c.created_at).toLocaleDateString("es-CL") : new Date().toLocaleDateString("es-CL"),
       cliente: { nombre: c.cliente_nombre, email: "", telefono: "", empresa: "", rut: "" },

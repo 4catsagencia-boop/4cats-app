@@ -1,13 +1,8 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// Augment the jsPDF type for autotable support
 interface jsPDFWithAutoTable extends jsPDF {
-  lastAutoTable?: {
-    cursor?: {
-      y: number
-    }
-  }
+  lastAutoTable?: { cursor?: { y: number } }
 }
 
 interface QuoteData {
@@ -31,91 +26,95 @@ interface QuoteData {
   notas?: string;
 }
 
-export const generateQuotePDF = (data: QuoteData) => {
+const loadImageAsDataUrl = (url: string): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      canvas.getContext("2d")!.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+
+export const generateQuotePDF = async (data: QuoteData) => {
   const doc = new jsPDF();
   const folioFinal = 200 + data.numero;
+  const clpFmt = (n: number) =>
+    new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(n);
 
-  // Fondo del Header
-  doc.setFillColor(124, 92, 191); // #7C5CBF
-  doc.rect(0, 0, 210, 45, "F");
-
-  // --- LOGO 4CATS (5 ELIPSES PREMIUM) ---
-  const lx = 25; // centro X
-  const ly = 22; // centro Y
-  
-  doc.setFillColor(255, 255, 255);
-  
-  // 1. Cuerpo (Elipse grande)
-  doc.ellipse(lx, ly + 3, 8, 5, "F");
-  
-  // 2. Cabeza (Círculo)
-  doc.circle(lx - 5, ly - 2, 5, "F");
-  
-  // 3 y 4. Orejas (Triángulos/Elipses pequeñas)
-  doc.triangle(lx - 8, ly - 5, lx - 6, ly - 10, lx - 4, ly - 6, "F");
-  doc.triangle(lx - 4, ly - 5, lx - 2, ly - 10, lx - 0, ly - 6, "F");
-  
-  // 5. Cola (Elipse larga y curva)
-  doc.setLineWidth(1.5);
-  doc.setDrawColor(255, 255, 255);
-  doc.line(lx + 6, ly + 1, lx + 12, ly - 5); // Cola hacia arriba
-  doc.circle(lx + 12, ly - 5, 0.8, "F");
-
-  // Ojos (Violetas para que tenga alma)
+  // Header background
   doc.setFillColor(124, 92, 191);
-  doc.circle(lx - 6.5, ly - 3, 0.8, "F");
-  doc.circle(lx - 3.5, ly - 3, 0.8, "F");
+  doc.rect(0, 0, 210, 48, "F");
 
-  // Título y Slogan
+  // Logo real
+  try {
+    const logoDataUrl = await loadImageAsDataUrl("/logo-4cats.png");
+    doc.addImage(logoDataUrl, "PNG", 12, 8, 38, 22);
+  } catch {
+    // Fallback: texto si no carga la imagen
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("4cats", 14, 24);
+  }
+
+  // Nombre y slogan
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
+  doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("4cats Studio", 45, 25);
-  doc.setFontSize(9);
+  doc.text("4cats Agency", 56, 22);
+  doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.text("DISEÑO Y DESARROLLO WEB PROFESIONAL", 45, 32);
+  doc.text("DISEÑO Y DESARROLLO WEB PROFESIONAL", 56, 30);
 
-  // Cuadro de Folio (Derecha Superior)
+  // Cuadro folio
   doc.setFillColor(255, 255, 255);
-  doc.roundedRect(150, 15, 40, 20, 3, 3, "F");
+  doc.roundedRect(148, 12, 44, 22, 3, 3, "F");
   doc.setTextColor(124, 92, 191);
   doc.setFontSize(8);
-  doc.text("COTIZACIÓN", 155, 22);
+  doc.setFont("helvetica", "bold");
+  doc.text("COTIZACIÓN", 152, 20);
   doc.setFontSize(14);
-  doc.text(`N° ${folioFinal}`, 155, 30);
+  doc.text(`N° ${folioFinal}`, 152, 30);
 
-  // --- CUERPO ---
-
-  // Datos del Cliente (A la izquierda ahora)
+  // Datos del cliente
   doc.setTextColor(124, 92, 191);
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("DATOS DEL CLIENTE", 20, 60);
-  
-  doc.setTextColor(39, 39, 42); // Zinc-800
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-  doc.text(data.cliente.empresa || data.cliente.nombre, 20, 68);
-  
-  doc.setFontSize(9);
-  doc.setTextColor(82, 82, 91); // Zinc-600
-  if (data.cliente.rut) doc.text(`RUT: ${data.cliente.rut}`, 20, 74);
-  doc.text(`Email: ${data.cliente.email}`, 20, 79);
-  if (data.cliente.telefono) doc.text(`Teléfono: ${data.cliente.telefono}`, 20, 84);
+  doc.text("DATOS DEL CLIENTE", 20, 62);
 
-  // Datos de Emisión (A la derecha)
+  doc.setTextColor(39, 39, 42);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.text(data.cliente.empresa || data.cliente.nombre, 20, 70);
+
+  doc.setFontSize(9);
+  doc.setTextColor(82, 82, 91);
+  let clientY = 76;
+  if (data.cliente.rut) { doc.text(`RUT: ${data.cliente.rut}`, 20, clientY); clientY += 6; }
+  if (data.cliente.email) { doc.text(`Email: ${data.cliente.email}`, 20, clientY); clientY += 6; }
+  if (data.cliente.telefono) { doc.text(`Teléfono: ${data.cliente.telefono}`, 20, clientY); }
+
+  // Datos emisión
   doc.setTextColor(124, 92, 191);
   doc.setFont("helvetica", "bold");
-  doc.text("EMITIDO POR", 130, 60);
+  doc.text("EMITIDO POR", 130, 62);
   doc.setTextColor(82, 82, 91);
   doc.setFont("helvetica", "normal");
-  doc.text("Luis Arnoldo Sáez Candia", 130, 68);
-  doc.text(`Fecha: ${data.fecha}`, 130, 73);
-  doc.text("Temuco, Chile", 130, 78);
+  doc.text("Luis Arnoldo Sáez Candia", 130, 70);
+  doc.text(`Fecha: ${data.fecha}`, 130, 76);
+  doc.text("Temuco, Chile", 130, 82);
 
-  // Agrupar ítems por módulo si corresponde
-  const clpFmt = (n: number) => new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(n);
-  const MODULO_NAMES: Record<string, string> = { sistema: "Módulo II: Sistema de Administración", web: "Módulo I: Plataforma Web", mantencion: "Mantención Mensual" };
+  // Tabla de ítems
+  const MODULO_NAMES: Record<string, string> = {
+    sistema: "Módulo II: Sistema de Administración",
+    web: "Módulo I: Plataforma Web (Landing Page)",
+    mantencion: "Mantención Mensual",
+  };
   const hasModulos = data.items.some(i => i.modulo);
 
   type AutoTableBody = (string | { content: string; styles?: Record<string, unknown> })[][];
@@ -130,85 +129,106 @@ export const generateQuotePDF = (data: QuoteData) => {
       grupos[key].push(item);
     }
     for (const key of orden) {
-      const subtotal = grupos[key].reduce((s, i) => s + i.precio, 0);
-      tableBody.push([{ content: MODULO_NAMES[key] || key, styles: { fontStyle: "bold", fillColor: [243, 238, 255] as unknown as string, textColor: [124, 92, 191] as unknown as string } }, { content: "", styles: {} }]);
+      const subtotalMod = grupos[key].reduce((s, i) => s + i.precio, 0);
+      tableBody.push([
+        { content: MODULO_NAMES[key] || key, styles: { fontStyle: "bold", fillColor: [243, 238, 255] as unknown as string, textColor: [124, 92, 191] as unknown as string } },
+        { content: "", styles: {} }
+      ]);
       for (const item of grupos[key]) {
         tableBody.push([item.descripcion, clpFmt(item.precio)]);
       }
-      if (subtotal > 0) {
-        tableBody.push([{ content: `Subtotal ${MODULO_NAMES[key] || key}`, styles: { fontStyle: "bold" } }, { content: clpFmt(subtotal), styles: { fontStyle: "bold", halign: "right" as const } }]);
+      if (subtotalMod > 0) {
+        tableBody.push([
+          { content: `Subtotal ${MODULO_NAMES[key] || key}`, styles: { fontStyle: "bold" } },
+          { content: clpFmt(subtotalMod), styles: { fontStyle: "bold", halign: "right" as const } }
+        ]);
       }
     }
   } else {
     tableBody = data.items.map(item => [item.descripcion, clpFmt(item.precio)]);
   }
 
+  const tableStartY = Math.max(clientY + 14, 98);
+
   autoTable(doc, {
-    startY: 95,
+    startY: tableStartY,
     head: [["Descripción del Servicio", "Monto"]],
     body: tableBody,
     theme: "striped",
-    headStyles: { fillColor: [124, 92, 191], textColor: [255, 255, 255], fontSize: 10, fontStyle: "bold", halign: "left" },
-    columnStyles: {
-      0: { cellWidth: 130 },
-      1: { halign: "right", fontStyle: "bold" }
+    headStyles: {
+      fillColor: [124, 92, 191],
+      textColor: [255, 255, 255],
+      fontSize: 10,
+      fontStyle: "bold",
+      halign: "left",
     },
-    styles: { fontSize: 9, cellPadding: 5 },
-    margin: { left: 20, right: 20 },
+    columnStyles: {
+      0: { cellWidth: 135, overflow: "linebreak" },
+      1: { cellWidth: 35, halign: "right", fontStyle: "bold" },
+    },
+    styles: { fontSize: 9, cellPadding: 4, overflow: "linebreak" },
+    margin: { left: 20, right: 20, bottom: 25 },
   });
 
-  // Posición después de la tabla
   let finalY = (doc as jsPDFWithAutoTable).lastAutoTable?.cursor?.y || 150;
-  finalY += 10;
+  finalY += 12;
 
-  // Totales (Alineados a la derecha)
+  // Si no hay espacio para totales, nueva página
+  if (finalY > 240) {
+    doc.addPage();
+    finalY = 20;
+  }
+
+  // Totales
   doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
   doc.setTextColor(82, 82, 91);
-  doc.text("Subtotal:", 140, finalY);
+  doc.text("Subtotal neto:", 130, finalY);
   doc.text(clpFmt(data.subtotal), 190, finalY, { align: "right" });
 
-  doc.text("IVA (19%):", 140, finalY + 7);
+  doc.text("IVA (19%):", 130, finalY + 7);
   doc.text(clpFmt(data.iva), 190, finalY + 7, { align: "right" });
 
-  doc.setFontSize(14);
+  doc.setFontSize(13);
   doc.setTextColor(124, 92, 191);
   doc.setFont("helvetica", "bold");
-  doc.text("TOTAL:", 140, finalY + 16);
+  doc.text("TOTAL:", 130, finalY + 16);
   doc.text(clpFmt(data.total), 190, finalY + 16, { align: "right" });
 
-  // Cuadro de Transferencia (Más estilizado)
-  const bankY = Math.max(finalY + 30, 190);
-  doc.setDrawColor(228, 228, 231); // Zinc-200
-  doc.setFillColor(250, 250, 250); // Zinc-50
-  doc.roundedRect(20, bankY, 170, 35, 2, 2, "FD");
-  
-  doc.setTextColor(124, 92, 191);
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "bold");
-  doc.text("INFORMACIÓN DE PAGO / TRANSFERENCIA", 25, bankY + 7);
-  
-  doc.setTextColor(82, 82, 91);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.text(`Nombre: Luis Arnoldo Sáez  |  RUT: 15.756.422-6  |  Banco: Banco Falabella`, 25, bankY + 15);
-  doc.text(`Tipo: Cuenta Corriente  |  N°: 1-024-010017-8  |  Email: luissaezcandia@gmail.com`, 25, bankY + 22);
-  doc.setFont("helvetica", "bold");
-  doc.text("Por favor, enviar comprobante de transferencia al correo indicado.", 25, bankY + 29);
+  // Cuadro transferencia
+  const bankY = finalY + 28;
+  if (bankY + 40 < 280) {
+    doc.setDrawColor(228, 228, 231);
+    doc.setFillColor(250, 250, 250);
+    doc.roundedRect(20, bankY, 170, 35, 2, 2, "FD");
 
-  // Notas finales
+    doc.setTextColor(124, 92, 191);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.text("INFORMACIÓN DE PAGO / TRANSFERENCIA", 25, bankY + 8);
+
+    doc.setTextColor(82, 82, 91);
+    doc.setFont("helvetica", "normal");
+    doc.text("Nombre: Luis Arnoldo Sáez  |  RUT: 15.756.422-6  |  Banco: Banco Falabella", 25, bankY + 16);
+    doc.text("Tipo: Cuenta Corriente  |  N°: 1-024-010017-8  |  Email: luissaezcandia@gmail.com", 25, bankY + 22);
+    doc.setFont("helvetica", "bold");
+    doc.text("Enviar comprobante de transferencia al correo indicado.", 25, bankY + 29);
+  }
+
+  // Notas
   if (data.notas) {
     doc.setFontSize(8);
     doc.setTextColor(161, 161, 170);
     doc.setFont("helvetica", "italic");
-    doc.text(`Notas adicionales: ${data.notas}`, 20, bankY + 45, { maxWidth: 170 });
+    doc.text(`Notas: ${data.notas}`, 20, bankY + 46, { maxWidth: 170 });
   }
 
-  // --- FOOTER LEGAL ---
+  // Footer
   doc.setFontSize(7);
   doc.setTextColor(161, 161, 170);
   doc.setFont("helvetica", "normal");
-  doc.text("Documento generado electrónicamente por 4cats Studio. No requiere firma manuscrita.", 105, 285, { align: "center" });
-  doc.text("www.4cats.cl  |  hola@4cats.cl", 105, 290, { align: "center" });
+  doc.text("Documento generado electrónicamente por 4cats Agency. No requiere firma manuscrita.", 105, 287, { align: "center" });
+  doc.text("www.4cats.cl  |  hola@4cats.cl", 105, 292, { align: "center" });
 
   doc.save(`Cotizacion_4cats_${folioFinal}.pdf`);
 };
