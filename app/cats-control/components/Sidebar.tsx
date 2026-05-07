@@ -24,11 +24,11 @@ const items: { view: View; label: string; icon: React.ReactNode }[] = [
     ),
   },
   {
-    view: "hardy",
-    label: "Hardy Central",
+    view: "propuesta",
+    label: "Propuestas",
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.129-1.125V3.375c0-.621-.508-1.125-1.129-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5m17.25 2.25H3.75" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-1.5V21m-9-8.25h.008v.008H6V11.25zM15 11.25h.008v.008H15V11.25zM18 10.5h.008v.008H18V10.5zM7.5 6.75h.008v.008H7.5V6.75zM21 21V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75V21l4.5-2.25L12 21l4.5-2.25L21 21z" />
       </svg>
     ),
   },
@@ -101,15 +101,6 @@ const items: { view: View; label: string; icon: React.ReactNode }[] = [
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    view: "propuesta",
-    label: "Propuesta",
-    icon: (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-1.5V21m-9-8.25h.008v.008H6V11.25zM15 11.25h.008v.008H15V11.25zM18 10.5h.008v.008H18V10.5zM7.5 6.75h.008v.008H7.5V6.75zM21 21V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75V21l4.5-2.25L12 21l4.5-2.25L21 21z" />
       </svg>
     ),
   },

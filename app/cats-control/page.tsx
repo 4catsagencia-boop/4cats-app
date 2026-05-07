@@ -130,7 +130,6 @@ export default function CatsControlPage() {
     billing: <BillingView />,
     hr: <HRView />,
     expenses: <ExpensesView />,
-    hardy: <HardyView />,
   };
 
   return (
