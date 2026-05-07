@@ -56,8 +56,13 @@ interface PropuestaViewProps {
 }
 
 export default function PropuestaView({ propuesta }: PropuestaViewProps) {
+  // Asegurar que las listas sean arreglos para evitar crashes
+  const links = Array.isArray(propuesta.links) ? propuesta.links : [];
+  const metricas = Array.isArray(propuesta.metricas) ? propuesta.metricas : [];
+  const ventajas = Array.isArray(propuesta.ventajas) ? propuesta.ventajas : [];
+
   // Agrupamos links por tipo
-  const linksByType = (propuesta.links || []).reduce((acc, link) => {
+  const linksByType = links.reduce((acc, link) => {
     if (!acc[link.tipo]) acc[link.tipo] = [];
     acc[link.tipo].push(link);
     return acc;
