@@ -15,6 +15,7 @@ async function getBacklog(id: string): Promise<Backlog | null> {
     .single();
 
   if (error || !data) return null;
+  if (data.publico === false) return null;
   return data as Backlog;
 }
 

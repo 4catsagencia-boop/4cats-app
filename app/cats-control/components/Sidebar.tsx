@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
 
 type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses" | "backlogs" | "propuestas-tecnicas";
@@ -13,6 +14,8 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
+const PROPUESTAS_VIEWS: View[] = ["propuesta", "backlogs", "propuestas-tecnicas"];
+
 const items: { view: View; label: string; icon: React.ReactNode }[] = [
   {
     view: "dashboard",
@@ -20,33 +23,6 @@ const items: { view: View; label: string; icon: React.ReactNode }[] = [
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-      </svg>
-    ),
-  },
-  {
-    view: "propuesta",
-    label: "Propuestas",
-    icon: (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-1.5V21m-9-8.25h.008v.008H6V11.25zM15 11.25h.008v.008H15V11.25zM18 10.5h.008v.008H18V10.5zM7.5 6.75h.008v.008H7.5V6.75zM21 21V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75V21l4.5-2.25L12 21l4.5-2.25L21 21z" />
-      </svg>
-    ),
-  },
-  {
-    view: "backlogs",
-    label: "Backlogs",
-    icon: (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-      </svg>
-    ),
-  },
-  {
-    view: "propuestas-tecnicas",
-    label: "Propuestas Técnicas",
-    icon: (
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
@@ -132,6 +108,11 @@ function userEmoji(name: string) {
 
 export default function Sidebar({ activeView, userName, onNavigate, onLogout }: SidebarProps) {
   const { theme, toggle: toggleTheme } = useTheme();
+  const [propuestasOpen, setPropuestasOpen] = useState(
+    PROPUESTAS_VIEWS.includes(activeView)
+  );
+
+  const isPropuestasActive = PROPUESTAS_VIEWS.includes(activeView);
 
   return (
     <aside className="w-60 shrink-0 bg-white dark:bg-[#0F0F12] border-r border-[#E4E4E7] dark:border-[#2A2A35] flex flex-col">
@@ -168,6 +149,48 @@ export default function Sidebar({ activeView, userName, onNavigate, onLogout }: 
             {item.label}
           </button>
         ))}
+
+        {/* Grupo Propuestas */}
+        <div>
+          <button
+            onClick={() => setPropuestasOpen((v) => !v)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+              isPropuestasActive
+                ? "bg-[#F3EEFF] dark:bg-[#1C1630] text-[#7C5CBF]"
+                : "text-[#52525B] dark:text-[#A1A1AA] hover:bg-[#F3EEFF] dark:hover:bg-[#1C1630] hover:text-[#7C5CBF]"
+            }`}
+          >
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-1.5V21m-9-8.25h.008v.008H6V11.25zM15 11.25h.008v.008H15V11.25zM18 10.5h.008v.008H18V10.5zM7.5 6.75h.008v.008H7.5V6.75zM21 21V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75V21l4.5-2.25L12 21l4.5-2.25L21 21z" />
+            </svg>
+            <span className="flex-1">Propuestas</span>
+            <svg className={`w-3 h-3 transition-transform ${propuestasOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {propuestasOpen && (
+            <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-[#E4E4E7] dark:border-[#2A2A35] pl-3">
+              {[
+                { view: "propuesta" as View, label: "ROI / Estratégicas" },
+                { view: "backlogs" as View, label: "Backlogs" },
+                { view: "propuestas-tecnicas" as View, label: "Técnicas" },
+              ].map((sub) => (
+                <button
+                  key={sub.view}
+                  onClick={() => onNavigate(sub.view)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeView === sub.view
+                      ? "bg-[#7C5CBF] text-white shadow-sm shadow-[#7C5CBF]/30"
+                      : "text-[#52525B] dark:text-[#A1A1AA] hover:bg-[#F3EEFF] dark:hover:bg-[#1C1630] hover:text-[#7C5CBF]"
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="mt-auto pt-4 border-t border-[#E4E4E7] dark:border-[#2A2A35] flex flex-col gap-1">
           <button

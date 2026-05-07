@@ -409,6 +409,15 @@ export default function BacklogsView() {
     });
   }
 
+  async function handleTogglePublico(backlog: Backlog) {
+    try {
+      await update("backlogs", backlog.id, { publico: !(backlog.publico ?? true) });
+      loadData();
+    } catch (err) {
+      console.error("Error toggling publico:", err);
+    }
+  }
+
   async function handleExportPDF(backlog: Backlog) {
     try {
       generateBacklogPDF(backlog);
@@ -519,9 +528,27 @@ export default function BacklogsView() {
                             </svg>
                           </button>
                           <button
+                            onClick={() => handleTogglePublico(backlog)}
+                            title={backlog.publico === false ? "Activar link" : "Desactivar link"}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              backlog.publico === false
+                                ? "bg-gray-100 dark:bg-gray-900/20 text-gray-400 hover:bg-gray-200"
+                                : "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-200"
+                            }`}
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d={backlog.publico === false ? "M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" : "M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z"} />
+                            </svg>
+                          </button>
+                          <button
                             onClick={() => handleCopyLink(backlog)}
-                            className="p-1.5 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/20 text-green-700 dark:text-green-400 transition-colors"
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              backlog.publico === false
+                                ? "opacity-30 cursor-not-allowed text-gray-400"
+                                : "hover:bg-blue-100 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-400"
+                            }`}
                             title="Copiar link para cliente"
+                            disabled={backlog.publico === false}
                           >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />

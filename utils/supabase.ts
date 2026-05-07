@@ -51,6 +51,7 @@ export interface Backlog {
   notas?: string
   epicas: Epica[]
   created_at?: string
+  publico?: boolean
 }
 
 export enum Tables {
