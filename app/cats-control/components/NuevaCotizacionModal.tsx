@@ -13,9 +13,10 @@ import {
 interface Props {
   onClose: () => void;
   onSuccess: () => void;
+  initialData?: Cotizacion;
 }
 
-export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
+export default function NuevaCotizacionModal({ onClose, onSuccess, initialData }: Props) {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,9 +32,6 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
   const [notas, setNotas] = useState("");
 
   useEffect(() => {
-    // Usamos adminDB para cargar clientes y planes publicados
-    // Nota: Aunque los planes publicados son visibles por RLS, 
-    // usamos el proxy para mantener consistencia en el panel administrativo.
     Promise.all([
       adminDB.select("clientes"),
       adminDB.select("planes")
@@ -41,15 +39,27 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
       .then(([c, p]) => {
         setClientes(c || []);
         setPlanes((p || []).filter((plan: Plan) => plan.publicado));
+        
+        if (initialData) {
+          setClienteSeleccionado(initialData.cliente_id);
+          setPlanSeleccionado(initialData.plan_id || "");
+          setMoneda(initialData.moneda || "CLP");
+          setNotas(initialData.notas || "");
+          if (initialData.items && initialData.items.length > 0) {
+            // Manejar si los items vienen como string JSON (caso de importación por script)
+            const parsedItems = typeof initialData.items === 'string' ? JSON.parse(initialData.items) : initialData.items;
+            setItems(parsedItems);
+          }
+        }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [initialData]);
 
   // Efecto para cargar datos del plan automáticamente
   const handlePlanChange = (planId: string) => {
     setPlanSeleccionado(planId);
     const plan = planes.find(p => p.id === planId);
-    if (plan) {
+    if (plan && !initialData) {
       const newItems = [...items];
       newItems[0] = { descripcion: `Plan ${plan.nombre}`, precio: plan.precio };
       setItems(newItems);
@@ -64,7 +74,7 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
     setItems(newItems);
   };
 
-  const total = items.reduce((acc, item) => acc + item.precio, 0);
+  const total = items.reduce((acc, item) => acc + Number(item.precio), 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +92,6 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
         const c = clientes.find(cl => cl.id === cliente_id);
         cliente_nombre = c?.nombre || "";
       } else {
-        // Si es manual, primero creamos el cliente
         const [nuevoCliente] = await adminDB.insert("clientes", clienteManual);
         cliente_id = nuevoCliente.id;
         cliente_nombre = nuevoCliente.nombre;
@@ -94,20 +103,24 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
         cliente_id,
         cliente_nombre,
         plan_id: planSeleccionado || null,
-        plan_nombre: plan?.nombre || "Personalizada",
+        plan_nombre: plan?.nombre || (initialData?.plan_nombre || "Personalizada"),
         total,
         moneda,
         notas,
-        estado: "pendiente",
         items
       };
 
-      await adminDB.insert("cotizaciones", cotizacionData);
+      if (initialData) {
+        await adminDB.update("cotizaciones", initialData.id, cotizacionData);
+      } else {
+        await adminDB.insert("cotizaciones", { ...cotizacionData, estado: "pendiente" });
+      }
+      
       onSuccess();
       onClose();
     } catch (err) {
-      console.error("Error al crear cotización:", err);
-      alert("Hubo un error al crear la cotización.");
+      console.error("Error al guardar cotización:", err);
+      alert("Hubo un error al guardar la cotización.");
     } finally {
       setSaving(false);
     }
@@ -120,8 +133,8 @@ export default function NuevaCotizacionModal({ onClose, onSuccess }: Props) {
       <div className="relative bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-[#18181B] dark:text-white">Nueva Cotización</h2>
-            <p className="text-sm text-[#A1A1AA] mt-1">Generar presupuesto para cliente</p>
+            <h2 className="text-2xl font-bold text-[#18181B] dark:text-white">{initialData ? "Editar Cotización" : "Nueva Cotización"}</h2>
+            <p className="text-sm text-[#A1A1AA] mt-1">{initialData ? "Modificar presupuesto existente" : "Generar presupuesto para cliente"}</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-[#F4F4F5] dark:hover:bg-[#27272A] rounded-full transition-colors text-[#A1A1AA]">✕</button>
         </div>
