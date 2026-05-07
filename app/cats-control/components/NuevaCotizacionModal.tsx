@@ -49,6 +49,16 @@ const PLANTILLAS: Record<string, { nombre: string; items: CotizacionItem[] }> = 
       { descripcion: "Módulo I: Plataforma Web de alto rendimiento", detalle: "Landing Page (100/100 PageSpeed). Incluida como beneficio por contratación del ecosistema completo.", costo_desarrollo: 650000, margen_porcentaje: -100, pvp: 0, precio: 0, modulo: "web" },
     ]
   },
+  sistema: {
+    nombre: "Solo Sistema de Administración",
+    items: [
+      { descripcion: "Fase 1: Fundación y Arquitectura", detalle: "Arquitectura de proyecto, modelamiento de BD, conexión persistente, lógica de autenticación y vistas iniciales (Login/Home).", costo_desarrollo: 2000000, margen_porcentaje: 50, pvp: 3000000, precio: 3000000, modulo: "sistema" },
+      { descripcion: "Fase 2: Administración de Recursos y Activos", detalle: "Módulos maestros para gestión de Usuarios/Roles, Grúas/Patentes y Panel de Mantenimiento con monitoreo de estados.", costo_desarrollo: 2000000, margen_porcentaje: 50, pvp: 3000000, precio: 3000000, modulo: "sistema" },
+      { descripcion: "Fase 3: Core Operacional y Logística", detalle: "Módulos de Solicitudes, Agendamiento programado, Logística de trazabilidad y lógica de validación de disponibilidad de flota.", costo_desarrollo: 3000000, margen_porcentaje: 50, pvp: 4500000, precio: 4500000, modulo: "sistema" },
+      { descripcion: "Fase 4: Ejecución App Móvil y Tracking", detalle: "App del Conductor (Servicios/Evidencia), Tracking en tiempo real por GPS, Vista de Cliente Externo y Notificaciones Push.", costo_desarrollo: 3000000, margen_porcentaje: 50, pvp: 4500000, precio: 4500000, modulo: "sistema" },
+      { descripcion: "Fase 5: Administración Final y Cierre", detalle: "Dashboard de KPIs gerenciales, Registro Histórico avanzado, Módulo de Aseguradoras e integración automática de WhatsApp/Email.", costo_desarrollo: 1500000, margen_porcentaje: 20, pvp: 1800000, precio: 1800000, modulo: "sistema" },
+    ]
+  },
   mantencion: {
     nombre: "Mantención Mensual",
     items: [
@@ -234,11 +244,12 @@ export default function NuevaCotizacionModal({ onClose, onSuccess, initialData }
           {!initialData && (
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] uppercase tracking-widest font-bold text-[#A1A1AA]">Plantilla Base</label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {[
                   { key: "", label: "Personalizada", desc: "Desde cero" },
                   { key: "web", label: "Solo Web", desc: "Landing Page" },
-                  { key: "ecosistema", label: "Ecosistema", desc: "Sistema + Web" },
+                  { key: "sistema", label: "Solo Sistema", desc: "App de Admin" },
+                  { key: "ecosistema", label: "Ecosistema", desc: "Web + Sistema" },
                   { key: "mantencion", label: "Mantención", desc: "Mensual" }
                 ].map(opt => (
                   <button
