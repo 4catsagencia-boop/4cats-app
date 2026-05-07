@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: result.data, ok: true }, { status: 200 });
 
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : "Error en operación de DB";
+    const msg = error instanceof Error ? error.message : String(error);
     console.error("Admin DB Error:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
