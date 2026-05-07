@@ -23,6 +23,7 @@ export default function CotizacionesView() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [editingCotizacion, setEditingCotizacion] = useState<Cotizacion | undefined>(undefined);
 
   const loadData = async () => {
     setLoading(true);
@@ -119,7 +120,7 @@ export default function CotizacionesView() {
         </div>
         <div className="flex gap-3 items-center">
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => { setEditingCotizacion(undefined); setShowModal(true); }}
             className="bg-[#7C5CBF] text-white text-xs font-bold px-5 py-2.5 rounded-2xl hover:bg-[#6B4DAE] transition-all shadow-lg shadow-[#7C5CBF]/20 active:scale-95 flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path d="M12 4v16m8-8H4" /></svg>
@@ -200,6 +201,14 @@ export default function CotizacionesView() {
                       </button>
 
                       <button
+                        onClick={() => { setEditingCotizacion(c); setShowModal(true); }}
+                        className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors"
+                        title="Editar Cotización"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                      </button>
+
+                      <button
                         onClick={() => handleDelete(c.id)}
                         className="p-1.5 text-[#A1A1AA] hover:text-red-500 transition-colors"
                         title="Eliminar"
@@ -222,6 +231,7 @@ export default function CotizacionesView() {
             setShowModal(false);
             loadData();
           }}
+          initialData={editingCotizacion}
         />
       )}
     </div>
