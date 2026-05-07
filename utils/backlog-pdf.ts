@@ -70,8 +70,8 @@ export const generateBacklogPDF = (backlog: Backlog) => {
   for (let i = 0; i < backlog.epicas.length; i++) {
     const epica = backlog.epicas[i];
 
-    // Verificar si cabe en la página actual
-    const estimatedHeight = 10 + (epica.historias.length * 4) + 3;
+    // Verificar si cabe en la página actual (estimamos 8px por HU para textos de 1-2 líneas)
+    const estimatedHeight = 10 + (epica.historias.length * 8) + 3;
     if (currentY + estimatedHeight > 270) {
       doc.addPage();
       currentY = 15;
@@ -100,15 +100,6 @@ export const generateBacklogPDF = (backlog: Backlog) => {
         head: [],
         body: tableBody,
         theme: "plain",
-        headStyles: {
-          fillColor: [200, 190, 220],
-          textColor: [80, 80, 90],
-          fontSize: 7,
-          fontStyle: "bold",
-          halign: "left",
-          lineColor: [200, 190, 220],
-          lineWidth: 0.5,
-        },
         bodyStyles: {
           fontSize: 7,
           textColor: [80, 80, 90],
@@ -123,11 +114,10 @@ export const generateBacklogPDF = (backlog: Backlog) => {
           overflow: "linebreak",
         },
         margin: { left: MARGIN_LEFT, right: MARGIN_RIGHT },
-        pageBreak: "avoid",
       });
 
-      currentY = (doc as jsPDFWithAutoTable).lastAutoTable?.cursor?.y || currentY + 20;
-      currentY += 4;
+      // cursor.y siempre refleja la posición final, sea en la misma página o en una nueva
+      currentY = ((doc as jsPDFWithAutoTable).lastAutoTable?.cursor?.y ?? currentY + 20) + 4;
     } else {
       doc.setFontSize(8);
       doc.setTextColor(161, 161, 170);
