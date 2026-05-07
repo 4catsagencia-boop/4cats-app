@@ -76,6 +76,28 @@ export default function CotizacionesView() {
     }
   }
 
+  const handleEmail = (c: Cotizacion, index: number) => {
+    const folio = 200 + (cotizaciones.length - index);
+    const subject = encodeURIComponent(`Cotización N° ${folio} — 4cats Agency`);
+    const body = encodeURIComponent(
+      `Hola ${c.cliente_nombre},\n\n` +
+      `Adjunto encontrarás la cotización formal por los servicios conversados. ` +
+      `Está detallada por módulos con los alcances y valores de cada fase.\n\n` +
+      `Resumen:\n` +
+      `- Proyecto: ${c.plan_nombre}\n` +
+      `- Total: ${clp(c.total)}\n` +
+      `- Validez: 15 días hábiles\n\n` +
+      `Cualquier duda o ajuste que necesites, me avisás y lo revisamos juntos. ` +
+      `Estoy disponible para agendar una llamada si querés repasar los detalles.\n\n` +
+      `Saludos,\n` +
+      `Luis Sáez\n` +
+      `4cats Agency — Diseño y Desarrollo Web\n` +
+      `www.4cats.cl`
+    );
+    const to = c.cliente_email || "";
+    window.open(`mailto:${to}?subject=${subject}&body=${body}`, "_blank");
+  };
+
   const handleDownloadPDF = async (c: Cotizacion, index: number) => {
     const items = c.items && c.items.length > 0
       ? c.items
@@ -216,6 +238,10 @@ export default function CotizacionesView() {
 
                           <button onClick={() => handleDownloadPDF(c, idx)} className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors" title="Exportar PDF">
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                          </button>
+
+                          <button onClick={() => handleEmail(c, idx)} className="p-1.5 text-[#A1A1AA] hover:text-blue-500 transition-colors" title="Enviar por email">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                           </button>
 
                           <button onClick={() => { setEditingCotizacion(c); setShowModal(true); }} className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors" title="Editar">
