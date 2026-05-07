@@ -156,6 +156,8 @@ export const generateQuotePDF = async (data: QuoteData) => {
 
   const tableStartY = Math.max(clientY + 14, 98);
 
+  let finalY = tableStartY + 20;
+
   autoTable(doc, {
     startY: tableStartY,
     head: [["Descripción del Servicio", "Monto"]],
@@ -174,9 +176,15 @@ export const generateQuotePDF = async (data: QuoteData) => {
     },
     styles: { fontSize: 9, cellPadding: 4, overflow: "linebreak" },
     margin: { left: 20, right: 20, bottom: 25 },
+    didDrawPage: (data) => {
+      if (data.cursor) finalY = data.cursor.y;
+    },
   });
 
-  let finalY = (doc as jsPDFWithAutoTable).lastAutoTable?.cursor?.y || 150;
+  // finalY también desde lastAutoTable.finalY como respaldo
+  const tableResult = (doc as any).lastAutoTable;
+  if (tableResult?.finalY) finalY = tableResult.finalY;
+
   finalY += 12;
 
   // Si no hay espacio para totales, nueva página
