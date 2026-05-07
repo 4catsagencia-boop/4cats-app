@@ -13,9 +13,10 @@ export default function HRView() {
   const [loading, setLoading] = useState(true);
   
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [newColab, setNewColab] = useState({
-    nombre: "", email: "", rol: "", rut: "", telefono: "", 
-    direccion: "", banco: "", tipo_cuenta: "", numero_cuenta: "", 
+    nombre: "", email: "", rol: "", rut: "", telefono: "",
+    direccion: "", banco: "", tipo_cuenta: "", numero_cuenta: "",
     comision_porcentaje: 0
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -46,19 +47,55 @@ export default function HRView() {
     if (!newColab.nombre || !newColab.email) return;
     setIsSaving(true);
     try {
-      await adminDB.insert("colaboradores", { ...newColab, activo: true });
+      if (editingId) {
+        await adminDB.update("colaboradores", editingId, newColab);
+        alert("Colaborador actualizado ✅");
+      } else {
+        await adminDB.insert("colaboradores", { ...newColab, activo: true });
+        alert("Colaborador registrado ✅");
+      }
       setShowModal(false);
-      setNewColab({ 
-        nombre: "", email: "", rol: "", rut: "", telefono: "", 
-        direccion: "", banco: "", tipo_cuenta: "", numero_cuenta: "", 
-        comision_porcentaje: 0 
+      setEditingId(null);
+      setNewColab({
+        nombre: "", email: "", rol: "", rut: "", telefono: "",
+        direccion: "", banco: "", tipo_cuenta: "", numero_cuenta: "",
+        comision_porcentaje: 0
       });
       await loadData();
-      alert("Colaborador registrado ✅");
     } catch (error) {
       console.error("Error saving collaborator:", error);
+      alert("Error al guardar colaborador");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleEdit = (colab: Colaborador) => {
+    setEditingId(colab.id);
+    setNewColab({
+      nombre: colab.nombre,
+      email: colab.email,
+      rol: colab.rol,
+      rut: colab.rut || "",
+      telefono: colab.telefono || "",
+      direccion: colab.direccion || "",
+      banco: colab.banco || "",
+      tipo_cuenta: colab.tipo_cuenta || "",
+      numero_cuenta: colab.numero_cuenta || "",
+      comision_porcentaje: colab.comision_porcentaje
+    });
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Eliminar este colaborador?")) return;
+    try {
+      await adminDB.remove("colaboradores", id);
+      await loadData();
+      alert("Colaborador eliminado ✅");
+    } catch (error) {
+      console.error("Error deleting collaborator:", error);
+      alert("Error al eliminar colaborador");
     }
   };
 
@@ -94,12 +131,32 @@ export default function HRView() {
           </div>
           <div className="space-y-3">
             {colaboradores.map((c) => (
-              <div key={c.id} className="flex items-center justify-between p-4 rounded-2xl bg-[#FAFAFA] dark:bg-[#0F0F12] border border-transparent hover:border-[#7C5CBF]/30 transition-all cursor-default">
-                <div>
+              <div key={c.id} className="flex items-center justify-between p-4 rounded-2xl bg-[#FAFAFA] dark:bg-[#0F0F12] border border-transparent hover:border-[#7C5CBF]/30 transition-all group">
+                <div className="flex-1">
                   <p className="text-sm font-bold text-[#18181B] dark:text-white">{c.nombre}</p>
                   <p className="text-[10px] text-[#A1A1AA] uppercase tracking-tighter">{c.rol} • {c.comision_porcentaje}% COM.</p>
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                  <button
+                    onClick={() => handleEdit(c)}
+                    className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-[#7C5CBF]/10 dark:hover:bg-[#7C5CBF]/20 transition-all"
+                    title="Editar"
+                  >
+                    <svg className="w-4 h-4 text-[#7C5CBF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id)}
+                    className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-all"
+                    title="Eliminar"
+                  >
+                    <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             ))}
             {colaboradores.length === 0 && (
@@ -108,8 +165,16 @@ export default function HRView() {
               </p>
             )}
           </div>
-          <button 
-            onClick={() => setShowModal(true)}
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setNewColab({
+                nombre: "", email: "", rol: "", rut: "", telefono: "",
+                direccion: "", banco: "", tipo_cuenta: "", numero_cuenta: "",
+                comision_porcentaje: 0
+              });
+              setShowModal(true);
+            }}
             className="w-full mt-6 py-3 rounded-xl bg-[#7C5CBF] text-white text-xs font-bold hover:bg-[#6B4DAE] transition-all shadow-lg shadow-[#7C5CBF]/20 active:scale-[0.98]"
           >
             Agregar Colaborador
@@ -161,11 +226,13 @@ export default function HRView() {
         </div>
       </div>
 
-      {/* Modal - Simplificado para el ejemplo */}
+      {/* Modal - Crear/Editar Colaborador */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
           <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-3xl p-8 w-full max-w-lg shadow-2xl">
-            <h3 className="text-lg font-bold text-[#18181B] dark:text-white mb-6">Nuevo Colaborador</h3>
+            <h3 className="text-lg font-bold text-[#18181B] dark:text-white mb-6">
+              {editingId ? "Editar Colaborador" : "Nuevo Colaborador"}
+            </h3>
             <div className="space-y-4">
               <input 
                 type="text" placeholder="Nombre Completo"
@@ -191,8 +258,10 @@ export default function HRView() {
               </div>
             </div>
             <div className="flex gap-3 mt-8">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 rounded-xl border border-[#E4E4E7] dark:border-[#2A2A35] text-xs font-bold text-[#A1A1AA]">Cancelar</button>
-              <button onClick={handleSave} disabled={isSaving} className="flex-1 py-3 rounded-xl bg-[#7C5CBF] text-white text-xs font-bold disabled:opacity-50">{isSaving ? "Guardando..." : "Registrar"}</button>
+              <button onClick={() => { setShowModal(false); setEditingId(null); }} className="flex-1 py-3 rounded-xl border border-[#E4E4E7] dark:border-[#2A2A35] text-xs font-bold text-[#A1A1AA]">Cancelar</button>
+              <button onClick={handleSave} disabled={isSaving} className="flex-1 py-3 rounded-xl bg-[#7C5CBF] text-white text-xs font-bold disabled:opacity-50">
+                {isSaving ? "Guardando..." : editingId ? "Actualizar" : "Registrar"}
+              </button>
             </div>
           </div>
         </div>
