@@ -113,7 +113,8 @@ export const generateBacklogPDF = (backlog: Backlog) => {
           cellPadding: 2,
           overflow: "linebreak",
         },
-        margin: { left: MARGIN_LEFT, right: MARGIN_RIGHT },
+        margin: { left: MARGIN_LEFT, right: MARGIN_RIGHT, bottom: 20 },
+        rowPageBreak: "avoid",
       });
 
       // cursor.y siempre refleja la posición final, sea en la misma página o en una nueva
