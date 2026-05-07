@@ -307,6 +307,30 @@ export interface Propuesta {
   updated_at?: string
 }
 
+export interface PropouestaTecnica {
+  id: string
+  cliente_id: string
+  nombre: string
+  descripcion: string
+  contenido_json: Record<string, any>
+  estado: 'activo' | 'inactivo'
+  expira_at?: string
+  creado_por?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export interface PropouestaTecnicaAcceso {
+  id: string
+  propuesta_tecnica_id: string
+  cliente_id: string
+  accessed_at: string
+  duracion_seg: number
+  ip_address: string
+  user_agent: string
+  created_at?: string
+}
+
 // =============================================================================
 // ROI & METRICS TEMPLATES (Contexto Alpha)
 // =============================================================================

@@ -1,15 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { 
-  Propuesta, 
-  LinkRecurso, 
+import {
+  Propuesta,
+  LinkRecurso,
   RoadmapModule,
   RoadmapItem,
   METRIC_HIGHER_IS_BETTER,
-  METRICAS_ROI_TEMPLATE 
+  METRICAS_ROI_TEMPLATE
 } from "@/utils/supabase";
-import { BarChart3, Target, ExternalLink, ShieldCheck, FileText, Monitor, Users, Zap, ListChecks, Calendar } from "lucide-react";
+import { BarChart3, Target, ExternalLink, ShieldCheck, FileText, Monitor, Users, Zap, ListChecks, Calendar, Shield } from "lucide-react";
+import PropuestaTecnicaModal from "./PropuestaTecnicaModal";
 
 // Mapeo de iconos y descripciones de impacto para la tabla estratégica
 const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string }> = {
@@ -58,6 +60,7 @@ interface PropuestaViewProps {
 }
 
 export default function PropuestaView({ propuesta }: PropuestaViewProps) {
+  const [showTecnicaModal, setShowTecnicaModal] = useState(false);
   console.log("Rendering PropuestaView with data:", propuesta);
 
   // Asegurar que las listas sean arreglos para evitar crashes
@@ -454,7 +457,23 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
         </section>
       )}
 
-      <footer className="pt-12 text-center space-y-6">
+      {/* Technical Proposal Button */}
+      <section className="pt-12 pb-8">
+        <div className="max-w-2xl mx-auto">
+          <button
+            onClick={() => setShowTecnicaModal(true)}
+            className="w-full sm:w-auto mx-auto block px-8 py-3 bg-[#7C5CBF] hover:bg-[#6B4DAE] text-white font-bold rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#7C5CBF]/20 flex items-center justify-center gap-2"
+          >
+            <Shield className="w-5 h-5" />
+            Ver Propuesta Técnica Protegida
+          </button>
+          <p className="text-xs text-gray-400 text-center mt-3">
+            Documento con protección contra copia y descarga
+          </p>
+        </div>
+      </section>
+
+      <footer className="pt-6 text-center space-y-6">
         <div className="max-w-md mx-auto p-4 rounded-2xl bg-gray-50 dark:bg-[#16161D]/50 border border-[#E4E4E7] dark:border-[#2A2A35] text-[10px] text-gray-400 leading-relaxed italic">
           <strong>Aviso de Confidencialidad:</strong> Este documento es confidencial y propiedad intelectual de 4cats. Su divulgación a terceros sin autorización previa y por escrito está estrictamente prohibida.
         </div>
@@ -462,6 +481,14 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
           ¿Listo para dar el siguiente paso? Esta propuesta fue generada por el equipo de 4cats.
         </p>
       </footer>
+
+      {/* Modal */}
+      <PropuestaTecnicaModal
+        isOpen={showTecnicaModal}
+        onClose={() => setShowTecnicaModal(false)}
+        clienteId={propuesta.cliente_id}
+        clientName={propuesta.titulo}
+      />
     </div>
   );
 }
