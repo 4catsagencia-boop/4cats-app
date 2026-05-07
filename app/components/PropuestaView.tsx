@@ -56,17 +56,26 @@ interface PropuestaViewProps {
 }
 
 export default function PropuestaView({ propuesta }: PropuestaViewProps) {
-  // Asegurar que las listas sean arreglos para evitar crashes
-  const links = Array.isArray(propuesta.links) ? propuesta.links : [];
-  const metricas = Array.isArray(propuesta.metricas) ? propuesta.metricas : [];
-  const ventajas = Array.isArray(propuesta.ventajas) ? propuesta.ventajas : [];
+  console.log("Rendering PropuestaView with data:", propuesta);
 
-  // Agrupamos links por tipo
-  const linksByType = links.reduce((acc, link) => {
-    if (!acc[link.tipo]) acc[link.tipo] = [];
-    acc[link.tipo].push(link);
-    return acc;
-  }, {} as Record<string, LinkRecurso[]>);
+  // Asegurar que las listas sean arreglos para evitar crashes
+  const links = Array.isArray(propuesta?.links) ? propuesta.links : [];
+  const metricas = Array.isArray(propuesta?.metricas) ? propuesta.metricas : [];
+  const ventajas = Array.isArray(propuesta?.ventajas) ? propuesta.ventajas : [];
+
+  // Agrupamos links por tipo de forma ultra-defensiva
+  let linksByType: Record<string, LinkRecurso[]> = {};
+  try {
+    linksByType = links.reduce((acc, link) => {
+      if (link && link.tipo) {
+        if (!acc[link.tipo]) acc[link.tipo] = [];
+        acc[link.tipo].push(link);
+      }
+      return acc;
+    }, {} as Record<string, LinkRecurso[]>);
+  } catch (err) {
+    console.error("Error agrupando links:", err);
+  }
 
   const getLinkIcon = (tipo: string) => {
     switch (tipo) {
