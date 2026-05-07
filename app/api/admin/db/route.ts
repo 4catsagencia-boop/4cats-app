@@ -35,11 +35,11 @@ export async function POST(req: NextRequest) {
       case "SELECT": {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let queryBuilder: any = supabaseAdmin.from(table).select("*");
-        
+
         if (filterColumn && filterValue !== undefined) {
-          queryBuilder = queryBuilder.eq(filterColumn, filterValue);
+          queryBuilder = queryBuilder.eq(filterColumn, filterValue) as any;
         }
-        
+
         if (table === 'clientes') {
           result = await queryBuilder.order("nombre", { ascending: true });
         } else {
