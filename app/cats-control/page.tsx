@@ -14,7 +14,7 @@ import HRView from "./components/HRView";
 import ExpensesView from "./components/ExpensesView";
 import HardyView from "./components/HardyView";
 
-type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses" | "hardy";
+type View = "dashboard" | "cotizaciones" | "clientes" | "planes" | "finanzas" | "propuesta" | "inventory" | "billing" | "hr" | "expenses";
 
 export default function CatsControlPage() {
   const [auth, setAuth] = useState(false);
