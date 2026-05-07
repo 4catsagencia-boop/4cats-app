@@ -131,7 +131,7 @@ export default function PropuestasTecnicasManager() {
                   <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      Creado: {new Date(p.created_at).toLocaleDateString("es-CL")}
+                      Creado: {p.created_at ? new Date(p.created_at).toLocaleDateString("es-CL") : "—"}
                     </span>
                     {p.expira_at && (
                       <span className="flex items-center gap-1">
