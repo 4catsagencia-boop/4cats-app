@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Backlog } from "@/utils/supabase";
 
 interface PageProps {
@@ -27,7 +28,10 @@ export default async function BacklogPublicPage({ params }: PageProps) {
     <div className="min-h-screen bg-[#FAFAFA] font-sans">
       {/* Header */}
       <div className="bg-[#7C5CBF] text-white px-8 py-10">
-        <p className="text-sm font-medium opacity-75 mb-1 uppercase tracking-widest">Product Backlog</p>
+        <div className="flex items-center justify-between mb-6">
+          <Image src="/logo-4cats.png" alt="4cats Agency" width={100} height={40} className="object-contain brightness-0 invert" />
+          <p className="text-sm font-medium opacity-60 uppercase tracking-widest">Product Backlog</p>
+        </div>
         <h1 className="text-3xl font-black mb-2">{backlog.nombre}</h1>
         <p className="text-white/80 text-sm">Cliente: {backlog.cliente_nombre}</p>
         {backlog.descripcion && (

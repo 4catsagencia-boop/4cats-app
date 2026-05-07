@@ -61,6 +61,13 @@ export default function PropuestasTecnicasManager() {
     }
   };
 
+  const handleCopyLink = (propuesta: PropouestaTecnica) => {
+    const url = `${window.location.origin}/propuesta-tecnica/${propuesta.cliente_id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert(`Link copiado: ${url}`);
+    });
+  };
+
   const isExpired = (expira_at?: string) => {
     if (!expira_at) return false;
     return new Date(expira_at) < new Date();
@@ -162,6 +169,15 @@ export default function PropuestasTecnicasManager() {
                     ) : (
                       <EyeOff className="w-4 h-4" />
                     )}
+                  </button>
+                  <button
+                    onClick={() => handleCopyLink(p)}
+                    title="Copiar link para cliente"
+                    className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 hover:bg-blue-200 transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
                   </button>
                   <button
                     onClick={() => deletePropuesta(p.id)}
