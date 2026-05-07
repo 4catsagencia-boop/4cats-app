@@ -114,7 +114,12 @@ export interface Cotizacion {
 
 export interface CotizacionItem {
   descripcion: string
-  precio: number
+  precio: number                        // legacy — en cotizaciones nuevas equivale a pvp
+  detalle?: string                      // descripción interna (solo admin)
+  costo_desarrollo?: number             // costo para la agencia (solo admin)
+  margen_porcentaje?: number            // % de ganancia por ítem (solo admin)
+  pvp?: number                          // precio de venta al público (va al PDF)
+  modulo?: 'web' | 'sistema' | 'mantencion'
 }
 
 export interface Pago {

@@ -23,6 +23,7 @@ interface QuoteData {
   items: Array<{
     descripcion: string;
     precio: number;
+    modulo?: string;
   }>;
   subtotal: number;
   iva: number;
@@ -112,26 +113,44 @@ export const generateQuotePDF = (data: QuoteData) => {
   doc.text(`Fecha: ${data.fecha}`, 130, 73);
   doc.text("Temuco, Chile", 130, 78);
 
-  // Tabla de Items (Con corrección de desborde)
-  const tableBody = data.items.map((item) => [
-    item.descripcion,
-    new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(item.precio),
-  ]);
+  // Agrupar ítems por módulo si corresponde
+  const clpFmt = (n: number) => new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(n);
+  const MODULO_NAMES: Record<string, string> = { sistema: "Módulo II: Sistema de Administración", web: "Módulo I: Plataforma Web", mantencion: "Mantención Mensual" };
+  const hasModulos = data.items.some(i => i.modulo);
+
+  type AutoTableBody = (string | { content: string; styles?: Record<string, unknown> })[][];
+  let tableBody: AutoTableBody = [];
+
+  if (hasModulos) {
+    const grupos: Record<string, typeof data.items> = {};
+    const orden: string[] = [];
+    for (const item of data.items) {
+      const key = item.modulo || "otros";
+      if (!grupos[key]) { grupos[key] = []; orden.push(key); }
+      grupos[key].push(item);
+    }
+    for (const key of orden) {
+      const subtotal = grupos[key].reduce((s, i) => s + i.precio, 0);
+      tableBody.push([{ content: MODULO_NAMES[key] || key, styles: { fontStyle: "bold", fillColor: [243, 238, 255] as unknown as string, textColor: [124, 92, 191] as unknown as string } }, { content: "", styles: {} }]);
+      for (const item of grupos[key]) {
+        tableBody.push([item.descripcion, clpFmt(item.precio)]);
+      }
+      if (subtotal > 0) {
+        tableBody.push([{ content: `Subtotal ${MODULO_NAMES[key] || key}`, styles: { fontStyle: "bold" } }, { content: clpFmt(subtotal), styles: { fontStyle: "bold", halign: "right" as const } }]);
+      }
+    }
+  } else {
+    tableBody = data.items.map(item => [item.descripcion, clpFmt(item.precio)]);
+  }
 
   autoTable(doc, {
     startY: 95,
     head: [["Descripción del Servicio", "Monto"]],
     body: tableBody,
     theme: "striped",
-    headStyles: { 
-      fillColor: [124, 92, 191], 
-      textColor: [255, 255, 255], 
-      fontSize: 10, 
-      fontStyle: "bold",
-      halign: "left"
-    },
+    headStyles: { fillColor: [124, 92, 191], textColor: [255, 255, 255], fontSize: 10, fontStyle: "bold", halign: "left" },
     columnStyles: {
-      0: { cellWidth: 130 }, // Ancho fijo para evitar desborde
+      0: { cellWidth: 130 },
       1: { halign: "right", fontStyle: "bold" }
     },
     styles: { fontSize: 9, cellPadding: 5 },
@@ -146,16 +165,16 @@ export const generateQuotePDF = (data: QuoteData) => {
   doc.setFontSize(10);
   doc.setTextColor(82, 82, 91);
   doc.text("Subtotal:", 140, finalY);
-  doc.text(new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(data.subtotal), 190, finalY, { align: "right" });
+  doc.text(clpFmt(data.subtotal), 190, finalY, { align: "right" });
 
   doc.text("IVA (19%):", 140, finalY + 7);
-  doc.text(new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(data.iva), 190, finalY + 7, { align: "right" });
+  doc.text(clpFmt(data.iva), 190, finalY + 7, { align: "right" });
 
   doc.setFontSize(14);
   doc.setTextColor(124, 92, 191);
   doc.setFont("helvetica", "bold");
   doc.text("TOTAL:", 140, finalY + 16);
-  doc.text(new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(data.total), 190, finalY + 16, { align: "right" });
+  doc.text(clpFmt(data.total), 190, finalY + 16, { align: "right" });
 
   // Cuadro de Transferencia (Más estilizado)
   const bankY = Math.max(finalY + 30, 190);

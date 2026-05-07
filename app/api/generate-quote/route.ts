@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         email: cotizacion.cliente_email || cliente?.email || "",
         telefono: cliente?.telefono || "N/A",
       },
-      items: items,
+      items: items.map((item: any) => ({ descripcion: item.descripcion, precio: item.pvp ?? item.precio ?? 0, modulo: item.modulo })),
       subtotal: subtotal,
       iva: iva,
       total: total,

@@ -1,12 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { type Cotizacion } from "../../../utils/supabase";
 import { generateQuotePDF } from "../../../utils/pdf-generator";
 import NuevaCotizacionModal from "./NuevaCotizacionModal";
 
 const clpFormatter = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
+const clp = (n: number) => clpFormatter.format(n);
+
+const MODULO_COLORS: Record<string, string> = {
+  sistema:    "bg-[#7C5CBF]/10 text-[#7C5CBF]",
+  web:        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  mantencion: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+};
 
 const estadoBadge: Record<Cotizacion["estado"], string> = {
   pendiente: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -24,6 +31,7 @@ export default function CotizacionesView() {
   const [updating, setUpdating] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editingCotizacion, setEditingCotizacion] = useState<Cotizacion | undefined>(undefined);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -76,18 +84,13 @@ export default function CotizacionesView() {
     generateQuotePDF({
       numero: cotizaciones.length - index,
       fecha: c.created_at ? new Date(c.created_at).toLocaleDateString("es-CL") : new Date().toLocaleDateString("es-CL"),
-      cliente: {
-        nombre: c.cliente_nombre,
-        email: "",
-        telefono: c.cliente_id || "", // Usamos el ID como fallback si no hay teléfono directo
-        empresa: "",
-        rut: ""
-      },
+      cliente: { nombre: c.cliente_nombre, email: "", telefono: "", empresa: "", rut: "" },
       items: items.map(item => ({
         descripcion: item.descripcion,
-        precio: item.precio
+        precio: item.pvp ?? item.precio,
+        modulo: item.modulo
       })),
-      subtotal: c.total, // Simplificado
+      subtotal: c.total,
       iva: 0,
       total: c.total,
       notas: c.notas
@@ -162,63 +165,115 @@ export default function CotizacionesView() {
                   <td colSpan={5} className="text-center text-[#A1A1AA] py-12 text-xs italic">No hay cotizaciones con este filtro.</td>
                 </tr>
               )}
-              {filtradas.map((c, idx) => (
-                <tr key={c.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#1C1C1E] transition-colors group ${updating === c.id ? 'opacity-50' : ''}`}>
-                  <td className="px-6 py-4 text-[#A1A1AA] text-xs font-mono">
-                    {c.created_at ? new Date(c.created_at).toLocaleDateString("es-CL") : "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-[#18181B] dark:text-white text-xs">{c.cliente_nombre}</p>
-                    <p className="text-[10px] text-[#7C5CBF] font-medium uppercase tracking-tighter">{c.plan_nombre}</p>
-                  </td>
-                  <td className="px-6 py-4 text-right font-black text-[#18181B] dark:text-white text-sm">
-                    {clpFormatter.format(c.total)}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${estadoBadge[c.estado]}`}>
-                      {c.estado}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-center gap-1">
-                      <select
-                        value={c.estado}
-                        disabled={updating === c.id}
-                        onChange={(e) => handleEstado(c.id, e.target.value as Cotizacion["estado"])}
-                        className="text-[10px] font-bold border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] text-[#18181B] dark:text-white rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-[#7C5CBF] transition-all"
-                      >
-                        <option value="pendiente">Pendiente</option>
-                        <option value="aprobada">Aprobada</option>
-                        <option value="rechazada">Rechazada</option>
-                      </select>
-                      
-                      <button
-                        onClick={() => handleDownloadPDF(c, idx)}
-                        className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors"
-                        title="Exportar PDF"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                      </button>
+              {filtradas.map((c, idx) => {
+                const isExpanded = expandedId === c.id;
+                const parsedItems = c.items
+                  ? (typeof c.items === "string" ? JSON.parse(c.items) : c.items)
+                  : [];
+                const hasDesglose = parsedItems.some((i: any) => i.costo_desarrollo !== undefined);
+                const totalCosto = parsedItems.reduce((s: number, i: any) => s + (i.costo_desarrollo || 0), 0);
 
-                      <button
-                        onClick={() => { setEditingCotizacion(c); setShowModal(true); }}
-                        className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors"
-                        title="Editar Cotización"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                      </button>
+                return (
+                  <React.Fragment key={c.id}>
+                    <tr className={`hover:bg-[#FAFAFA] dark:hover:bg-[#1C1C1E] transition-colors group ${updating === c.id ? "opacity-50" : ""}`}>
+                      <td className="px-6 py-4 text-[#A1A1AA] text-xs font-mono">
+                        {c.created_at ? new Date(c.created_at).toLocaleDateString("es-CL") : "—"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-[#18181B] dark:text-white text-xs">{c.cliente_nombre}</p>
+                        <p className="text-[10px] text-[#7C5CBF] font-medium uppercase tracking-tighter">{c.plan_nombre}</p>
+                      </td>
+                      <td className="px-6 py-4 text-right font-black text-[#18181B] dark:text-white text-sm">
+                        {clp(c.total)}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${estadoBadge[c.estado]}`}>
+                          {c.estado}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-1">
+                          <select
+                            value={c.estado}
+                            disabled={updating === c.id}
+                            onChange={(e) => handleEstado(c.id, e.target.value as Cotizacion["estado"])}
+                            className="text-[10px] font-bold border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] text-[#18181B] dark:text-white rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-[#7C5CBF] transition-all"
+                          >
+                            <option value="pendiente">Pendiente</option>
+                            <option value="aprobada">Aprobada</option>
+                            <option value="rechazada">Rechazada</option>
+                          </select>
 
-                      <button
-                        onClick={() => handleDelete(c.id)}
-                        className="p-1.5 text-[#A1A1AA] hover:text-red-500 transition-colors"
-                        title="Eliminar"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                          {hasDesglose && (
+                            <button
+                              onClick={() => setExpandedId(isExpanded ? null : c.id)}
+                              className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors"
+                              title="Ver desglose interno"
+                            >
+                              <svg className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                          )}
+
+                          <button onClick={() => handleDownloadPDF(c, idx)} className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors" title="Exportar PDF">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                          </button>
+
+                          <button onClick={() => { setEditingCotizacion(c); setShowModal(true); }} className="p-1.5 text-[#A1A1AA] hover:text-[#7C5CBF] transition-colors" title="Editar">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                          </button>
+
+                          <button onClick={() => handleDelete(c.id)} className="p-1.5 text-[#A1A1AA] hover:text-red-500 transition-colors" title="Eliminar">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Desglose interno expandido */}
+                    {isExpanded && hasDesglose && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-4 bg-[#FAFAFA] dark:bg-[#0F0F12] border-b border-[#E4E4E7] dark:border-[#2A2A35]">
+                          <p className="text-[9px] uppercase tracking-widest font-bold text-[#A1A1AA] mb-3">Desglose Interno — Solo Admin</p>
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="text-[9px] uppercase tracking-widest text-[#A1A1AA] font-bold">
+                                <th className="text-left pb-2">Módulo</th>
+                                <th className="text-left pb-2">Descripción</th>
+                                <th className="text-right pb-2">Costo Dev</th>
+                                <th className="text-right pb-2">Margen</th>
+                                <th className="text-right pb-2">PVP</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[#E4E4E7] dark:divide-[#2A2A35]">
+                              {parsedItems.map((item: any, i: number) => (
+                                <tr key={i}>
+                                  <td className="py-1.5 pr-4">
+                                    <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full ${MODULO_COLORS[item.modulo] || "bg-gray-100 text-gray-600"}`}>
+                                      {item.modulo || "—"}
+                                    </span>
+                                  </td>
+                                  <td className="py-1.5 pr-4 text-[#18181B] dark:text-white font-medium max-w-xs truncate">{item.descripcion}</td>
+                                  <td className="py-1.5 pr-4 text-right text-[#A1A1AA]">{item.costo_desarrollo ? clp(item.costo_desarrollo) : "—"}</td>
+                                  <td className="py-1.5 pr-4 text-right text-[#A1A1AA]">{item.margen_porcentaje !== undefined ? `${item.margen_porcentaje}%` : "—"}</td>
+                                  <td className="py-1.5 text-right font-black text-green-600 dark:text-green-400">{clp(item.pvp ?? item.precio ?? 0)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                            <tfoot>
+                              <tr className="border-t border-[#E4E4E7] dark:border-[#2A2A35] font-bold">
+                                <td colSpan={2} className="pt-2 text-[#A1A1AA]">Totales</td>
+                                <td className="pt-2 text-right text-[#18181B] dark:text-white">{clp(totalCosto)}</td>
+                                <td></td>
+                                <td className="pt-2 text-right text-green-600 dark:text-green-400">{clp(c.total)}</td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
