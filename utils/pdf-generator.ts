@@ -135,7 +135,10 @@ export const generateQuotePDF = async (data: QuoteData) => {
         { content: "", styles: {} }
       ]);
       for (const item of grupos[key]) {
-        tableBody.push([item.descripcion, clpFmt(item.precio)]);
+        const montoCell = item.precio === 0
+          ? { content: "INCLUIDA", styles: { textColor: [22, 163, 74] as unknown as string, fontStyle: "bold" } }
+          : clpFmt(item.precio);
+        tableBody.push([item.descripcion, montoCell]);
       }
       if (subtotalMod > 0) {
         tableBody.push([
@@ -145,7 +148,10 @@ export const generateQuotePDF = async (data: QuoteData) => {
       }
     }
   } else {
-    tableBody = data.items.map(item => [item.descripcion, clpFmt(item.precio)]);
+    tableBody = data.items.map(item => [
+      item.descripcion,
+      item.precio === 0 ? { content: "INCLUIDA", styles: { textColor: [22, 163, 74] as unknown as string, fontStyle: "bold" } } : clpFmt(item.precio)
+    ]);
   }
 
   const tableStartY = Math.max(clientY + 14, 98);
@@ -179,24 +185,29 @@ export const generateQuotePDF = async (data: QuoteData) => {
     finalY = 20;
   }
 
-  // Totales
+  // Totales — sin IVA si iva === 0
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(82, 82, 91);
-  doc.text("Subtotal neto:", 130, finalY);
-  doc.text(clpFmt(data.subtotal), 190, finalY, { align: "right" });
 
-  doc.text("IVA (19%):", 130, finalY + 7);
-  doc.text(clpFmt(data.iva), 190, finalY + 7, { align: "right" });
+  let totalY = finalY;
+  if (data.iva > 0) {
+    doc.text("Subtotal neto:", 130, totalY);
+    doc.text(clpFmt(data.subtotal), 190, totalY, { align: "right" });
+    totalY += 7;
+    doc.text("IVA (19%):", 130, totalY);
+    doc.text(clpFmt(data.iva), 190, totalY, { align: "right" });
+    totalY += 9;
+  }
 
   doc.setFontSize(13);
   doc.setTextColor(124, 92, 191);
   doc.setFont("helvetica", "bold");
-  doc.text("TOTAL:", 130, finalY + 16);
-  doc.text(clpFmt(data.total), 190, finalY + 16, { align: "right" });
+  doc.text("TOTAL:", 130, totalY);
+  doc.text(clpFmt(data.total), 190, totalY, { align: "right" });
 
   // Cuadro transferencia
-  const bankY = finalY + 28;
+  const bankY = totalY + 16;
   if (bankY + 40 < 280) {
     doc.setDrawColor(228, 228, 231);
     doc.setFillColor(250, 250, 250);
