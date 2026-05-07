@@ -245,39 +245,10 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
         </motion.section>
       )}
 
-            <div className="mt-6 pt-6 border-t border-[#F4F4F5] dark:border-[#1A1A20]">
-              <span className="text-xs font-bold uppercase text-[#A1A1AA] block mb-2">Referencia Competidor</span>
-              <a 
-                href={propuesta.competidor_url ?? '#'} 
-                target="_blank" 
-                className="text-[#7C5CBF] font-medium flex items-center gap-1 hover:underline"
-              >
-                {propuesta.competidor_nombre} <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          )}
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="p-8 rounded-3xl bg-[#7C5CBF] text-white shadow-xl shadow-[#7C5CBF]/20"
-        >
-          <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center mb-6">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <h2 className="text-xl font-bold mb-4">{propuesta.solucion_titulo || "Nuestra Solución"}</h2>
-          <p className="text-white/90 leading-relaxed">
-            {propuesta.solucion_descripcion}
-          </p>
-        </motion.div>
-      </div>
-
       {/* Impact Table */}
       {(() => {
         // Filtramos las métricas que tienen definición de impacto y valores cargados
-        const roiMetrics = propuesta.metricas
+        const roiMetrics = metricas
           .filter(m => ROI_IMPACT_MAP[m.nombre] && (m.actual > 0 || m.propuesta > 0))
           .map(m => ({
             ...m,
@@ -339,8 +310,8 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
       })()}
 
       {/* Benchmarking Table */}
-      {propuesta.metricas.length > 0 && (() => {
-        const mobileMetric = propuesta.metricas.find(m => m.nombre === 'PageSpeed Mobile');
+      {metricas.length > 0 && (() => {
+        const mobileMetric = metricas.find(m => m.nombre === 'PageSpeed Mobile');
         const actualScore = mobileMetric?.actual ?? 0;
         const propuestaScore = mobileMetric?.propuesta ?? 0;
         const mejora = actualScore > 0 && propuestaScore > 0
@@ -400,7 +371,7 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
                   <span className="text-center text-red-400">Competidor</span>
                   <span className="text-center text-[#7C5CBF]">Propuesta</span>
                 </div>
-                {propuesta.metricas.map((m, idx) => {
+                {metricas.map((m, idx) => {
                   const higherBetter = METRIC_HIGHER_IS_BETTER[m.nombre] ?? true;
                   const propuestaColor = scoreColor(m.propuesta, m.actual, higherBetter);
                   const competidorColor = scoreColor(m.competidor, m.actual, higherBetter);
@@ -428,11 +399,11 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
       })()}
 
       {/* Ventajas Cards */}
-      {propuesta.ventajas.length > 0 && (
+      {ventajas.length > 0 && (
         <section className="space-y-8">
           <h2 className="text-2xl font-bold text-center dark:text-white">Ventajas del Nuevo Sistema</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {propuesta.ventajas.map((v, idx) => (
+            {ventajas.map((v, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}

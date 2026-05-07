@@ -1,12 +1,267 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Backlog, Cliente, UserStory, Epica } from "@/utils/supabase";
 import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
 import { generateBacklogPDF } from "@/utils/backlog-pdf";
 
+// Plantilla Hardy - 19 épicas + 100+ HUs
+const HARDY_BACKLOG_TEMPLATE: Epica[] = [
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 1",
+    nombre: "Dashboard",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU1.1", descripcion: "Como operador quiero ver resumen general" },
+      { id: crypto.randomUUID(), codigo: "HU1.2", descripcion: "Como operador quiero ver indicadores clave" },
+      { id: crypto.randomUUID(), codigo: "HU1.3", descripcion: "Como operador quiero visualizar alertas" },
+      { id: crypto.randomUUID(), codigo: "HU1.4", descripcion: "Como operador quiero ver disponibilidad de recursos" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 2",
+    nombre: "Logística Operativa",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU2.1", descripcion: "Como operador quiero visualizar servicios en distintos estados" },
+      { id: crypto.randomUUID(), codigo: "HU2.2", descripcion: "Como operador quiero priorizar servicios según criticidad" },
+      { id: crypto.randomUUID(), codigo: "HU2.3", descripcion: "Como operador quiero identificar servicios críticos" },
+      { id: crypto.randomUUID(), codigo: "HU2.4", descripcion: "Como operador quiero acceder al detalle de un servicio" },
+      { id: crypto.randomUUID(), codigo: "HU2.5", descripcion: "Como operador quiero ejecutar acciones rápidas desde el detalle" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 3",
+    nombre: "Gestión de Solicitudes",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU3.1", descripcion: "Como operador quiero crear una solicitud de servicio" },
+      { id: crypto.randomUUID(), codigo: "HU3.2", descripcion: "Como operador quiero registrar datos del cliente" },
+      { id: crypto.randomUUID(), codigo: "HU3.3", descripcion: "Como operador quiero registrar ubicación del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU3.4", descripcion: "Como operador quiero clasificar tipo de servicio" },
+      { id: crypto.randomUUID(), codigo: "HU3.5", descripcion: "Como operador quiero asignar prioridad a la solicitud" },
+      { id: crypto.randomUUID(), codigo: "HU3.6", descripcion: "Como operador quiero editar una solicitud" },
+      { id: crypto.randomUUID(), codigo: "HU3.7", descripcion: "Como operador quiero visualizar listado de solicitudes" },
+      { id: crypto.randomUUID(), codigo: "HU3.8", descripcion: "Como operador quiero cambiar estado de la solicitud" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 4",
+    nombre: "Agendamiento de Servicios",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU4.1", descripcion: "Como operador quiero visualizar calendario de servicios" },
+      { id: crypto.randomUUID(), codigo: "HU4.2", descripcion: "Como operador quiero navegar entre períodos" },
+      { id: crypto.randomUUID(), codigo: "HU4.3", descripcion: "Como operador quiero crear un agendamiento" },
+      { id: crypto.randomUUID(), codigo: "HU4.4", descripcion: "Como operador quiero registrar fecha, hora y dirección" },
+      { id: crypto.randomUUID(), codigo: "HU4.5", descripcion: "Como operador quiero registrar motivo del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU4.6", descripcion: "Como operador quiero definir tipo de grúa requerida" },
+      { id: crypto.randomUUID(), codigo: "HU4.7", descripcion: "Como operador quiero asignar grúa al agendamiento" },
+      { id: crypto.randomUUID(), codigo: "HU4.8", descripcion: "Como operador quiero visualizar listado de agendamientos" },
+      { id: crypto.randomUUID(), codigo: "HU4.9", descripcion: "Como operador quiero editar agendamientos" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 5",
+    nombre: "Registro Histórico de Servicios",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU5.1", descripcion: "Como operador quiero registrar cierre del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU5.2", descripcion: "Como operador quiero agregar observaciones" },
+      { id: crypto.randomUUID(), codigo: "HU5.3", descripcion: "Como operador quiero visualizar historial" },
+      { id: crypto.randomUUID(), codigo: "HU5.4", descripcion: "Como operador quiero ver detalle de servicio histórico" },
+      { id: crypto.randomUUID(), codigo: "HU5.5", descripcion: "Como operador quiero visualizar evidencia" },
+      { id: crypto.randomUUID(), codigo: "HU5.6", descripcion: "Como operador quiero visualizar firma digital" },
+      { id: crypto.randomUUID(), codigo: "HU5.7", descripcion: "Como operador quiero editar registros históricos" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 6",
+    nombre: "Mantenedor de Usuarios",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU6.1", descripcion: "Como operador quiero crear nuevos usuarios" },
+      { id: crypto.randomUUID(), codigo: "HU6.2", descripcion: "Como operador quiero editar usuarios" },
+      { id: crypto.randomUUID(), codigo: "HU6.3", descripcion: "Como operador quiero asignar roles" },
+      { id: crypto.randomUUID(), codigo: "HU6.4", descripcion: "Como operador quiero activar o desactivar usuarios" },
+      { id: crypto.randomUUID(), codigo: "HU6.5", descripcion: "Como operador quiero visualizar listado de usuarios" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 7",
+    nombre: "Mantenedor de Grúas",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU7.1", descripcion: "Como operador quiero registrar nuevas grúas" },
+      { id: crypto.randomUUID(), codigo: "HU7.2", descripcion: "Como operador quiero editar información de grúas" },
+      { id: crypto.randomUUID(), codigo: "HU7.3", descripcion: "Como operador quiero asignar patente a una grúa" },
+      { id: crypto.randomUUID(), codigo: "HU7.4", descripcion: "Como operador quiero asociar grúa a conductor" },
+      { id: crypto.randomUUID(), codigo: "HU7.5", descripcion: "Como operador quiero visualizar estado operativo de grúas" },
+      { id: crypto.randomUUID(), codigo: "HU7.6", descripcion: "Como encargado de mantenimiento quiero visualizar listado de grúas" },
+      { id: crypto.randomUUID(), codigo: "HU7.7", descripcion: "Como encargado de mantenimiento quiero consultar historial técnico" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 8",
+    nombre: "Módulo Aseguradora",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU8.1", descripcion: "Como operador quiero crear formularios" },
+      { id: crypto.randomUUID(), codigo: "HU8.2", descripcion: "Como operador quiero asociar formularios a servicios" },
+      { id: crypto.randomUUID(), codigo: "HU8.3", descripcion: "Como operador quiero adjuntar documentos" },
+      { id: crypto.randomUUID(), codigo: "HU8.4", descripcion: "Como operador quiero exportar formularios" },
+      { id: crypto.randomUUID(), codigo: "HU8.5", descripcion: "Como operador quiero importar documentos" },
+      { id: crypto.randomUUID(), codigo: "HU8.6", descripcion: "Como operador quiero enviar formularios por correo" },
+      { id: crypto.randomUUID(), codigo: "HU8.7", descripcion: "Como operador quiero registrar envíos realizados" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 9",
+    nombre: "Vista de Usuario Conductor",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU9.1", descripcion: "Como conductor quiero iniciar sesión en la app" },
+      { id: crypto.randomUUID(), codigo: "HU9.2", descripcion: "Como conductor quiero ver servicios asignados" },
+      { id: crypto.randomUUID(), codigo: "HU9.3", descripcion: "Como conductor quiero ver detalle del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU9.4", descripcion: "Como conductor quiero actualizar estado del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU9.5", descripcion: "Como conductor quiero iniciar un servicio" },
+      { id: crypto.randomUUID(), codigo: "HU9.6", descripcion: "Como conductor quiero finalizar un servicio" },
+      { id: crypto.randomUUID(), codigo: "HU9.7", descripcion: "Como conductor quiero registrar observaciones" },
+      { id: crypto.randomUUID(), codigo: "HU9.8", descripcion: "Como conductor quiero capturar evidencia" },
+      { id: crypto.randomUUID(), codigo: "HU9.9", descripcion: "Como conductor quiero registrar firma digital" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 10",
+    nombre: "Tracking Cliente (Externo)",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU10.1", descripcion: "Como sistema quiero generar enlace único de tracking" },
+      { id: crypto.randomUUID(), codigo: "HU10.2", descripcion: "Como cliente quiero acceder sin autenticación" },
+      { id: crypto.randomUUID(), codigo: "HU10.3", descripcion: "Como cliente quiero ver ubicación del conductor" },
+      { id: crypto.randomUUID(), codigo: "HU10.4", descripcion: "Como cliente quiero ver estado del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU10.5", descripcion: "Como cliente quiero ver información básica del servicio" },
+      { id: crypto.randomUUID(), codigo: "HU10.6", descripcion: "Como cliente quiero contactar al conductor" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 11",
+    nombre: "Vista del Usuario de Mantenimiento",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU11.1", descripcion: "Como encargado de mantenimiento quiero registrar mantenimiento" },
+      { id: crypto.randomUUID(), codigo: "HU11.2", descripcion: "Como encargado de mantenimiento quiero asociar a grúa" },
+      { id: crypto.randomUUID(), codigo: "HU11.3", descripcion: "Como encargado de mantenimiento quiero definir tipo de mantenimiento" },
+      { id: crypto.randomUUID(), codigo: "HU11.4", descripcion: "Como encargado de mantenimiento quiero actualizar estado" },
+      { id: crypto.randomUUID(), codigo: "HU11.5", descripcion: "Como encargado de mantenimiento quiero registrar detalles" },
+      { id: crypto.randomUUID(), codigo: "HU11.6", descripcion: "Como encargado de mantenimiento quiero adjuntar evidencia" },
+      { id: crypto.randomUUID(), codigo: "HU11.7", descripcion: "Como encargado de mantenimiento quiero consultar historial" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 12",
+    nombre: "Tareas de Mantenimiento",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU12.1", descripcion: "Como encargado de mantenimiento quiero crear tareas" },
+      { id: crypto.randomUUID(), codigo: "HU12.2", descripcion: "Como encargado de mantenimiento quiero organizar tareas" },
+      { id: crypto.randomUUID(), codigo: "HU12.3", descripcion: "Como encargado de mantenimiento quiero actualizar estado de tareas" },
+      { id: crypto.randomUUID(), codigo: "HU12.4", descripcion: "Como encargado de mantenimiento quiero registrar ejecución" },
+      { id: crypto.randomUUID(), codigo: "HU12.5", descripcion: "Como encargado de mantenimiento quiero visualizar avance" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 13",
+    nombre: "Tracking en Tiempo Real (Operación Interna)",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU13.1", descripcion: "Como conductor quiero enviar ubicación automáticamente" },
+      { id: crypto.randomUUID(), codigo: "HU13.2", descripcion: "Como conductor quiero que la app funcione en segundo plano" },
+      { id: crypto.randomUUID(), codigo: "HU13.3", descripcion: "Como sistema quiero registrar ubicaciones periódicamente" },
+      { id: crypto.randomUUID(), codigo: "HU13.4", descripcion: "Como operador quiero visualizar ubicación en mapa" },
+      { id: crypto.randomUUID(), codigo: "HU13.5", descripcion: "Como operador quiero visualizar ubicación por servicio" },
+      { id: crypto.randomUUID(), codigo: "HU13.6", descripcion: "Como operador quiero consultar historial de rutas" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 14",
+    nombre: "Comunicación y Contacto",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU14.1", descripcion: "Como operador quiero llamar al cliente" },
+      { id: crypto.randomUUID(), codigo: "HU14.2", descripcion: "Como operador quiero contactar por WhatsApp al cliente" },
+      { id: crypto.randomUUID(), codigo: "HU14.3", descripcion: "Como operador quiero llamar al conductor" },
+      { id: crypto.randomUUID(), codigo: "HU14.4", descripcion: "Como operador quiero contactar por WhatsApp al conductor" },
+      { id: crypto.randomUUID(), codigo: "HU14.5", descripcion: "Como conductor quiero llamar al cliente" },
+      { id: crypto.randomUUID(), codigo: "HU14.6", descripcion: "Como conductor quiero contactar por WhatsApp al cliente" },
+      { id: crypto.randomUUID(), codigo: "HU14.7", descripcion: "Como sistema quiero enviar WhatsApp al asignar servicio" },
+      { id: crypto.randomUUID(), codigo: "HU14.8", descripcion: "Como sistema quiero incluir link de tracking" },
+      { id: crypto.randomUUID(), codigo: "HU14.9", descripcion: "Como sistema quiero incluir contacto del conductor" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 15",
+    nombre: "Gestión de Solicitudes y Asignación (Core Operacional)",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU15.1", descripcion: "Como operador quiero asignar conductor a un servicio" },
+      { id: crypto.randomUUID(), codigo: "HU15.2", descripcion: "Como operador quiero asignar grúa a un servicio" },
+      { id: crypto.randomUUID(), codigo: "HU15.3", descripcion: "Como operador quiero validar disponibilidad" },
+      { id: crypto.randomUUID(), codigo: "HU15.4", descripcion: "Como operador quiero evitar asignar grúas en mantenimiento" },
+      { id: crypto.randomUUID(), codigo: "HU15.5", descripcion: "Como operador quiero programar ejecución" },
+      { id: crypto.randomUUID(), codigo: "HU15.6", descripcion: "Como operador quiero modificar asignaciones" },
+      { id: crypto.randomUUID(), codigo: "HU15.7", descripcion: "Como sistema quiero activar servicio" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 16",
+    nombre: "Autenticación y Control de Acceso",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU16.1", descripcion: "Como usuario quiero iniciar sesión" },
+      { id: crypto.randomUUID(), codigo: "HU16.2", descripcion: "Como sistema quiero validar credenciales" },
+      { id: crypto.randomUUID(), codigo: "HU16.3", descripcion: "Como sistema quiero identificar rol" },
+      { id: crypto.randomUUID(), codigo: "HU16.4", descripcion: "Como sistema quiero restringir acceso" },
+      { id: crypto.randomUUID(), codigo: "HU16.5", descripcion: "Como usuario quiero cerrar sesión" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 17",
+    nombre: "Auditoría y Trazabilidad",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU17.1", descripcion: "Como sistema quiero registrar acciones" },
+      { id: crypto.randomUUID(), codigo: "HU17.2", descripcion: "Como operador quiero consultar historial" },
+      { id: crypto.randomUUID(), codigo: "HU17.3", descripcion: "Como operador quiero auditar cambios" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 18",
+    nombre: "Notificaciones",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU18.1", descripcion: "Como conductor quiero recibir notificaciones push" },
+      { id: crypto.randomUUID(), codigo: "HU18.2", descripcion: "Como conductor quiero recibir cambios de servicio" },
+      { id: crypto.randomUUID(), codigo: "HU18.3", descripcion: "Como encargado de mantenimiento quiero recibir alertas" },
+      { id: crypto.randomUUID(), codigo: "HU18.4", descripcion: "Como operador quiero recibir alertas críticas" },
+    ]
+  },
+  {
+    id: crypto.randomUUID(),
+    codigo: "ÉPICA 19",
+    nombre: "Capacidades Mobile del Conductor",
+    historias: [
+      { id: crypto.randomUUID(), codigo: "HU19.1", descripcion: "Como conductor quiero mantener sesión activa" },
+      { id: crypto.randomUUID(), codigo: "HU19.2", descripcion: "Como conductor quiero permitir acceso a GPS" },
+      { id: crypto.randomUUID(), codigo: "HU19.3", descripcion: "Como conductor quiero permitir acceso a cámara" },
+      { id: crypto.randomUUID(), codigo: "HU19.4", descripcion: "Como conductor quiero poder seguir viendo la información si pierdo conexión" },
+      { id: crypto.randomUUID(), codigo: "HU19.5", descripcion: "Como conductor quiero sincronizar datos offline" },
+    ]
+  },
+];
+
 export default function BacklogsView() {
-  const { query, insert, update, remove } = useAdminDB();
+  const { select, insert, update, remove } = useAdminDB();
   const [backlogs, setBacklogs] = useState<Backlog[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +269,7 @@ export default function BacklogsView() {
   const [editingBacklog, setEditingBacklog] = useState<Backlog | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [modalEpicas, setModalEpicas] = useState<Epica[]>([]);
 
   // Modal form state
   const [formData, setFormData] = useState({
@@ -31,8 +287,8 @@ export default function BacklogsView() {
   async function loadData() {
     setLoading(true);
     try {
-      const backlogsData = await query("backlogs", { sort: "created_at", ascending: false });
-      const clientesData = await query("clientes", { sort: "nombre", ascending: true });
+      const backlogsData = await select("backlogs");
+      const clientesData = await select("clientes");
       setBacklogs((backlogsData || []) as Backlog[]);
       setClientes((clientesData || []) as Cliente[]);
     } catch (error) {
@@ -45,7 +301,20 @@ export default function BacklogsView() {
   function openCreateModal() {
     setEditingBacklog(null);
     setFormData({ nombre: "", cliente_nombre: "", cliente_id: "", descripcion: "", notas: "" });
+    setModalEpicas([]);
     setShowModal(true);
+  }
+
+  function loadHardyTemplate() {
+    setFormData({
+      nombre: "Sistema de Administración para Grúas Hardy",
+      cliente_nombre: "Grúas Hardy",
+      cliente_id: "",
+      descripcion: "Plataforma completa de gestión operacional, logística y tracking para la flota de grúas.",
+      notas: "Plantilla prediseñada con 19 épicas y 100+ historias de usuario",
+    });
+    // Deep clone para no mutar la plantilla original
+    setModalEpicas(JSON.parse(JSON.stringify(HARDY_BACKLOG_TEMPLATE)));
   }
 
   function openEditModal(backlog: Backlog) {
@@ -74,7 +343,7 @@ export default function BacklogsView() {
         cliente_id: formData.cliente_id || null,
         descripcion: formData.descripcion,
         notas: formData.notas,
-        epicas: editingBacklog?.epicas || [],
+        epicas: modalEpicas.length > 0 ? modalEpicas : (editingBacklog?.epicas || []),
       };
 
       if (editingBacklog) {
@@ -298,6 +567,18 @@ export default function BacklogsView() {
               </h2>
               <p className="text-sm text-[#A1A1AA] mt-1">Gestiona el nombre y detalles de tu backlog</p>
             </div>
+
+            {!editingBacklog && (
+              <button
+                onClick={loadHardyTemplate}
+                className="w-full px-4 py-3 rounded-xl border-2 border-dashed border-[#D4CCFF] dark:border-[#3D3357] text-[#7C5CBF] hover:bg-[#F3EEFF] dark:hover:bg-[#2D1F4D] transition-all font-medium text-sm flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Cargar Plantilla Hardy (19 Épicas + 100+ HUs)
+              </button>
+            )}
 
             <div className="space-y-4">
               <div>
