@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import { 
   Propuesta, 
   LinkRecurso, 
+  RoadmapModule,
+  RoadmapItem,
   METRIC_HIGHER_IS_BETTER,
   METRICAS_ROI_TEMPLATE 
 } from "@/utils/supabase";
-import { BarChart3, Target, ExternalLink, ShieldCheck, FileText, Monitor, Users, Zap } from "lucide-react";
+import { BarChart3, Target, ExternalLink, ShieldCheck, FileText, Monitor, Users, Zap, ListChecks, Calendar } from "lucide-react";
 
 // Mapeo de iconos y descripciones de impacto para la tabla estratégica
 const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string }> = {
@@ -62,6 +64,7 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
   const links = Array.isArray(propuesta?.links) ? propuesta.links : [];
   const metricas = Array.isArray(propuesta?.metricas) ? propuesta.metricas : [];
   const ventajas = Array.isArray(propuesta?.ventajas) ? propuesta.ventajas : [];
+  const roadmap = Array.isArray(propuesta?.roadmap) ? propuesta.roadmap : [];
 
   // Agrupamos links por tipo de forma ultra-defensiva
   let linksByType: Record<string, LinkRecurso[]> = {};
@@ -148,6 +151,100 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
             {propuesta.problema}
           </p>
           {propuesta.competidor_nombre && (
+            <div className="mt-6 pt-6 border-t border-[#F4F4F5] dark:border-[#1A1A20]">
+              <span className="text-xs font-bold uppercase text-[#A1A1AA] block mb-2">Referencia Competidor</span>
+              <a 
+                href={propuesta.competidor_url ?? '#'} 
+                target="_blank" 
+                className="text-[#7C5CBF] font-medium flex items-center gap-1 hover:underline"
+              >
+                {propuesta.competidor_nombre} <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          )}
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="p-8 rounded-3xl bg-[#7C5CBF] text-white shadow-xl shadow-[#7C5CBF]/20"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center mb-6">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl font-bold mb-4">{propuesta.solucion_titulo || "Nuestra Solución"}</h2>
+          <p className="text-white/90 leading-relaxed">
+            {propuesta.solucion_descripcion}
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Roadmap / Backlog Section */}
+      {roadmap.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="space-y-8"
+        >
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter flex items-center justify-center gap-2">
+              <ListChecks className="w-6 h-6 text-[#7C5CBF]" />
+              Plan de Ejecución y Roadmap
+            </h2>
+            <p className="text-gray-500 text-sm italic">Desglose modular de funcionalidades y tiempos estimados de entrega.</p>
+          </div>
+
+          <div className="space-y-6">
+            {roadmap.map((module, mIdx) => (
+              <div key={mIdx} className="bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-[2.5rem] overflow-hidden shadow-sm">
+                <div className="bg-gray-50 dark:bg-[#16161D] px-8 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35] flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="w-10 h-10 rounded-2xl bg-[#7C5CBF] text-white flex items-center justify-center font-black text-lg shadow-lg shadow-[#7C5CBF]/20">
+                      {module.id}
+                    </span>
+                    <h3 className="text-xl font-bold dark:text-white">{module.titulo}</h3>
+                  </div>
+                </div>
+
+                <div className="p-2 sm:p-4">
+                  <div className="grid grid-cols-1 gap-2">
+                    {module.items.map((item, iIdx) => (
+                      <div key={iIdx} className="group p-6 rounded-3xl hover:bg-gray-50 dark:hover:bg-[#16161D]/50 transition-all border border-transparent hover:border-[#E4E4E7] dark:hover:border-[#2A2A35]">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                          <div className="space-y-1 flex-1">
+                            <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-mono font-bold text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] px-2 py-0.5 rounded-md">
+                                {item.id}
+                              </span>
+                              <h4 className="font-bold text-lg dark:text-white group-hover:text-[#7C5CBF] transition-colors">
+                                {item.titulo}
+                              </h4>
+                            </div>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-2xl">
+                              {item.descripcion}
+                            </p>
+                          </div>
+                          {item.fases && (
+                            <div className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20">
+                              <Calendar className="w-4 h-4 text-emerald-600" />
+                              <span className="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+                                Fase {item.fases}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
             <div className="mt-6 pt-6 border-t border-[#F4F4F5] dark:border-[#1A1A20]">
               <span className="text-xs font-bold uppercase text-[#A1A1AA] block mb-2">Referencia Competidor</span>
               <a 

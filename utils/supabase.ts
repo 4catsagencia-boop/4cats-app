@@ -223,6 +223,19 @@ export interface AccesosPropuesta {
   created_at?: string
 }
 
+export interface RoadmapItem {
+  id: string
+  titulo: string
+  descripcion: string
+  fases?: string        // ej: "1-2" o "1, 2, 3"
+}
+
+export interface RoadmapModule {
+  id: string
+  titulo: string
+  items: RoadmapItem[]
+}
+
 export interface MetricaBenchmark {
   nombre: string
   actual: number
@@ -259,6 +272,7 @@ export interface Propuesta {
   metricas: MetricaBenchmark[]
   ventajas: Ventaja[]
   links: LinkRecurso[]
+  roadmap?: RoadmapModule[]
   vistas: number
   expira_at?: string
   modo_seguro?: boolean
