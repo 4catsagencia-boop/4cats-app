@@ -12,9 +12,9 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const clienteId = params.id;
+  const { id: clienteId } = await params;
 
   try {
     // Fetch the technical proposal
