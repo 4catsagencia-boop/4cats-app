@@ -57,7 +57,7 @@ interface PropuestaViewProps {
 
 export default function PropuestaView({ propuesta }: PropuestaViewProps) {
   // Agrupamos links por tipo
-  const linksByType = propuesta.links.reduce((acc, link) => {
+  const linksByType = (propuesta.links || []).reduce((acc, link) => {
     if (!acc[link.tipo]) acc[link.tipo] = [];
     acc[link.tipo].push(link);
     return acc;
