@@ -102,7 +102,7 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
       {/* Tracking de vistas (Client-side trigger) */}
       <Tracker id={propuesta.id} />
 
-      {!propuesta.modo_seguro && <PrintButton />}
+      {!propuesta.modo_seguro && <PrintButton propuesta={propuesta} />}
 
       <main className={`min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] py-12 ${propuesta.modo_seguro ? 'user-select-none' : ''}`}>
         <div className="main-content">
