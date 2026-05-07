@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   description: "Panel de administración",
   manifest: "/manifest-app.json",
   icons: {
-    icon: "/logo-app.png",
-    apple: "/logo-app.png",
+    icon: "/logo-4cats.png",
+    apple: "/logo-4cats.png",
   },
 };
 

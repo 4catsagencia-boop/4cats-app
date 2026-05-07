@@ -120,8 +120,8 @@ export default function Sidebar({ activeView, userName, onNavigate, onLogout }: 
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 relative transition-transform group-hover:scale-110">
             <Image
-              src="/logo-app.png"
-              alt="4cats App"
+              src="/logo-4cats.png"
+              alt="4cats Agency"
               fill
               sizes="40px"
               className="object-contain"

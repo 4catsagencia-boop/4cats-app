@@ -4,8 +4,8 @@ export const metadata: Metadata = {
   title: "Cats Control — Centro de Mando",
   manifest: "/manifest-app.json",
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/logo-4cats.png",
+    apple: "/logo-4cats.png",
   },
 };
 
