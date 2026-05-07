@@ -17,8 +17,8 @@ const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string
 
 export const generatePropuestaPDF = (propuesta: Propuesta) => {
   const doc = new jsPDF();
-  const primaryColor = [124, 92, 191]; // #7C5CBF
-  const secondaryColor = [39, 39, 42]; // #27272A
+  const primaryColor: [number, number, number] = [124, 92, 191]; // #7C5CBF
+  const secondaryColor: [number, number, number] = [39, 39, 42]; // #27272A
 
   // --- PORTADA ---
   // Fondo superior
