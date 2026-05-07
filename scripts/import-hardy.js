@@ -77,9 +77,9 @@ async function run() {
     .insert([{
       cliente_id: cliente.id,
       cliente_nombre: 'Grúas Hardy',
+      cliente_email: 'contacto@gruashardy.cl',
       plan_nombre: 'Ecosistema Digital Grúas Hardy',
       total: total,
-      moneda: 'CLP',
       estado: 'pendiente',
       items: JSON.stringify(items),
       notas: 'Presupuesto extraído íntegramente del PDF "Ecosistema Digital Grúas Hardy".'

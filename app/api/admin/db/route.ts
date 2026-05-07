@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Verificación de Seguridad
     if (!password || !authorizedPasswords.includes(password)) {
-      console.warn(`[SECURITY] Intento de acceso administrativo FALLIDO desde IP: ${ip} para tabla: ${table}`);
+      console.warn(`[SECURITY] Intento de acceso administrativo FALLIDO desde IP: ${ip} para tabla: ${table}. Password received length: ${password?.length}`);
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
@@ -40,7 +40,11 @@ export async function POST(req: NextRequest) {
           queryBuilder = queryBuilder.eq(filterColumn, filterValue);
         }
         
-        result = await queryBuilder.order("created_at", { ascending: false });
+        if (table === 'clientes') {
+          result = await queryBuilder.order("nombre", { ascending: true });
+        } else {
+          result = await queryBuilder.order("created_at", { ascending: false });
+        }
         break;
       }
       
