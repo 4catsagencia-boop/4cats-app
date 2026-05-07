@@ -43,7 +43,7 @@ export default function PropuestasTecnicasManager() {
       await adminDB.update("propuestas_tecnicas", {
         ...propuesta,
         estado: propuesta.estado === "activo" ? "inactivo" : "activo",
-      });
+      }, propuesta.id);
       cargarPropuestas();
     } catch (err) {
       console.error("Error actualizando estado:", err);

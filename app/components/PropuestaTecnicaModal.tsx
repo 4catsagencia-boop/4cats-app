@@ -71,10 +71,6 @@ export default function PropuestaTecnicaModal({
     e.preventDefault();
   };
 
-  const handlePrint = (e: React.PrintEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
