@@ -1,4 +1,4 @@
-import { fetchPropuestaBySlug } from "@/utils/supabase";
+import { fetchPropuestaBySlug, getServiceSupabase } from "@/utils/supabase";
 import PropuestaView from "@/app/components/PropuestaView";
 import PrintButton from "./PrintButton";
 import Tracker from "./Tracker";
@@ -76,6 +76,23 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
     );
   }
 
+  // Buscar backlog del cliente
+  let backlogId: string | null = null;
+  if (propuesta.cliente_id) {
+    try {
+      const supabaseAdmin = getServiceSupabase();
+      const { data } = await supabaseAdmin
+        .from('backlogs')
+        .select('id')
+        .eq('cliente_id', propuesta.cliente_id)
+        .limit(1)
+        .maybeSingle();
+      backlogId = data?.id ?? null;
+    } catch (_) {
+      // Sin backlog, no es error crítico
+    }
+  }
+
   return (
     <>
       <style>{`
@@ -106,7 +123,7 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
 
       <main className={`min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] py-12 ${propuesta.modo_seguro ? 'user-select-none' : ''}`}>
         <div className="main-content">
-          <PropuestaView propuesta={propuesta} />
+          <PropuestaView propuesta={propuesta} backlogId={backlogId} />
         </div>
         
         {propuesta.modo_seguro && (

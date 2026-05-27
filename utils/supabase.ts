@@ -261,6 +261,7 @@ export interface RoadmapItem {
 export interface RoadmapModule {
   id: string
   titulo: string
+  semanas?: string
   items: RoadmapItem[]
 }
 

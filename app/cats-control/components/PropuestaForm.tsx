@@ -201,7 +201,8 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
     setLoading(true);
     try {
       if (propuesta?.id) {
-        await adminDB.update("propuestas", propuesta.id, formData);
+        const { id: _id, created_at: _ca, updated_at: _ua, vistas: _v, ...updateData } = formData as Propuesta & { updated_at?: string };
+        await adminDB.update("propuestas", propuesta.id, updateData);
       } else {
         await adminDB.insert("propuestas", formData);
       }
@@ -492,59 +493,77 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
             </button>
           </div>
         </div>
-        <div className="space-y-3">
-          {formData.metricas?.map((m, idx) => (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={idx} 
-              className="grid grid-cols-1 sm:grid-cols-5 gap-3 p-4 rounded-2xl border border-[#E4E4E7] dark:border-[#2A2A35] bg-gray-50/50 dark:bg-[#16161D]/30 relative group"
-            >
-              <input
-                placeholder="Nombre (ej: Velocidad)"
-                value={m.nombre}
-                onChange={(e) => updateItem("metricas", idx, "nombre", e.target.value)}
-                className="col-span-1 sm:col-span-1 bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400/40"
-              />
-              <input
-                type="number"
-                placeholder="Actual"
-                value={m.actual}
-                onChange={(e) => updateItem("metricas", idx, "actual", Number(e.target.value))}
-                className="col-span-1 bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400/40"
-              />
-              <input
-                type="number"
-                placeholder="Competidor"
-                value={m.competidor}
-                onChange={(e) => updateItem("metricas", idx, "competidor", Number(e.target.value))}
-                className="col-span-1 bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400/40"
-              />
-              <input
-                type="number"
-                placeholder="Propuesta"
-                value={m.propuesta}
-                onChange={(e) => updateItem("metricas", idx, "propuesta", Number(e.target.value))}
-                className="col-span-1 bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400/40"
-              />
-              <div className="flex gap-2">
-                <input
-                  placeholder="Unidad (ej: %)"
-                  value={m.unidad}
-                  onChange={(e) => updateItem("metricas", idx, "unidad", e.target.value)}
-                  className="flex-1 bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400/40"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeItem("metricas", idx)}
-                  className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {(formData.metricas?.length ?? 0) > 0 && (
+          <div className="overflow-x-auto rounded-2xl border border-[#E4E4E7] dark:border-[#2A2A35]">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-[#16161D]">
+                  <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-[35%]">Métrica</th>
+                  <th className="text-center px-3 py-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-[15%]">Actual</th>
+                  <th className="text-center px-3 py-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-[15%]">Competidor</th>
+                  <th className="text-center px-3 py-2.5 text-xs font-semibold text-[#7C5CBF] uppercase tracking-wide w-[15%]">Propuesta</th>
+                  <th className="text-center px-3 py-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-[12%]">Unidad</th>
+                  <th className="w-[8%]"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E4E4E7] dark:divide-[#2A2A35]">
+                {formData.metricas?.map((m, idx) => (
+                  <tr key={idx} className="bg-white dark:bg-[#0F0F12] hover:bg-gray-50/50 dark:hover:bg-[#16161D]/30 transition-colors">
+                    <td className="px-3 py-2">
+                      <input
+                        placeholder="Nombre métrica"
+                        value={m.nombre}
+                        onChange={(e) => updateItem("metricas", idx, "nombre", e.target.value)}
+                        className="w-full bg-transparent outline-none text-sm placeholder:text-gray-400/40"
+                      />
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        type="number"
+                        value={m.actual}
+                        onChange={(e) => updateItem("metricas", idx, "actual", Number(e.target.value))}
+                        className="w-full bg-transparent outline-none text-sm text-center"
+                      />
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        type="number"
+                        value={m.competidor}
+                        onChange={(e) => updateItem("metricas", idx, "competidor", Number(e.target.value))}
+                        className="w-full bg-transparent outline-none text-sm text-center"
+                      />
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        type="number"
+                        value={m.propuesta}
+                        onChange={(e) => updateItem("metricas", idx, "propuesta", Number(e.target.value))}
+                        className="w-full bg-transparent outline-none text-sm text-center font-semibold text-[#7C5CBF]"
+                      />
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        placeholder="%"
+                        value={m.unidad}
+                        onChange={(e) => updateItem("metricas", idx, "unidad", e.target.value)}
+                        className="w-full bg-transparent outline-none text-sm text-center placeholder:text-gray-400/40"
+                      />
+                    </td>
+                    <td className="px-3 py-2 text-center">
+                      <button
+                        type="button"
+                        onClick={() => removeItem("metricas", idx)}
+                        className="p-1 text-red-400 hover:text-red-600 rounded transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Ventajas */}

@@ -57,9 +57,10 @@ function ScoreRing({ score, label, color }: { score: number; label: string; colo
 
 interface PropuestaViewProps {
   propuesta: Propuesta;
+  backlogId?: string | null;
 }
 
-export default function PropuestaView({ propuesta }: PropuestaViewProps) {
+export default function PropuestaView({ propuesta, backlogId }: PropuestaViewProps) {
   const [showTecnicaModal, setShowTecnicaModal] = useState(false);
   console.log("Rendering PropuestaView with data:", propuesta);
 
@@ -182,71 +183,6 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
           </p>
         </motion.div>
       </div>
-
-      {/* Roadmap / Backlog Section */}
-      {roadmap.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="space-y-8"
-        >
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter flex items-center justify-center gap-2">
-              <ListChecks className="w-6 h-6 text-[#7C5CBF]" />
-              Plan de Ejecución y Roadmap
-            </h2>
-            <p className="text-gray-500 text-sm italic">Desglose modular de funcionalidades y tiempos estimados de entrega.</p>
-          </div>
-
-          <div className="space-y-6">
-            {roadmap.map((module, mIdx) => (
-              <div key={mIdx} className="bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] rounded-[2.5rem] overflow-hidden shadow-sm">
-                <div className="bg-gray-50 dark:bg-[#16161D] px-8 py-5 border-b border-[#E4E4E7] dark:border-[#2A2A35] flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <span className="w-10 h-10 rounded-2xl bg-[#7C5CBF] text-white flex items-center justify-center font-black text-lg shadow-lg shadow-[#7C5CBF]/20">
-                      {module.id}
-                    </span>
-                    <h3 className="text-xl font-bold dark:text-white">{module.titulo}</h3>
-                  </div>
-                </div>
-
-                <div className="p-2 sm:p-4">
-                  <div className="grid grid-cols-1 gap-2">
-                    {module.items.map((item, iIdx) => (
-                      <div key={iIdx} className="group p-6 rounded-3xl hover:bg-gray-50 dark:hover:bg-[#16161D]/50 transition-all border border-transparent hover:border-[#E4E4E7] dark:hover:border-[#2A2A35]">
-                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                          <div className="space-y-1 flex-1">
-                            <div className="flex items-center gap-3">
-                              <span className="text-[10px] font-mono font-bold text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] px-2 py-0.5 rounded-md">
-                                {item.id}
-                              </span>
-                              <h4 className="font-bold text-lg dark:text-white group-hover:text-[#7C5CBF] transition-colors">
-                                {item.titulo}
-                              </h4>
-                            </div>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-2xl">
-                              {item.descripcion}
-                            </p>
-                          </div>
-                          {item.fases && (
-                            <div className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20">
-                              <Calendar className="w-4 h-4 text-emerald-600" />
-                              <span className="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
-                                Fase {item.fases}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-      )}
 
       {/* Impact Table */}
       {(() => {
@@ -426,52 +362,171 @@ export default function PropuestaView({ propuesta }: PropuestaViewProps) {
         </section>
       )}
 
-      {/* Links grouped */}
-      {Object.entries(linksByType).length > 0 && (
-        <section className="space-y-8 bg-[#F9F9FB] dark:bg-[#16161D]/50 p-8 sm:p-12 rounded-[40px]">
-          <h2 className="text-2xl font-bold dark:text-white mb-8">Recursos y Documentación</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {Object.entries(linksByType).map(([tipo, links], idx) => (
-              <div key={tipo} className="space-y-4">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-[#A1A1AA] flex items-center gap-2">
-                  {getLinkIcon(tipo)}
-                  {getTipoLabel(tipo)}
-                </h3>
-                <div className="space-y-3">
-                  {links.map((link, lidx) => (
-                    <a
-                      key={lidx}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] hover:border-[#7C5CBF] transition-all"
-                    >
-                      <span className="font-medium text-sm group-hover:text-[#7C5CBF] transition-colors">{link.label}</span>
-                      <ExternalLink className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#7C5CBF] transition-colors" />
-                    </a>
-                  ))}
-                </div>
+      {/* Roadmap — vista tabla */}
+      {roadmap.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="space-y-6"
+        >
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter flex items-center justify-center gap-2">
+              <ListChecks className="w-6 h-6 text-[#7C5CBF]" />
+              Plan de Ejecución y Roadmap
+            </h2>
+            <p className="text-gray-500 text-sm italic">Desglose modular de funcionalidades y fases de entrega.</p>
+          </div>
+
+          <div className="overflow-x-auto rounded-3xl border border-[#E4E4E7] dark:border-[#2A2A35] shadow-sm bg-white dark:bg-[#0F0F12]">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-[#7C5CBF] text-white">
+                  <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest w-14">ID</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest w-52">Título</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest">Descripción</th>
+                  <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest w-16">Fase</th>
+                </tr>
+              </thead>
+              <tbody>
+                {roadmap.map((module, mIdx) => (
+                  <>
+                    <tr key={`m-${mIdx}`} className="bg-[#F3EEFF] dark:bg-[#1C1630] border-t-2 border-[#7C5CBF]/30">
+                      <td colSpan={4} className="px-4 py-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-[#7C5CBF] text-xs uppercase tracking-widest">
+                            {module.id} — {module.titulo}
+                          </span>
+                          {module.semanas && (
+                            <span className="text-[10px] font-bold text-[#7C5CBF]/60 uppercase tracking-widest">
+                              {module.semanas}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {module.items.map((item, iIdx) => (
+                      <tr
+                        key={`i-${mIdx}-${iIdx}`}
+                        className="border-t border-[#E4E4E7] dark:border-[#2A2A35] hover:bg-gray-50 dark:hover:bg-[#16161D]/40 transition-colors"
+                      >
+                        <td className="px-4 py-3 font-mono text-xs text-[#7C5CBF] font-bold align-top">{item.id}</td>
+                        <td className="px-4 py-3 font-semibold text-[13px] dark:text-white align-top">{item.titulo}</td>
+                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-[13px] leading-relaxed align-top">{item.descripcion}</td>
+                        <td className="px-4 py-3 text-center align-top">
+                          {item.fases && (
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-[#F3EEFF] dark:bg-[#1C1630] text-[#7C5CBF] text-[10px] font-black border border-[#7C5CBF]/20">
+                              {item.fases}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.section>
+      )}
+
+      {/* Explorá el Sistema — Hub unificado: prototipos + backlog + propuesta técnica */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="space-y-6"
+      >
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter flex items-center justify-center gap-2">
+            <Monitor className="w-6 h-6 text-[#7C5CBF]" />
+            Explorá el Sistema
+          </h2>
+          <p className="text-gray-500 text-sm">Accedé a los prototipos, backlog y documentación técnica del proyecto.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {linksByType["prototipo"]?.map((link, idx) => (
+            <a
+              key={idx}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 p-5 rounded-3xl bg-[#7C5CBF] hover:bg-[#6B4DAE] text-white transition-all shadow-lg shadow-[#7C5CBF]/20 hover:shadow-xl hover:shadow-[#7C5CBF]/30 hover:-translate-y-0.5"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <ExternalLink className="w-5 h-5" />
               </div>
-            ))}
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm leading-tight">{link.label}</p>
+                <p className="text-white/60 text-xs mt-0.5 truncate">{link.url}</p>
+              </div>
+            </a>
+          ))}
+
+          {backlogId && (
+            <a
+              href={`/backlog/${backlogId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 p-5 rounded-3xl bg-[#18181B] hover:bg-[#27272A] dark:bg-[#0F0F12] dark:hover:bg-[#1A1A20] text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-[#3F3F46] dark:border-[#2A2A35]"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                <ListChecks className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm leading-tight">Backlog del Proyecto</p>
+                <p className="text-white/50 text-xs mt-0.5">Épicas, tareas y estado de avance</p>
+              </div>
+            </a>
+          )}
+
+          <button
+            onClick={() => setShowTecnicaModal(true)}
+            className="group flex items-center gap-4 p-5 rounded-3xl bg-[#18181B] hover:bg-[#27272A] dark:bg-[#0F0F12] dark:hover:bg-[#1A1A20] text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-[#3F3F46] dark:border-[#2A2A35] text-left"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0">
+              <Shield className="w-5 h-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm leading-tight">Propuesta Técnica Protegida</p>
+              <p className="text-white/50 text-xs mt-0.5">Documento con protección contra copia</p>
+            </div>
+          </button>
+        </div>
+      </motion.section>
+
+      {/* Otros links (cliente, competidor, reporte) */}
+      {Object.entries(linksByType).some(([tipo]) => tipo !== "prototipo") && (
+        <section className="space-y-6 bg-[#F9F9FB] dark:bg-[#16161D]/50 p-8 sm:p-10 rounded-[40px]">
+          <h2 className="text-lg font-bold dark:text-white">Recursos y Documentación</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {Object.entries(linksByType)
+              .filter(([tipo]) => tipo !== "prototipo")
+              .map(([tipo, links]) => (
+                <div key={tipo} className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-[#A1A1AA] flex items-center gap-2">
+                    {getLinkIcon(tipo)}
+                    {getTipoLabel(tipo)}
+                  </h3>
+                  <div className="space-y-2">
+                    {links.map((link, lidx) => (
+                      <a
+                        key={lidx}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#0F0F12] border border-[#E4E4E7] dark:border-[#2A2A35] hover:border-[#7C5CBF] transition-all"
+                      >
+                        <span className="font-medium text-sm group-hover:text-[#7C5CBF] transition-colors">{link.label}</span>
+                        <ExternalLink className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#7C5CBF] transition-colors" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
           </div>
         </section>
       )}
-
-      {/* Technical Proposal Button */}
-      <section className="pt-12 pb-8">
-        <div className="max-w-2xl mx-auto">
-          <button
-            onClick={() => setShowTecnicaModal(true)}
-            className="w-full sm:w-auto mx-auto block px-8 py-3 bg-[#7C5CBF] hover:bg-[#6B4DAE] text-white font-bold rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-[#7C5CBF]/20 flex items-center justify-center gap-2"
-          >
-            <Shield className="w-5 h-5" />
-            Ver Propuesta Técnica Protegida
-          </button>
-          <p className="text-xs text-gray-400 text-center mt-3">
-            Documento con protección contra copia y descarga
-          </p>
-        </div>
-      </section>
 
       <footer className="pt-6 text-center space-y-6">
         <div className="max-w-md mx-auto p-4 rounded-2xl bg-gray-50 dark:bg-[#16161D]/50 border border-[#E4E4E7] dark:border-[#2A2A35] text-[10px] text-gray-400 leading-relaxed italic">

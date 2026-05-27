@@ -73,6 +73,21 @@ export default function PropuestasTecnicasManager() {
     return new Date(expira_at) < new Date();
   };
 
+  const renovarPropuesta = async (propuesta: PropouestaTecnica) => {
+    const nuevaExpiracion = new Date();
+    nuevaExpiracion.setDate(nuevaExpiracion.getDate() + 90);
+    try {
+      await adminDB.update("propuestas_tecnicas", propuesta.id, {
+        expira_at: nuevaExpiracion.toISOString(),
+        estado: "activo",
+      });
+      cargarPropuestas();
+    } catch (err) {
+      console.error("Error renovando propuesta:", err);
+      alert("Error al renovar. Revisá la consola.");
+    }
+  };
+
   return (
     <div className="space-y-6 p-8">
       {/* Header */}
@@ -179,6 +194,15 @@ export default function PropuestasTecnicasManager() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                     </svg>
                   </button>
+                  {isExpired(p.expira_at) && (
+                    <button
+                      onClick={() => renovarPropuesta(p)}
+                      title="Renovar por 90 días"
+                      className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-200 transition-all"
+                    >
+                      <Calendar className="w-4 h-4" />
+                    </button>
+                  )}
                   <button
                     onClick={() => deletePropuesta(p.id)}
                     className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-200 transition-all"
