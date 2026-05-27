@@ -278,6 +278,35 @@ export default function PropuestaForm({ propuesta, clienteId, onSuccess, onCance
             <option value="aprobada">Aprobada</option>
           </select>
         </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Expiración</label>
+            {formData.expira_at && (
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, expira_at: undefined })}
+                className="text-xs text-red-500 hover:text-red-700 font-medium"
+              >
+                Sin expiración
+              </button>
+            )}
+          </div>
+          <input
+            type="date"
+            value={formData.expira_at ? formData.expira_at.split("T")[0] : ""}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                expira_at: e.target.value ? new Date(e.target.value).toISOString() : undefined,
+              })
+            }
+            className="w-full px-4 py-2.5 rounded-xl border border-[#E4E4E7] dark:border-[#2A2A35] bg-transparent focus:ring-2 focus:ring-[#7C5CBF] outline-none transition-all"
+          />
+          {!formData.expira_at && (
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Sin expiración — acceso permanente</p>
+          )}
+        </div>
       </div>
 
       <hr className="border-[#E4E4E7] dark:border-[#2A2A35]" />
