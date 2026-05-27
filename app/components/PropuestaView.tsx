@@ -18,7 +18,7 @@ const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string
   'CTR (Click-to-Call)': { impact: 'Más clientes contactan desde Google', icon: '📲', dim: 'Conversión' },
   'Tasa Conversión':      { impact: 'Mejor retorno de inversión', icon: '💰', dim: 'Ventas' },
   'Ranking Keywords':     { impact: 'Top en búsquedas locales', icon: '📍', dim: 'Visibilidad' },
-  'SEO Score':            { impact: 'Google e IAs reconocen el negocio', icon: '🔍', dim: 'SEO' },
+  'SEO Score':            { impact: 'Visible en Google, Gemini y ChatGPT', icon: '🔍', dim: 'SEO' },
   'PageSpeed Mobile':     { impact: 'Retención inmediata en móvil', icon: '⚡', dim: 'UX' },
   'Uptime (24/7)':        { impact: 'Disponibilidad total', icon: '🔌', dim: 'Estabilidad' },
   'Security Score':       { impact: 'Blindaje de marca', icon: '🛡️', dim: 'Confianza' },
@@ -206,7 +206,7 @@ export default function PropuestaView({ propuesta, backlogId }: PropuestaViewPro
           >
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter">Resumen de Impacto Estratégico</h2>
-              <p className="text-gray-500 text-sm">Proyección de resultados basada en optimización técnica y experiencia de usuario.</p>
+              <p className="text-gray-500 text-sm">Proyección de resultados con visibilidad real en Google, Gemini, ChatGPT y otros motores de IA.</p>
             </div>
 
             <div className="overflow-hidden rounded-[2.5rem] border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] shadow-2xl shadow-[#7C5CBF]/5">
