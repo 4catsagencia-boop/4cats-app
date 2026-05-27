@@ -15,13 +15,14 @@ import PropuestaTecnicaModal from "./PropuestaTecnicaModal";
 
 // Mapeo de iconos y descripciones de impacto para la tabla estratégica
 const ROI_IMPACT_MAP: Record<string, { impact: string, icon: string, dim: string }> = {
-  'CTR (Click-to-Call)': { impact: 'Más servicios facturados', icon: '📲', dim: 'Conversión' },
+  'CTR (Click-to-Call)': { impact: 'Más clientes contactan desde Google', icon: '📲', dim: 'Conversión' },
   'Tasa Conversión':      { impact: 'Mejor retorno de inversión', icon: '💰', dim: 'Ventas' },
-  'Ranking Keywords':     { impact: 'Menos gasto en publicidad', icon: '📍', dim: 'Visibilidad' },
-  'PageSpeed Mobile':     { impact: 'Retención inmediata', icon: '⚡', dim: 'UX' },
+  'Ranking Keywords':     { impact: 'Top en búsquedas locales', icon: '📍', dim: 'Visibilidad' },
+  'SEO Score':            { impact: 'Google e IAs reconocen el negocio', icon: '🔍', dim: 'SEO' },
+  'PageSpeed Mobile':     { impact: 'Retención inmediata en móvil', icon: '⚡', dim: 'UX' },
   'Uptime (24/7)':        { impact: 'Disponibilidad total', icon: '🔌', dim: 'Estabilidad' },
   'Security Score':       { impact: 'Blindaje de marca', icon: '🛡️', dim: 'Confianza' },
-  'Accesibilidad (A11y)': { impact: 'Inclusión y mejor SEO', icon: '♿', dim: 'Calidad' },
+  'Accesibilidad (A11y)': { impact: 'Inclusión y mejor posicionamiento', icon: '♿', dim: 'Calidad' },
   'Tiempo Tarea Crítica': { impact: 'Fricción mínima', icon: '⏱️', dim: 'UX' },
   'Costo por Lead':       { impact: 'Eficiencia publicitaria', icon: '📉', dim: 'Finanzas' },
 };
