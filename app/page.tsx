@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState, useRef, useEffect } from "react"
 import LucyCat from "./components/cats/LucyCat"
 import BillieCat from "./components/cats/BillieCat"
@@ -33,7 +34,7 @@ function CheckIcon() {
 }
 
 function BentoStatCell({
-  label, target, suffix = "", colSpan = 1, bg, textColor = "text-white", labelColor = "text-white/60", active, duration = 1600,
+  label, target, suffix = "", colSpan = 1, bg, textColor = "text-[#18181B] dark:text-white", labelColor = "text-[#18181B] dark:text-black/70 dark:text-white/60", active, duration = 1600,
 }: {
   label: string; target: number; suffix?: string; colSpan?: number; bg: string;
   textColor?: string; labelColor?: string; active: boolean; duration?: number;
@@ -57,10 +58,13 @@ function PlanCard({
   return (
     <FadeUp delay={index * 120}>
       <div
-        className="relative flex flex-col rounded-3xl overflow-hidden h-full transition-all duration-300 cursor-default"
+        className={`relative flex flex-col rounded-3xl overflow-hidden h-full transition-all duration-300 cursor-default ${
+          featured
+            ? "bg-gradient-to-br from-[#F3EEFF] to-[#FAFAFA] dark:from-[#100B20] dark:to-[#1C1235]"
+            : "bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.08]"
+        }`}
         style={{
-          border: featured ? `2px solid ${catColor}` : "1px solid rgba(255,255,255,0.08)",
-          background: featured ? "linear-gradient(135deg, #100B20 0%, #1C1235 100%)" : "rgba(255,255,255,0.03)",
+          ...(featured ? { border: `2px solid ${catColor}` } : {}),
           boxShadow: hovered
             ? `0 0 80px -20px ${catColor}50`
             : featured ? `0 0 50px -20px ${catColor}35` : "none",
@@ -91,8 +95,8 @@ function PlanCard({
         </div>
 
         <div className="flex flex-col flex-1 p-8">
-          <h3 className="text-2xl font-black text-white mb-2">{title}</h3>
-          <p className="text-sm text-white/60 mb-8 leading-relaxed italic">{subtitle}</p>
+          <h3 className="text-2xl font-black text-[#18181B] dark:text-white mb-2">{title}</h3>
+          <p className="text-sm text-[#18181B] dark:text-black/70 dark:text-white/60 mb-8 leading-relaxed italic">{subtitle}</p>
 
           <ul className="space-y-3 flex-1 mb-8">
             {features.map((f, i) => (
@@ -100,7 +104,7 @@ function PlanCard({
                 <span className="mt-0.5" style={{ color: catColor }}>
                   <CheckIcon />
                 </span>
-                <span className="text-sm text-white/80">{f}</span>
+                <span className="text-sm text-[#18181B] dark:text-white/80">{f}</span>
               </li>
             ))}
           </ul>
@@ -131,7 +135,7 @@ function CatHoverWrapper({ renderCat, name, className = "" }: { renderCat: (hove
         {renderCat(hovered)}
       </div>
       {name && (
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 text-white/50 whitespace-nowrap">
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 text-[#18181B] dark:text-black/60 dark:text-white/50 whitespace-nowrap">
           {name}
         </span>
       )}
@@ -244,7 +248,7 @@ export default function Home() {
       <Navbar />
 
       {/* ─────────── HERO ─────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center bg-[#06030F] overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#06030F] overflow-hidden">
         {/* Atmospheric blobs */}
         <div className="absolute top-1/3 left-1/4 w-[700px] h-[700px] rounded-full blur-[200px] opacity-[0.14] pointer-events-none animate-pulse-slow" style={{ background: "radial-gradient(ellipse, #7C5CBF, transparent)" }} />
         <div className="absolute bottom-1/4 right-1/6 w-[500px] h-[500px] rounded-full blur-[160px] opacity-[0.10] pointer-events-none animate-pulse-slow" style={{ background: "radial-gradient(ellipse, #D4788A, transparent)", animationDelay: "1s" }} />
@@ -260,45 +264,24 @@ export default function Home() {
         />
 
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-24">
-          {/* Badge */}
           <FadeUp delay={0}>
-            <div className="mb-10 text-xs font-semibold tracking-widest uppercase text-[#C4B5FD] bg-white/[0.07] px-5 py-2.5 rounded-full border border-white/[0.12]">
+            <div className="mb-10 text-xs font-semibold tracking-widest uppercase text-[#7C5CBF] dark:text-[#C4B5FD] bg-[#7C5CBF]/10 dark:bg-white/[0.07] px-5 py-2.5 rounded-full border border-[#7C5CBF]/20 dark:border-white/[0.12]">
               {tr.badge}
             </div>
           </FadeUp>
 
-          {/* Lucy + daughters constellation */}
-          <FadeUp delay={100}>
-            <div className="relative flex items-end justify-center mb-10 h-[280px]">
-              <CatHoverWrapper 
-                name="Billie"
-                className="opacity-70 hover:opacity-100 transition-opacity duration-500 z-0 -mr-6 mb-2 cursor-pointer" 
-                renderCat={(h) => <BillieCat className="w-[84px] h-[100px]" />} 
-              />
-              <CatHoverWrapper 
-                name="Layla"
-                className="opacity-55 hover:opacity-100 transition-opacity duration-500 z-0 -mr-4 mb-8 cursor-pointer" 
-                renderCat={(h) => <LaylaCat className="w-[66px] h-[80px]" />} 
-              />
-
-              {/* Lucy — center, large */}
-              <CatHoverWrapper 
-                name="Lucy"
-                className="relative z-10 mx-2 cursor-pointer mb-0" 
-                renderCat={(h) => (
-                <>
-                  <div className="absolute inset-0 blur-[70px] scale-[1.6] opacity-45 pointer-events-none rounded-full" style={{ background: "radial-gradient(circle, #f5a85535, transparent)" }} />
-                  <LucyCat className="w-[200px] h-[240px] relative drop-shadow-2xl" />
-                </>
-              )} />
-
-              <CatHoverWrapper 
-                name="Roxanne"
-                className="opacity-55 hover:opacity-100 transition-opacity duration-500 z-0 -ml-4 mb-8 cursor-pointer" 
-                renderCat={(h) => <RoxanneCat className="w-[66px] h-[80px]" />} 
+            {/* Imagen grupal 3D */}
+            <div className="relative flex items-end justify-center mb-10">
+              <div className="absolute inset-0 blur-[80px] opacity-30 pointer-events-none" style={{ background: "radial-gradient(ellipse at center bottom, #7C5CBF40, transparent 70%)" }} />
+              <Image
+                src="/cats/group.png"
+                alt="Billie, Layla, Roxanne y Lucy — el equipo 4cats"
+                width={600}
+                height={480}
+                className="relative z-10 drop-shadow-2xl w-[340px] sm:w-[460px] md:w-[560px] h-auto"
+                priority
               />
             </div>
-          </FadeUp>
 
           {/* Lucy label */}
           <FadeUp delay={180}>
@@ -312,18 +295,19 @@ export default function Home() {
           {/* Main headline */}
           <FadeUp delay={260}>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.92] mb-8 max-w-5xl">
-              <span className="text-white">{es ? "Construimos el" : "We build the"}</span>
+              <span className="text-[#18181B] dark:text-white">{es ? "Convertimos tu web" : "We turn your web"}</span>
               <br />
+              <span className="text-[#18181B] dark:text-white">{es ? "en una " : "into a "}</span>
               <span className="bg-gradient-to-r from-[#9B8EB2] via-[#C4B5FD] to-[#D4788A] bg-clip-text text-transparent">
-                {es ? "futuro digital" : "digital future"}
+                {es ? "máquina de captar" : "lead capturing"}
               </span>
               <br />
-              <span className="text-white">{es ? "de tu empresa." : "of your business."}</span>
+              <span className="text-[#18181B] dark:text-white">{es ? "clientes." : "machine."}</span>
             </h1>
           </FadeUp>
 
           <FadeUp delay={360}>
-            <p className="text-white/60 text-lg leading-relaxed max-w-2xl mb-12 font-medium">
+            <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-lg leading-relaxed max-w-2xl mb-12 font-medium">
               {es
                 ? "Soy Lucy. Junto a mis hijas Billie, Layla y Roxanne hemos construido más de 50 proyectos que generan resultados reales para empresas del sur de Chile."
                 : "I'm Lucy. Together with my daughters Billie, Layla and Roxanne we've built over 50 projects that generate real results for businesses in southern Chile."}
@@ -342,7 +326,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/cotizar"
-                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-white/[0.18] text-white font-bold rounded-2xl hover:bg-white/[0.07] transition-colors"
+                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-white/[0.18] text-[#18181B] dark:text-white font-bold rounded-2xl hover:bg-white/[0.07] transition-colors"
               >
                 <PawIcon className="w-4 h-4 text-[#7C5CBF]" />
                 {tr.cta2}
@@ -353,22 +337,43 @@ export default function Home() {
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none">
           <div className="w-px h-14 bg-gradient-to-b from-transparent to-white/40" />
-          <p className="text-[10px] tracking-[0.25em] uppercase text-white/50">{es ? "Conocé el equipo" : "Meet the team"}</p>
+          <p className="text-[10px] tracking-[0.25em] uppercase text-[#18181B] dark:text-black/60 dark:text-white/50">{es ? "Conocé el equipo" : "Meet the team"}</p>
+        </div>
+      </section>
+
+      {/* ─────────── CLIENT MARQUEE ─────────── */}
+      <section className="py-12 bg-white dark:bg-[#06030F] border-b border-black/[0.06] dark:border-white/[0.06] overflow-hidden">
+        <div className="relative flex max-w-full overflow-hidden group">
+          <div className="flex w-max animate-infinite-scroll group-hover:[animation-play-state:paused]">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex items-center gap-16 px-8">
+                {/* Dummy logos */}
+                <div className="text-[#18181B] dark:text-black/50 dark:text-white/30 font-bold text-xl uppercase tracking-widest flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">W</div> WAYFINDING</div>
+                <div className="text-[#18181B] dark:text-black/50 dark:text-white/30 font-bold text-xl uppercase tracking-widest flex items-center gap-3"><div className="w-6 h-6 rotate-45 bg-white/10" /> TEMUCO LED</div>
+                <div className="text-[#18181B] dark:text-black/50 dark:text-white/30 font-bold text-xl uppercase tracking-widest flex items-center gap-3"><div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-xs">PG</div> PLUS GRAFICA</div>
+                <div className="text-[#18181B] dark:text-black/50 dark:text-white/30 font-bold text-xl uppercase tracking-widest flex items-center gap-3"><div className="w-8 h-4 rounded-full bg-white/10" /> HARDY GRUAS</div>
+                <div className="text-[#18181B] dark:text-black/50 dark:text-white/30 font-bold text-xl uppercase tracking-widest flex items-center gap-3"><div className="w-6 h-6 border-2 border-black/20 dark:border-white/20 rounded-full" /> ARQUICONTROL</div>
+              </div>
+            ))}
+          </div>
+          {/* Gradients */}
+          <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-white dark:from-[#06030F] to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-white dark:from-[#06030F] to-transparent pointer-events-none" />
         </div>
       </section>
 
       {/* ─────────── LAS HIJAS ─────────── */}
-      <section className="bg-[#0A0710] py-32 border-t border-white/[0.06]">
+      <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-32 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-6">
           <FadeUp>
             <div className="text-center mb-20">
-              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-white/30 mb-4">
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#18181B] dark:text-black/50 dark:text-white/30 mb-4">
                 {es ? "El equipo" : "The team"}
               </p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-black text-[#18181B] dark:text-white tracking-tight">
                 {es ? "Las hijas de Lucy" : "Lucy's daughters"}
               </h2>
-              <p className="text-white/50 text-lg mt-5 max-w-xl mx-auto leading-relaxed">
+              <p className="text-[#18181B] dark:text-black/60 dark:text-white/50 text-lg mt-5 max-w-xl mx-auto leading-relaxed">
                 {es
                   ? "Cada una experta en su área. Juntas, cubren todo lo que tu empresa necesita para crecer."
                   : "Each an expert in their area. Together, they cover everything your business needs to grow."}
@@ -380,7 +385,7 @@ export default function Home() {
             {daughters.map((d, idx) => (
               <FadeUp key={d.key} delay={idx * 80}>
                 <div
-                  className={`flex flex-col gap-10 py-16 ${idx % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} items-center ${idx < daughters.length - 1 ? "border-b border-white/[0.06]" : ""}`}
+                  className={`flex flex-col gap-10 py-16 ${idx % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} items-center ${idx < daughters.length - 1 ? "border-b border-black/[0.06] dark:border-white/[0.06]" : ""}`}
                 >
                   <CatHoverWrapper className="relative flex-shrink-0 flex items-center justify-center w-[200px] h-[220px]" renderCat={(h) => (
                     <>
@@ -397,13 +402,13 @@ export default function Home() {
                     <p className="text-xs font-black tracking-[0.2em] uppercase mb-4" style={{ color: d.color }}>
                       {d.role}
                     </p>
-                    <blockquote className="text-2xl md:text-3xl font-black text-white leading-tight mb-5 italic">
+                    <blockquote className="text-2xl md:text-3xl font-black text-[#18181B] dark:text-white leading-tight mb-5 italic">
                       {d.quote}
                       <span className="block mt-4 text-lg not-italic font-bold opacity-80" style={{ color: d.color }}>
                         — {d.name}
                       </span>
                     </blockquote>
-                    <p className="text-white/60 text-base leading-relaxed mb-7 max-w-lg">
+                    <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-base leading-relaxed mb-7 max-w-lg">
                       {d.desc}
                     </p>
                     <div className={`flex flex-wrap gap-2 ${idx % 2 === 1 ? "md:justify-end" : ""}`}>
@@ -425,20 +430,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─────────── EL PROCESO ─────────── */}
+      <section className="py-32 bg-[#F4F4F6] dark:bg-[#0A0710] border-t border-black/[0.06] dark:border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-6">
+          <FadeUp>
+            <div className="text-center mb-16">
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#f5a855] mb-4">
+                {es ? "El Método 4cats" : "The 4cats Method"}
+              </p>
+              <h2 className="text-4xl md:text-5xl font-black text-[#18181B] dark:text-white tracking-tight">
+                {es ? "Cómo convertimos código en ventas" : "How we turn code into sales"}
+              </h2>
+            </div>
+          </FadeUp>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FadeUp delay={0}>
+              <div className="glass-card bento-cell p-8 rounded-3xl h-full border-t-4 border-t-[#D4788A]">
+                <div className="text-4xl font-black text-[#D4788A]/30 mb-4">01</div>
+                <h3 className="text-xl font-bold text-[#18181B] dark:text-white mb-3">{es ? "Auditoría & Estrategia" : "Audit & Strategy"}</h3>
+                <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-sm leading-relaxed">{es ? "Roxanne disecciona tu mercado. Detectamos dónde estás perdiendo clientes y diseñamos un funnel a medida antes de tirar una sola línea de código." : "Roxanne dissects your market. We detect where you're losing clients and design a custom funnel before writing a single line of code."}</p>
+              </div>
+            </FadeUp>
+            <FadeUp delay={100}>
+              <div className="glass-card bento-cell p-8 rounded-3xl h-full border-t-4 border-t-[#9B8EB2]">
+                <div className="text-4xl font-black text-[#9B8EB2]/30 mb-4">02</div>
+                <h3 className="text-xl font-bold text-[#18181B] dark:text-white mb-3">{es ? "Diseño & Arquitectura" : "Design & Architecture"}</h3>
+                <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-sm leading-relaxed">{es ? "Billie y Layla entran a la cancha. Creamos una interfaz premium conectada a base de datos. Tu marca carga en 2s y genera autoridad inmediata." : "Billie and Layla enter the pitch. We create a premium interface connected to databases. Your brand loads in 2s and generates instant authority."}</p>
+              </div>
+            </FadeUp>
+            <FadeUp delay={200}>
+              <div className="glass-card bento-cell p-8 rounded-3xl h-full border-t-4 border-t-[#f5a855]">
+                <div className="text-4xl font-black text-[#f5a855]/30 mb-4">03</div>
+                <h3 className="text-xl font-bold text-[#18181B] dark:text-white mb-3">{es ? "Lanzamiento & Escala" : "Launch & Scale"}</h3>
+                <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-sm leading-relaxed">{es ? "Lucy automatiza lo aburrido. Lanzamos tu plataforma al aire, conectamos IA y te entregamos las llaves de tu nueva máquina generadora de leads." : "Lucy automates the boring stuff. We launch your platform, connect AI, and hand you the keys to your new lead-generating machine."}</p>
+              </div>
+            </FadeUp>
+          </div>
+        </div>
+      </section>
+
       {/* ─────────── PLANES ─────────── */}
-      <section className="relative py-32 bg-[#06030F] overflow-hidden border-t border-white/[0.06]">
+      <section className="relative py-32 bg-white dark:bg-[#06030F] overflow-hidden border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full blur-[220px] opacity-[0.07] pointer-events-none animate-pulse-slow" style={{ background: "radial-gradient(ellipse, #7C5CBF, transparent)" }} />
 
         <div className="relative max-w-6xl mx-auto px-6">
           <FadeUp>
             <div className="text-center mb-16">
-              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-white/30 mb-4">
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#18181B] dark:text-black/50 dark:text-white/30 mb-4">
                 {es ? "Lucy te guía" : "Lucy guides you"}
               </p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-5">
+              <h2 className="text-4xl md:text-5xl font-black text-[#18181B] dark:text-white tracking-tight leading-tight mb-5">
                 {es ? "¿Cuál es el siguiente nivel\npara tu empresa?" : "What's the next level\nfor your business?"}
               </h2>
-              <p className="text-white/50 text-lg max-w-xl mx-auto leading-relaxed">
+              <p className="text-[#18181B] dark:text-black/60 dark:text-white/50 text-lg max-w-xl mx-auto leading-relaxed">
                 {es
                   ? "No existe el plan universal. Existe el plan correcto para tu momento. Cada hija está lista para acompañarte."
                   : "There's no universal plan. There's the right plan for your moment. Each daughter is ready to guide you."}
@@ -453,9 +498,9 @@ export default function Home() {
           </div>
 
           <FadeUp>
-            <p className="text-center text-white/50 text-sm mt-12">
+            <p className="text-center text-[#18181B] dark:text-black/60 dark:text-white/50 text-sm mt-12">
               {es ? "¿No sabés cuál elegir? " : "Not sure which to choose? "}
-              <Link href="/cotizar" className="text-[#C4B5FD] hover:text-white underline underline-offset-4 transition-colors font-semibold">
+              <Link href="/cotizar" className="text-[#C4B5FD] hover:text-[#18181B] dark:text-white underline underline-offset-4 transition-colors font-semibold">
                 {es ? "Contanos tu caso y te asesoramos gratis." : "Tell us your case and we'll advise you for free."}
               </Link>
             </p>
@@ -467,17 +512,17 @@ export default function Home() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <FadeUp>
           <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <BentoStatCell label={tr.stat1} target={50} suffix="+" colSpan={2} bg="bg-[#0F0F12] dark:bg-[#1E1E26]" textColor="text-white text-7xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1400} />
-            <BentoStatCell label={tr.stat2} target={98} suffix="%" bg="bg-[#7C5CBF]" textColor="text-white" labelColor="text-[#E5D8FF]/70" active={statsVisible} duration={1600} />
-            <BentoStatCell label={tr.stat3} target={3} suffix={es ? " años" : " yrs"} bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#18181B] dark:text-[#F4F4F6]" labelColor="text-[#7C5CBF]" active={statsVisible} duration={800} />
-            <BentoStatCell label="PageSpeed" target={95} suffix="+" bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#18181B] dark:text-[#F4F4F6] text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1200} />
+            <BentoStatCell label={tr.stat1} target={50} suffix="+" colSpan={2} bg="bg-white dark:bg-[#1E1E26]" textColor="text-[#18181B] dark:text-white text-7xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1400} />
+            <BentoStatCell label={tr.stat2} target={98} suffix="%" bg="bg-[#7C5CBF]" textColor="text-white" labelColor="text-[#E5D8FF]/90" active={statsVisible} duration={1600} />
+            <BentoStatCell label={tr.stat3} target={3} suffix={es ? " años" : " yrs"} bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#7C5CBF] dark:text-[#F4F4F6]" labelColor="text-[#7C5CBF]" active={statsVisible} duration={800} />
+            <BentoStatCell label="PageSpeed" target={95} suffix="+" bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#7C5CBF] dark:text-[#F4F4F6] text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1200} />
             <div className="bento-cell col-span-2 bg-gradient-to-r from-[#7C5CBF] to-[#9B72F0] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
-              <p className="text-xs font-semibold tracking-widest uppercase text-white/70">
+              <p className="text-xs font-semibold tracking-widest uppercase text-white/90">
                 {es ? "Carga garantizada" : "Guaranteed load"}
               </p>
               <p className="text-5xl font-black text-white leading-none mt-4">{"< 2s"}</p>
             </div>
-            <BentoStatCell label={es ? "Entrega MVP" : "MVP delivery"} target={18} suffix="d" bg="bg-[#0F0F12] dark:bg-[#1E1E26]" textColor="text-white text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={900} />
+            <BentoStatCell label={es ? "Entrega MVP" : "MVP delivery"} target={18} suffix="d" bg="bg-white dark:bg-[#1E1E26]" textColor="text-[#18181B] dark:text-white text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={900} />
           </div>
         </FadeUp>
       </section>
@@ -490,7 +535,7 @@ export default function Home() {
             50%      { opacity: var(--star-min); transform: scale(0.6); }
           }
         `}</style>
-        <div className="absolute inset-0 bg-[#06030F]" />
+        <div className="absolute inset-0 bg-white dark:bg-[#06030F]" />
         {Array.from({ length: 120 }, (_, i) => {
           const size = i % 7 === 0 ? 2.5 : i % 3 === 0 ? 1.5 : 1
           const max = i % 5 === 0 ? 1 : i % 3 === 0 ? 0.7 : 0.45
@@ -509,8 +554,8 @@ export default function Home() {
             <p className="text-xs font-semibold tracking-widest uppercase text-[#C4B5FD] bg-white/10 px-4 py-2 rounded-full inline-block mb-4">
               {tr.stackBadge}
             </p>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-4">{tr.stackTitle}</h2>
-            <p className="text-[#E5D8FF]/80 text-base max-w-xl mx-auto leading-relaxed">{tr.stackDesc}</p>
+            <h2 className="text-3xl font-bold text-[#18181B] dark:text-white tracking-tight mb-4">{tr.stackTitle}</h2>
+            <p className="text-[#18181B]/70 dark:text-[#E5D8FF]/80 text-base max-w-xl mx-auto leading-relaxed">{tr.stackDesc}</p>
           </FadeUp>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {tr.stackItems.map((item, idx) => (
@@ -519,20 +564,20 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 font-black text-xs tracking-tight transition-transform group-hover:scale-110" style={{ backgroundColor: "rgba(124,92,191,0.25)", color: "#E5D8FF", border: "1px solid rgba(196,181,253,0.2)" }}>
                     {item.name.split(" ")[0].slice(0, 2).toUpperCase()}
                   </div>
-                  <p className="font-bold text-white text-sm mb-1">{item.name}</p>
-                  <p className="text-xs text-[#E5D8FF]/70 leading-relaxed font-medium">{item.desc}</p>
+                  <p className="font-bold text-[#18181B] dark:text-white text-sm mb-1">{item.name}</p>
+                  <p className="text-xs text-[#18181B]/70 dark:text-[#E5D8FF]/70 leading-relaxed font-medium">{item.desc}</p>
                 </div>
               </FadeUp>
             ))}
           </div>
-          <p className="text-center text-xs text-white/50 mt-8 font-medium">
+          <p className="text-center text-xs text-[#18181B] dark:text-black/60 dark:text-white/50 mt-8 font-medium">
             {es ? "Código abierto · Sin vendor lock-in · Tu propiedad intelectual" : "Open source · No vendor lock-in · Your intellectual property"}
           </p>
         </div>
       </section>
 
       {/* ─────────── CTA FINAL ─────────── */}
-      <section className="bg-[#0A0710] py-32 border-t border-white/[0.06]">
+      <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-32 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <FadeUp>
             <CatHoverWrapper className="relative inline-block mb-10 cursor-pointer" renderCat={(h) => (
@@ -549,13 +594,13 @@ export default function Home() {
               {es ? "Lucy, en persona" : "Lucy, in person"}
               <span className="w-10 h-px bg-[#f5a855]/40" />
             </p>
-            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-[0.95] mb-6">
+            <h2 className="text-4xl md:text-6xl font-black text-[#18181B] dark:text-white tracking-tight leading-[0.95] mb-6">
               {es ? "Tu empresa merece " : "Your business deserves "}
               <span className="bg-gradient-to-r from-[#7C5CBF] to-[#D4788A] bg-clip-text text-transparent">
                 {es ? "el mejor equipo." : "the best team."}
               </span>
             </h2>
-            <p className="text-white/50 text-lg mb-12 max-w-xl mx-auto leading-relaxed">
+            <p className="text-[#18181B] dark:text-black/60 dark:text-white/50 text-lg mb-12 max-w-xl mx-auto leading-relaxed">
               {es
                 ? "Cuéntanos tu proyecto. Mis hijas y yo te preparamos una propuesta en menos de 24 horas."
                 : "Tell us about your project. My daughters and I will prepare a proposal in less than 24 hours."}
@@ -574,7 +619,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/planes"
-                className="btn-squish inline-flex items-center justify-center gap-2 px-10 py-4 border border-white/[0.18] text-white font-bold rounded-2xl hover:bg-white/[0.07] transition-colors text-base"
+                className="btn-squish inline-flex items-center justify-center gap-2 px-10 py-4 border border-black/[0.12] dark:border-white/[0.18] text-[#18181B] dark:text-white font-bold rounded-2xl hover:bg-black/[0.03] dark:hover:bg-white/[0.07] transition-colors text-base"
               >
                 {es ? "Ver todos los planes" : "See all plans"}
               </Link>

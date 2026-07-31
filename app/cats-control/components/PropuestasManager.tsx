@@ -10,7 +10,7 @@ import {
 import PropuestaView from "@/app/components/PropuestaView";
 import PropuestaForm from "./PropuestaForm";
 import PropuestaWizard from "./PropuestaWizard";
-import { Plus, Pencil, Copy, Trash2, Mail, MessageCircle, CopyPlus, Check } from "lucide-react";
+import { Plus, Pencil, Copy, Trash2, Mail, MessageCircle, CopyPlus, Check, Power, PowerOff } from "lucide-react";
 
 const PUBLIC_BASE = "https://4cats.cl/propuesta";
 
@@ -66,13 +66,31 @@ export default function PropuestasManager() {
     try {
       const { id: _id, created_at: _ca, updated_at: _ua, ...rest } = p as Propuesta & { updated_at?: string };
       const newSlug = `${rest.slug}-copia-${Date.now().toString(36)}`;
-      await adminDB.insert("propuestas", { ...rest, slug: newSlug, titulo: `${rest.titulo} (copia)`, estado: "borrador" });
+      await adminDB.insert("propuestas", { ...rest, slug: newSlug, titulo: `${rest.titulo} (copia)`, estado: "borrador", activo: true });
       load();
       setScreen("list");
       setSelected(null);
     } catch (e) {
       console.error(e);
       alert("Error al duplicar la propuesta.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleToggleActivo = async (p: Propuesta) => {
+    const estaActiva = p.activo !== false;
+    if (estaActiva && !confirm(`¿Desactivar el enlace de "${p.titulo}"? El cliente verá "ENLACE DESACTIVADO" al abrirlo. Podés reactivarlo cuando quieras.`)) return;
+    setActionLoading("toggle");
+    try {
+      const nuevoActivo = !estaActiva;
+      await adminDB.update("propuestas", p.id, { activo: nuevoActivo });
+      const actualizada = { ...p, activo: nuevoActivo };
+      setSelected(actualizada);
+      setPropuestas((prev) => prev.map((x) => (x.id === p.id ? actualizada : x)));
+    } catch (e) {
+      console.error(e);
+      alert("Error al cambiar el estado del enlace.");
     } finally {
       setActionLoading(null);
     }
@@ -148,6 +166,23 @@ export default function PropuestasManager() {
             >
               <CopyPlus className="w-3.5 h-3.5" />
               {actionLoading === "duplicate" ? "Duplicando..." : "Duplicar"}
+            </button>
+
+            <button
+              onClick={() => handleToggleActivo(selected)}
+              disabled={actionLoading === "toggle"}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium border transition-all disabled:opacity-50 ${
+                selected.activo === false
+                  ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-400 text-emerald-600 dark:text-emerald-400"
+                  : "bg-white dark:bg-[#0F0F12] border-[#E4E4E7] dark:border-[#2A2A35] hover:border-red-500 hover:text-red-500"
+              }`}
+            >
+              {selected.activo === false ? <Power className="w-3.5 h-3.5" /> : <PowerOff className="w-3.5 h-3.5" />}
+              {actionLoading === "toggle"
+                ? "Guardando..."
+                : selected.activo === false
+                ? "Activar enlace"
+                : "Desactivar enlace"}
             </button>
 
             <button
@@ -251,14 +286,21 @@ export default function PropuestasManager() {
                 <h2 className="font-bold text-[#18181B] dark:text-white">{p.titulo}</h2>
                 {p.subtitulo && <p className="text-sm text-[#71717A] dark:text-[#A1A1AA] mt-0.5">{p.subtitulo}</p>}
               </div>
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                p.estado === 'aprobada' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                p.estado === 'enviada'  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                p.estado === 'vista'    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                'bg-[#F4F4F5] text-[#71717A] dark:bg-[#1A1A20] dark:text-[#A1A1AA]'
-              }`}>
-                {p.estado}
-              </span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {p.activo === false && (
+                  <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                    <PowerOff className="w-3 h-3" /> Desactivada
+                  </span>
+                )}
+                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                  p.estado === 'aprobada' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                  p.estado === 'enviada'  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                  p.estado === 'vista'    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                  'bg-[#F4F4F5] text-[#71717A] dark:bg-[#1A1A20] dark:text-[#A1A1AA]'
+                }`}>
+                  {p.estado}
+                </span>
+              </div>
             </div>
           </motion.button>
         ))}

@@ -292,6 +292,7 @@ export interface Propuesta {
   titulo: string
   subtitulo?: string
   estado: 'borrador' | 'enviada' | 'vista' | 'aprobada' | 'bloqueada'
+  activo: boolean
   tipo: 'web' | 'app' | 'crm' | 'erp' | 'saas'
   problema?: string
   competidor_nombre?: string

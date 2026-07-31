@@ -1,6 +1,7 @@
 export const t = {
   es: {
     nav: {
+      inicio: "Inicio",
       planes: "Planes",
       mantenimiento: "Mantenimiento",
       portafolio: "Portafolio",
@@ -191,6 +192,7 @@ export const t = {
   /* ─── ENGLISH ─── */
   en: {
     nav: {
+      inicio: "Home",
       planes: "Plans",
       mantenimiento: "Maintenance",
       portafolio: "Portfolio",

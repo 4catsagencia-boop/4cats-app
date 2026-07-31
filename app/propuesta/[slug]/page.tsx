@@ -33,8 +33,8 @@ export default async function PropuestaPublicPage({ params }: PageProps) {
 
   if (!propuesta) notFound();
 
-  // Verificar si está bloqueada manualmente (Kill Switch)
-  if (propuesta.estado === 'bloqueada') {
+  // Kill Switch: control de acceso independiente del estado comercial
+  if (propuesta.activo === false) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] flex flex-col items-center justify-center p-12 text-center">
         <div className="bg-red-100 dark:bg-red-900/20 p-8 rounded-full mb-8">

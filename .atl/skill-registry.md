@@ -30,6 +30,7 @@
 
 | Skill | Trigger | Source |
 |-------|---------|--------|
+| verification-protocol | Before ANY technical action; IRON CIRCLE V4.0 | global |
 | zero-error-architect | "zero error", "architect", "cambio técnico" | local |
 | branch-pr | Creating a PR, opening a pull request | global |
 | issue-creation | Creating an issue, reporting a bug | global |

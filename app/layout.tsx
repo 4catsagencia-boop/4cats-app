@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import ConditionalFooter from "./components/ConditionalFooter";
 import FloatingContact from "./components/FloatingContact";
+import WhatsAppButton from "./components/WhatsAppButton";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -57,6 +58,7 @@ export default function RootLayout({
           {children}
           <ConditionalFooter />
           <FloatingContact />
+          <WhatsAppButton />
         </Providers>
         <Analytics />
       </body>

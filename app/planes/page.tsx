@@ -45,13 +45,15 @@ function PlanCard({ plan, idx, lang }: { plan: Plan; idx: number; lang: "es" | "
   return (
     <FadeUp delay={idx * 120}>
       <div
-        className="relative flex flex-col rounded-3xl overflow-hidden h-full"
+        className={`relative flex flex-col rounded-3xl overflow-hidden h-full transition-all duration-300 ${
+          plan.destacado
+            ? "bg-gradient-to-br from-[#F3EEFF] to-[#FAFAFA] dark:from-[#100B20] dark:to-[#1C1235]"
+            : "bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.08]"
+        }`}
         style={{
-          border: plan.destacado ? `2px solid ${cfg.color}` : "1px solid rgba(255,255,255,0.08)",
-          background: plan.destacado ? "linear-gradient(135deg, #100B20 0%, #1C1235 100%)" : "rgba(255,255,255,0.03)",
+          ...(plan.destacado ? { border: `2px solid ${cfg.color}` } : {}),
           boxShadow: hovered ? `0 0 80px -20px ${cfg.color}50` : plan.destacado ? `0 0 50px -20px ${cfg.color}35` : "none",
           transform: hovered ? "translateY(-6px)" : "translateY(0)",
-          transition: "all 0.3s ease",
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -68,16 +70,16 @@ function PlanCard({ plan, idx, lang }: { plan: Plan; idx: number; lang: "es" | "
         </div>
 
         <div className="flex flex-col flex-1 p-8">
-          <h3 className="text-2xl font-black text-white mb-3">{plan.nombre}</h3>
+          <h3 className="text-2xl font-black text-[#18181B] dark:text-white mb-3">{plan.nombre}</h3>
           {plan.descripcion && (
-            <p className="text-sm text-white/50 mb-8 leading-relaxed">{plan.descripcion}</p>
+            <p className="text-sm text-[#18181B]/60 dark:text-white/50 mb-8 leading-relaxed">{plan.descripcion}</p>
           )}
 
           <ul className="space-y-3 flex-1 mb-8">
             {(plan.caracteristicas || []).map((f, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="mt-0.5" style={{ color: cfg.color }}><CheckIcon /></span>
-                <span className="text-sm text-white/70">{f}</span>
+                <span className="text-sm text-[#18181B]/80 dark:text-white/70">{f}</span>
               </li>
             ))}
           </ul>
@@ -118,14 +120,14 @@ export default function PlanesPage() {
       <Navbar />
 
       {/* ── HERO ── */}
-      <section className="relative bg-[#06030F] pt-32 pb-24 overflow-hidden">
+      <section className="relative bg-white dark:bg-[#06030F] pt-32 pb-24 overflow-hidden">
         <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full blur-[180px] opacity-[0.12] pointer-events-none" style={{ background: "radial-gradient(ellipse, #D4788A, transparent)" }} />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full blur-[140px] opacity-[0.08] pointer-events-none" style={{ background: "radial-gradient(ellipse, #7C5CBF, transparent)" }} />
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: "180px 180px" }} />
 
         <div className="relative max-w-5xl mx-auto px-6 text-center">
           <FadeUp>
-            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-white/[0.07] px-5 py-2.5 rounded-full border border-white/[0.12] mb-10">
+            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-black/[0.03] dark:bg-white/[0.07] px-5 py-2.5 rounded-full border border-black/[0.12] dark:border-white/[0.12] mb-10">
               {tr.badge}
             </div>
           </FadeUp>
@@ -143,13 +145,13 @@ export default function PlanesPage() {
               {es ? "Roxanne habla" : "Roxanne speaks"}
               <span className="w-10 h-px bg-[#D4788A]/40" />
             </p>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white leading-[0.95] mb-6">
+            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#18181B] dark:text-white leading-[0.95] mb-6">
               {es ? "El plan correcto\npara " : "The right plan\nfor "}
               <span className="bg-gradient-to-r from-[#9B8EB2] via-[#C4B5FD] to-[#D4788A] bg-clip-text text-transparent">
                 {es ? "tu momento." : "your moment."}
               </span>
             </h1>
-            <p className="text-white/40 text-lg max-w-xl mx-auto leading-relaxed">
+            <p className="text-[#18181B]/60 dark:text-white/40 text-lg max-w-xl mx-auto leading-relaxed">
               {tr.subtitle}
             </p>
           </FadeUp>
@@ -157,18 +159,18 @@ export default function PlanesPage() {
       </section>
 
       {/* ── PLANES ── */}
-      <section className="bg-[#0A0710] py-24 border-t border-white/[0.06]">
+      <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-24 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6">
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[0, 1, 2].map(i => (
-                <div key={i} className="rounded-3xl border border-white/[0.06] bg-white/[0.02] h-[480px] animate-pulse" />
+                <div key={i} className="rounded-3xl border border-black/[0.06] dark:border-white/[0.06] bg-white/[0.02] h-[480px] animate-pulse" />
               ))}
             </div>
           ) : plans.length === 0 ? (
-            <div className="text-center py-20 rounded-3xl border border-dashed border-white/10">
-              <p className="text-xl font-bold text-white mb-2">{tr.soon}</p>
-              <p className="text-white/40 text-sm">{tr.soonDesc}</p>
+            <div className="text-center py-20 rounded-3xl border border-dashed border-black/10 dark:border-white/10">
+              <p className="text-xl font-bold text-[#18181B] dark:text-white mb-2">{tr.soon}</p>
+              <p className="text-[#18181B]/60 dark:text-white/40 text-sm">{tr.soonDesc}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -181,13 +183,13 @@ export default function PlanesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#06030F] py-24 border-t border-white/[0.06]">
+      <section className="bg-white dark:bg-[#06030F] py-24 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-[#18181B] dark:text-white leading-tight mb-4">
               {tr.footerTitle}
             </h2>
-            <p className="text-white/40 text-lg mb-10">{tr.footerDesc}</p>
+            <p className="text-[#18181B]/60 dark:text-white/40 text-lg mb-10">{tr.footerDesc}</p>
             <Link
               href="/cotizar"
               className="btn-squish inline-flex items-center gap-2 px-10 py-4 bg-[#7C5CBF] text-white font-bold rounded-2xl hover:bg-[#6B4DAE] transition-colors"

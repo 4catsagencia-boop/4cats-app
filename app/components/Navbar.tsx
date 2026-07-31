@@ -44,10 +44,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
+    { href: "/", label: tr.inicio },
     { href: "/planes", label: tr.planes },
     { href: "/planes-mantenimiento", label: tr.mantenimiento },
     { href: "/portafolio", label: tr.portafolio },
-    { href: "/cotizar", label: tr.cotizar },
   ];
 
   return (
@@ -65,19 +65,19 @@ export default function Navbar() {
         </Link>
 
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-5">
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-all relative py-1 group ${
-                  pathname === link.href ? "text-[#7C5CBF]" : "text-[#52525B] hover:text-[#18181B]"
+                className={`text-base font-semibold transition-all relative py-1 px-2 group ${
+                  pathname === link.href ? "text-[#7C5CBF] dark:text-[#C4B5FD]" : "text-[#52525B] hover:text-[#18181B] dark:text-white/60 dark:hover:text-white"
                 }`}
               >
                 {link.label}
-                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#7C5CBF] transition-all duration-300 group-hover:w-full ${pathname === link.href ? "w-full" : "w-0"}`} />
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#7C5CBF] dark:bg-[#C4B5FD] transition-all duration-300 group-hover:w-full ${pathname === link.href ? "w-full" : "w-0"}`} />
               </Link>
             ))}
           </div>
@@ -85,7 +85,7 @@ export default function Navbar() {
           {/* Dark mode toggle */}
           <button
             onClick={toggleTheme}
-            className="hidden md:flex items-center justify-center w-8 h-8 text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] border border-[#E5D8FF] dark:border-[#2E2255] rounded-lg hover:bg-[#E5D8FF] dark:hover:bg-[#2E2255] transition-all"
+            className="hidden md:flex items-center justify-center w-9 h-9 text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] border-2 border-[#E5D8FF] dark:border-[#2E2255] rounded-xl hover:bg-[#E5D8FF] dark:hover:bg-[#2E2255] hover:scale-105 transition-all"
             aria-label="Toggle dark mode"
             title={theme === "light" ? "Modo oscuro" : "Modo claro"}
           >
@@ -103,7 +103,7 @@ export default function Navbar() {
           {/* Language toggle */}
           <button
             onClick={toggle}
-            className="hidden md:flex items-center justify-center w-8 h-8 text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] border border-[#E5D8FF] dark:border-[#2E2255] rounded-lg hover:bg-[#E5D8FF] dark:hover:bg-[#2E2255] transition-all"
+            className="hidden md:flex items-center justify-center w-9 h-9 text-[#7C5CBF] bg-[#F3EEFF] dark:bg-[#1C1630] border-2 border-[#E5D8FF] dark:border-[#2E2255] rounded-xl hover:bg-[#E5D8FF] dark:hover:bg-[#2E2255] hover:scale-105 transition-all"
             aria-label="Switch language"
             title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
           >

@@ -109,14 +109,14 @@ const casesEn: CaseStudy[] = [
 
 function MetricRow({ metric }: { metric: Metric }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-white/[0.06] last:border-0">
-      <span className="text-xs text-white/40 flex-1 pr-4">{metric.label}</span>
+    <div className="flex items-center justify-between py-3 border-b border-black/[0.06] dark:border-white/[0.06] last:border-0">
+      <span className="text-xs text-[#18181B]/60 dark:text-white/40 flex-1 pr-4">{metric.label}</span>
       <div className="flex items-center gap-3 shrink-0">
-        <span className="text-xs text-white/20 line-through">{metric.before}</span>
-        <svg className="w-3 h-3 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <span className="text-xs text-[#18181B] dark:text-white/20 line-through">{metric.before}</span>
+        <svg className="w-3 h-3 text-[#18181B] dark:text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-xs font-bold text-white">{metric.after}</span>
+        <span className="text-xs font-bold text-[#18181B] dark:text-white">{metric.after}</span>
         <span
           className="text-xs font-bold px-2 py-0.5 rounded-full"
           style={{ background: metric.positive ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)", color: metric.positive ? "#4ade80" : "#f87171" }}
@@ -142,15 +142,15 @@ function CaseCard({ c, lang }: { c: CaseStudy; lang: "es" | "en" }) {
       {c.verified && (
         <div className="px-6 py-2.5 flex items-center justify-between" style={{ background: c.industryColor }}>
           <div className="flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-3.5 h-3.5 text-[#18181B] dark:text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span className="text-xs font-bold text-white uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#18181B] dark:text-white uppercase tracking-wider">
               {lang === "es" ? "Caso real verificado" : "Verified real case"}
             </span>
           </div>
           {c.url && (
-            <a href={`https://${c.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-white/80 hover:text-white flex items-center gap-1 transition-colors">
+            <a href={`https://${c.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[#18181B]/90 dark:text-white/80 hover:text-[#18181B] dark:text-white flex items-center gap-1 transition-colors">
               {c.url}
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -162,16 +162,16 @@ function CaseCard({ c, lang }: { c: CaseStudy; lang: "es" | "en" }) {
       {c.inProgress && (
         <div className="bg-[#6366F1] px-6 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 text-[#18181B] dark:text-white animate-spin" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
-            <span className="text-xs font-bold text-white uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#18181B] dark:text-white uppercase tracking-wider">
               {lang === "es" ? "Proyecto en desarrollo" : "Project in progress"}
             </span>
           </div>
           {c.url && (
-            <a href={`https://${c.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-white/80 hover:text-white transition-colors">
+            <a href={`https://${c.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[#18181B]/90 dark:text-white/80 hover:text-[#18181B] dark:text-white transition-colors">
               {lang === "es" ? "Sitio actual" : "Current site"} ↗
             </a>
           )}
@@ -179,32 +179,32 @@ function CaseCard({ c, lang }: { c: CaseStudy; lang: "es" | "en" }) {
       )}
 
       {/* Header */}
-      <div className="p-8 pb-6 border-b border-white/[0.06]">
+      <div className="p-8 pb-6 border-b border-black/[0.06] dark:border-white/[0.06]">
         <div className="flex items-start justify-between mb-4">
           <span className="text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full" style={{ background: `${c.industryColor}18`, color: c.industryColor }}>
             {c.industry}
           </span>
-          <span className="text-xs text-white/30 bg-white/[0.06] px-3 py-1 rounded-full">{c.duration}</span>
+          <span className="text-xs text-[#18181B]/50 dark:text-white/30 bg-black/[0.03] dark:bg-white/[0.06] px-3 py-1 rounded-full">{c.duration}</span>
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">{c.title}</h3>
+        <h3 className="text-xl font-bold text-[#18181B] dark:text-white mb-2">{c.title}</h3>
         <p className="text-sm font-medium text-[#C4B5FD]">{c.subtitle}</p>
       </div>
 
       {/* Challenge + Solution */}
-      <div className="px-8 py-6 grid gap-4 border-b border-white/[0.06]">
+      <div className="px-8 py-6 grid gap-4 border-b border-black/[0.06] dark:border-white/[0.06]">
         <div>
           <p className="text-xs font-semibold text-red-400/80 uppercase tracking-wider mb-2">{lang === "es" ? "El problema" : "The problem"}</p>
-          <p className="text-sm text-white/45 leading-relaxed">{c.challenge}</p>
+          <p className="text-sm text-[#18181B] dark:text-white/45 leading-relaxed">{c.challenge}</p>
         </div>
         <div>
           <p className="text-xs font-semibold text-emerald-400/80 uppercase tracking-wider mb-2">{lang === "es" ? "La solución 4cats" : "The 4cats solution"}</p>
-          <p className="text-sm text-white/45 leading-relaxed">{c.solution}</p>
+          <p className="text-sm text-[#18181B] dark:text-white/45 leading-relaxed">{c.solution}</p>
         </div>
       </div>
 
       {/* Metrics */}
-      <div className="px-8 py-6 border-b border-white/[0.06] flex-1">
-        <p className="text-xs font-semibold text-white/25 uppercase tracking-wider mb-3">
+      <div className="px-8 py-6 border-b border-black/[0.06] dark:border-white/[0.06] flex-1">
+        <p className="text-xs font-semibold text-[#18181B] dark:text-white/25 uppercase tracking-wider mb-3">
           {c.inProgress ? (lang === "es" ? "Métricas objetivo" : "Target metrics") : (lang === "es" ? "Resultados medibles" : "Measurable results")}
         </p>
         {c.metrics.map((m, i) => <MetricRow key={i} metric={m} />)}
@@ -214,21 +214,21 @@ function CaseCard({ c, lang }: { c: CaseStudy; lang: "es" | "en" }) {
       {c.inProgress ? (
         <div className="px-8 py-6 bg-[#6366F1]/10">
           <p className="text-xs font-semibold text-[#818CF8] uppercase tracking-wider mb-1">{lang === "es" ? "Resultados proyectados" : "Projected results"}</p>
-          <p className="text-lg font-bold text-white mb-1">{lang === "es" ? "Pendiente al cierre del proyecto" : "Pending at project close"}</p>
-          <p className="text-xs text-white/35">{c.roiLabel}</p>
+          <p className="text-lg font-bold text-[#18181B] dark:text-white mb-1">{lang === "es" ? "Pendiente al cierre del proyecto" : "Pending at project close"}</p>
+          <p className="text-xs text-[#18181B] dark:text-white/35">{c.roiLabel}</p>
         </div>
       ) : (
         <div className="px-8 py-6" style={{ background: "linear-gradient(135deg, rgba(124,92,191,0.12) 0%, rgba(99,102,241,0.08) 100%)" }}>
           <p className="text-xs font-semibold text-[#C4B5FD] uppercase tracking-wider mb-1">{lang === "es" ? "Impacto" : "Impact"}</p>
-          <p className="text-3xl font-black text-white mb-1">{c.roi}</p>
-          <p className="text-xs text-white/35">{c.roiLabel}</p>
+          <p className="text-3xl font-black text-[#18181B] dark:text-white mb-1">{c.roi}</p>
+          <p className="text-xs text-[#18181B] dark:text-white/35">{c.roiLabel}</p>
         </div>
       )}
 
       {/* Stack */}
-      <div className="px-8 py-5 border-t border-white/[0.06] flex flex-wrap gap-2">
+      <div className="px-8 py-5 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-wrap gap-2">
         {c.stack.map(s => (
-          <span key={s} className="text-xs font-medium bg-white/[0.06] text-white/50 px-3 py-1 rounded-full border border-white/[0.08]">{s}</span>
+          <span key={s} className="text-xs font-medium bg-black/[0.03] dark:bg-white/[0.06] text-[#18181B]/60 dark:text-white/50 px-3 py-1 rounded-full border border-white/[0.08]">{s}</span>
         ))}
       </div>
     </div>
@@ -245,14 +245,14 @@ export default function PortafolioPage() {
       <Navbar />
 
       {/* ── HERO ── */}
-      <section className="relative bg-[#06030F] pt-32 pb-24 overflow-hidden">
+      <section className="relative bg-white dark:bg-[#06030F] pt-32 pb-24 overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] rounded-full blur-[180px] opacity-[0.10] pointer-events-none" style={{ background: "radial-gradient(ellipse, #F97316, transparent)" }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[160px] opacity-[0.08] pointer-events-none" style={{ background: "radial-gradient(ellipse, #7C5CBF, transparent)" }} />
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: "180px 180px" }} />
 
         <div className="relative max-w-5xl mx-auto px-6 text-center">
           <FadeUp>
-            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-white/[0.07] px-5 py-2.5 rounded-full border border-white/[0.12] mb-10">
+            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-black/[0.03] dark:bg-white/[0.07] px-5 py-2.5 rounded-full border border-black/[0.12] dark:border-white/[0.12] mb-10">
               {es ? "Casos de éxito reales · ROI medido" : "Real success stories · Measured ROI"}
             </div>
           </FadeUp>
@@ -271,13 +271,13 @@ export default function PortafolioPage() {
           </FadeUp>
 
           <FadeUp delay={160}>
-            <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-[0.95] mb-6">
+            <h1 className="text-5xl md:text-6xl font-black text-[#18181B] dark:text-white tracking-tight leading-[0.95] mb-6">
               {es ? "Resultados que " : "Results measured "}
               <span className="bg-gradient-to-r from-[#F97316] via-[#F59E0B] to-[#D4788A] bg-clip-text text-transparent">
                 {es ? "se miden en pesos." : "in real numbers."}
               </span>
             </h1>
-            <p className="text-white/40 text-lg leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[#18181B]/60 dark:text-white/40 text-lg leading-relaxed max-w-2xl mx-auto">
               {es
                 ? "No vendemos promesas. Vendemos eficiencia financiera. Proyectos reales, con métricas reales, construidos con React y Supabase para empresas chilenas."
                 : "We don't sell promises. We sell financial efficiency. Real projects, with real metrics, built with React and Supabase for Chilean businesses."}
@@ -287,7 +287,7 @@ export default function PortafolioPage() {
       </section>
 
       {/* ── CASOS ── */}
-      <section className="bg-[#0A0710] py-24 border-t border-white/[0.06]">
+      <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-24 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {cases.map((c, i) => (
@@ -300,7 +300,7 @@ export default function PortafolioPage() {
       </section>
 
       {/* ── QUICK STATS ── */}
-      <section className="bg-[#06030F] py-20 border-t border-white/[0.06]">
+      <section className="bg-white dark:bg-[#06030F] py-20 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { val: "< 2s", label: es ? "Tiempo de carga garantizado" : "Guaranteed load time" },
@@ -311,7 +311,7 @@ export default function PortafolioPage() {
             <FadeUp key={i} delay={i * 80}>
               <div>
                 <p className="text-4xl font-black mb-2" style={{ color: "#7C5CBF" }}>{s.val}</p>
-                <p className="text-xs text-white/30 font-medium leading-snug">{s.label}</p>
+                <p className="text-xs text-[#18181B]/50 dark:text-white/30 font-medium leading-snug">{s.label}</p>
               </div>
             </FadeUp>
           ))}
@@ -319,16 +319,16 @@ export default function PortafolioPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#0A0710] py-24 border-t border-white/[0.06]">
+      <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-24 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-[#18181B] dark:text-white leading-tight mb-4">
               {es ? "¿Tu negocio necesita " : "Does your business need "}
               <span className="bg-gradient-to-r from-[#7C5CBF] to-[#D4788A] bg-clip-text text-transparent">
                 {es ? "esta transformación?" : "this transformation?"}
               </span>
             </h2>
-            <p className="text-white/40 text-lg mb-12 max-w-xl mx-auto">
+            <p className="text-[#18181B]/60 dark:text-white/40 text-lg mb-12 max-w-xl mx-auto">
               {es
                 ? "Cuéntanos tu caso. En menos de 24 horas te preparamos una propuesta con métricas proyectadas para tu industria."
                 : "Tell us your case. In less than 24 hours we'll prepare a proposal with projected metrics for your industry."}
@@ -337,7 +337,7 @@ export default function PortafolioPage() {
               <Link href="/cotizar" className="btn-squish inline-flex items-center justify-center gap-2 px-10 py-4 bg-[#7C5CBF] text-white font-bold rounded-2xl hover:bg-[#6B4DAE] transition-colors" style={{ boxShadow: "0 4px 28px -4px rgba(124,92,191,0.65)" }}>
                 {es ? "Solicitar propuesta gratuita" : "Request free proposal"}
               </Link>
-              <Link href="/planes" className="btn-squish inline-flex items-center justify-center gap-2 px-10 py-4 border border-white/[0.18] text-white font-bold rounded-2xl hover:bg-white/[0.06] transition-colors">
+              <Link href="/planes" className="btn-squish inline-flex items-center justify-center gap-2 px-10 py-4 border border-white/[0.18] text-[#18181B] dark:text-white font-bold rounded-2xl hover:bg-black/[0.03] dark:bg-white/[0.06] transition-colors">
                 {es ? "Ver planes" : "View plans"}
               </Link>
             </div>

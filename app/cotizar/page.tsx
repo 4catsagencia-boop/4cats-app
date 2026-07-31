@@ -12,20 +12,20 @@ import { FadeUp } from "../components/FadeUp";
 
 function inputClass(hasError: boolean) {
   return [
-    "w-full text-sm px-4 py-3 rounded-xl border bg-white/[0.06] text-white",
-    "placeholder:text-white/25 outline-none",
+    "w-full text-sm px-4 py-3 rounded-xl border bg-black/[0.03] dark:bg-white/[0.06] text-[#18181B] dark:text-white",
+    "placeholder:text-[#18181B] dark:text-white/25 outline-none",
     "focus:ring-2 focus:ring-[#7C5CBF] focus:border-[#7C5CBF]",
     "transition-all",
     hasError
       ? "border-red-500/60 focus:ring-red-500 focus:border-red-500"
-      : "border-white/[0.12]",
+      : "border-black/[0.12] dark:border-white/[0.12]",
   ].join(" ")
 }
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-xs font-bold text-white/40 uppercase tracking-wider ml-1">{label}</label>
+      <label className="text-xs font-bold text-[#18181B]/60 dark:text-white/40 uppercase tracking-wider ml-1">{label}</label>
       {children}
       {error && <p className="text-xs text-red-400 font-medium ml-1">{error}</p>}
     </div>
@@ -108,7 +108,7 @@ function CotizarForm() {
 
   if (submitted) {
     return (
-      <main className="min-h-screen bg-[#06030F] overflow-x-hidden">
+      <main className="min-h-screen bg-white dark:bg-[#06030F] overflow-x-hidden">
         <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
           <FadeUp>
@@ -117,12 +117,12 @@ function CotizarForm() {
                 <path d="M4 10L8 14L16 6" stroke="#7C5CBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 className="text-3xl font-black text-white mb-3">{tr.successTitle}</h2>
-            <p className="text-white/40 mb-10 leading-relaxed max-w-sm">
+            <h2 className="text-3xl font-black text-[#18181B] dark:text-white mb-3">{tr.successTitle}</h2>
+            <p className="text-[#18181B]/60 dark:text-white/40 mb-10 leading-relaxed max-w-sm">
               {tr.successDesc} <span className="font-bold text-[#C4B5FD]">{form.plan}</span>. {tr.successDesc2}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/planes" className="px-6 py-3 text-sm font-bold text-white/60 border border-white/10 rounded-xl hover:bg-white/[0.06] transition-all">
+              <Link href="/planes" className="px-6 py-3 text-sm font-bold text-[#18181B]/70 dark:text-white/60 border border-black/10 dark:border-white/10 rounded-xl hover:bg-black/[0.03] dark:bg-white/[0.06] transition-all">
                 {tr.successBack}
               </Link>
               <button
@@ -140,7 +140,7 @@ function CotizarForm() {
   }
 
   return (
-    <main className="min-h-screen bg-[#06030F] overflow-x-hidden">
+    <main className="min-h-screen bg-white dark:bg-[#06030F] overflow-x-hidden">
       <Navbar />
 
       {/* Atmospheric blobs */}
@@ -152,7 +152,7 @@ function CotizarForm() {
         {/* Left: intro */}
         <div className="pt-4">
           <FadeUp>
-            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-white/[0.07] px-5 py-2.5 rounded-full border border-white/[0.12] mb-10">
+            <div className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-[#C4B5FD] bg-black/[0.03] dark:bg-white/[0.07] px-5 py-2.5 rounded-full border border-black/[0.12] dark:border-white/[0.12] mb-10">
               {tr.badge}
             </div>
           </FadeUp>
@@ -169,7 +169,7 @@ function CotizarForm() {
               <span className="w-10 h-px bg-[#9370db]/40" />
               {es ? "Layla te recibe" : "Layla receives you"}
             </p>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-[0.95] mb-5">
+            <h1 className="text-4xl md:text-5xl font-black text-[#18181B] dark:text-white tracking-tight leading-[0.95] mb-5">
               {tr.h1.split("\n").map((line, i) => (
                 <span key={i}>
                   {i === 1 ? (
@@ -179,7 +179,7 @@ function CotizarForm() {
                 </span>
               ))}
             </h1>
-            <p className="text-white/40 text-lg leading-relaxed mb-12">{tr.subtitle}</p>
+            <p className="text-[#18181B]/60 dark:text-white/40 text-lg leading-relaxed mb-12">{tr.subtitle}</p>
           </FadeUp>
 
           <FadeUp delay={240}>
@@ -189,12 +189,12 @@ function CotizarForm() {
                 { label: "+56 9 3481 9569", icon: "M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1.05 3.16a1 1 0 01-.23 1.02L7.91 9.09a11.05 11.05 0 005 5l1.23-1.14a1 1 0 011.02-.23l3.16 1.05a1 1 0 01.68.95V17a2 2 0 01-2 2C7.16 19 1 12.84 1 5a2 2 0 012-2z" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.10] flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-black/[0.03] dark:bg-white/[0.06] border border-black/[0.10] dark:border-white/[0.10] flex items-center justify-center shrink-0">
                     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="text-[#7C5CBF]">
                       <path d={item.icon} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
-                  <span className="text-white/60 font-medium">{item.label}</span>
+                  <span className="text-[#18181B]/70 dark:text-white/60 font-medium">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -203,7 +203,7 @@ function CotizarForm() {
 
         {/* Right: form */}
         <FadeUp delay={200}>
-          <div className="rounded-3xl p-8 border border-white/[0.10]" style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(20px)" }}>
+          <div className="rounded-3xl p-8 border border-black/[0.10] dark:border-white/[0.10]" style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(20px)" }}>
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
               <Field label={tr.labelNombre} error={errors.nombre}>
                 <input name="nombre" type="text" placeholder={tr.placeholderNombre} value={form.nombre} onChange={handleChange} disabled={loading} className={inputClass(!!errors.nombre)} />
@@ -218,7 +218,7 @@ function CotizarForm() {
               </Field>
 
               <Field label={tr.labelPlan} error={errors.plan}>
-                <select name="plan" value={form.plan} onChange={handleChange} disabled={loading} className={`${inputClass(!!errors.plan)} [&>option]:bg-[#1A1030] [&>option]:text-white`}>
+                <select name="plan" value={form.plan} onChange={handleChange} disabled={loading} className={`${inputClass(!!errors.plan)} [&>option]:bg-[#1A1030] [&>option]:text-[#18181B] dark:text-white`}>
                   <option value="">{tr.placeholderPlan}</option>
                   {planes.map(p => (
                     <option key={p.id} value={p.nombre}>{p.nombre}</option>
@@ -239,7 +239,7 @@ function CotizarForm() {
                 {loading ? tr.sending : tr.submitBtn}
               </button>
 
-              <p className="text-xs text-center text-white/25 font-medium">{tr.privacy}</p>
+              <p className="text-xs text-center text-[#18181B] dark:text-white/25 font-medium">{tr.privacy}</p>
             </form>
           </div>
         </FadeUp>
@@ -250,7 +250,7 @@ function CotizarForm() {
 
 export default function CotizarPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#06030F]"><Navbar /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#06030F]"><Navbar /></div>}>
       <CotizarForm />
     </Suspense>
   )
