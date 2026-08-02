@@ -82,7 +82,7 @@ export default function AuditoriaForm() {
           <input name="empresa" type="text" placeholder="El nombre de tu negocio" disabled={loading} required className={inputClass(false)} />
         </Field>
 
-        <Field label="Web o Instagram">
+        <Field label="Web / Instagram">
           <input name="web" type="text" placeholder="Link a tu sitio o red social principal" disabled={loading} className={inputClass(false)} />
         </Field>
 
