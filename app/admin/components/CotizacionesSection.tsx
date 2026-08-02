@@ -5,6 +5,7 @@ import { Tables, type Cotizacion } from "../../../utils/supabase"
 import { useAdminDB } from "../hooks/useAdminDB"
 
 const ESTADO_BADGE: Record<Cotizacion["estado"], string> = {
+  nuevo: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   pendiente: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
   aprobada: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   rechazada: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
@@ -125,6 +126,7 @@ export default function CotizacionesSection() {
                     onChange={e => handleEstadoChange(cot.id, e.target.value as Cotizacion["estado"])}
                     className="bg-[#F4F4F5] dark:bg-[#2A2A35] border-none rounded-xl px-3 py-1.5 text-[10px] font-bold text-[#18181B] dark:text-white focus:ring-2 focus:ring-[#7C5CBF] outline-none cursor-pointer appearance-none text-center"
                   >
+                    <option value="nuevo">Nuevo</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="aprobada">Aprobada</option>
                     <option value="rechazada">Rechazada</option>

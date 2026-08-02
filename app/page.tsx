@@ -2,12 +2,11 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import LucyCat from "./components/cats/LucyCat"
 import BillieCat from "./components/cats/BillieCat"
 import LaylaCat from "./components/cats/LaylaCat"
 import RoxanneCat from "./components/cats/RoxanneCat"
-import { useAnimatedCounter } from "./hooks/useAnimatedCounter"
 import { useLang } from "./context/LanguageContext"
 import { t } from "./translations"
 import Navbar from "./components/Navbar"
@@ -30,21 +29,6 @@ function CheckIcon() {
     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
-  )
-}
-
-function BentoStatCell({
-  label, target, suffix = "", colSpan = 1, bg, textColor = "text-[#18181B] dark:text-white", labelColor = "text-[#18181B] dark:text-black/70 dark:text-white/60", active, duration = 1600,
-}: {
-  label: string; target: number; suffix?: string; colSpan?: number; bg: string;
-  textColor?: string; labelColor?: string; active: boolean; duration?: number;
-}) {
-  const count = useAnimatedCounter(target, active, duration)
-  return (
-    <div className={`bento-cell rounded-3xl p-8 flex flex-col justify-between min-h-[160px] ${colSpan === 2 ? "col-span-2" : ""} ${bg}`}>
-      <p className={`text-xs font-semibold tracking-widest uppercase ${labelColor}`}>{label}</p>
-      <p className={`text-5xl md:text-6xl font-black leading-none mt-4 ${textColor}`}>{count}{suffix}</p>
-    </div>
   )
 }
 
@@ -147,25 +131,12 @@ export default function Home() {
   const { lang } = useLang()
   const tr = t[lang].home
 
-  const statsRef = useRef<HTMLDivElement>(null)
-  const [statsVisible, setStatsVisible] = useState(false)
-  useEffect(() => {
-    const el = statsRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect() } },
-      { threshold: 0.2 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
   const es = lang === "es"
 
   const daughters = [
     {
       key: "billie",
-      renderCat: (h: boolean) => <BillieCat className="w-[160px] h-[192px] relative z-10" />,
+      renderCat: () => <BillieCat className="w-[160px] h-[192px] relative z-10" />,
       color: "#9B8EB2",
       name: "Billie",
       quote: es ? '"Tu marca merece diseño que haga parar el scroll."' : '"Your brand deserves design that stops the scroll."',
@@ -177,7 +148,7 @@ export default function Home() {
     },
     {
       key: "layla",
-      renderCat: (h: boolean) => <LaylaCat className="w-[160px] h-[192px] relative z-10" />,
+      renderCat: () => <LaylaCat className="w-[160px] h-[192px] relative z-10" />,
       color: "#9370db",
       name: "Layla",
       quote: es ? '"Código que funciona perfecto aunque nadie lo vea."' : '"Code that works perfectly even when no one sees it."',
@@ -189,7 +160,7 @@ export default function Home() {
     },
     {
       key: "roxanne",
-      renderCat: (h: boolean) => <RoxanneCat className="w-[160px] h-[192px] relative z-10" />,
+      renderCat: () => <RoxanneCat className="w-[160px] h-[192px] relative z-10" />,
       color: "#D4788A",
       name: "Roxanne",
       quote: es ? '"Tus visitas ya son clientes. Solo les falta el empuje correcto."' : '"Your visitors are already clients. They just need the right push."',
@@ -204,7 +175,7 @@ export default function Home() {
   const plans = [
     {
       catColor: "#9370db",
-      renderCat: (h: boolean) => (
+      renderCat: () => (
         <div className="relative flex items-end justify-center">
           <BillieCat className="w-[70px] h-[84px] opacity-40 -mr-4 mb-1" />
           <LaylaCat className="w-[110px] h-[132px] relative z-10" />
@@ -220,7 +191,7 @@ export default function Home() {
     },
     {
       catColor: "#D4788A",
-      renderCat: (h: boolean) => <RoxanneCat className="w-[130px] h-[156px] relative z-10" />,
+      renderCat: () => <RoxanneCat className="w-[130px] h-[156px] relative z-10" />,
       title: es ? "Motor de Leads" : "Lead Engine",
       badge: es ? "Más elegido" : "Most chosen",
       subtitle: es ? "Roxanne dice: una web bonita no alcanza. Necesitás una máquina de captar clientes que no pare de vender." : "Roxanne says: a pretty website isn't enough. You need a client-capturing machine that never stops selling.",
@@ -232,7 +203,7 @@ export default function Home() {
     },
     {
       catColor: "#f5a855",
-      renderCat: (h: boolean) => <LucyCat className="w-[130px] h-[156px] relative z-10" />,
+      renderCat: () => <LucyCat className="w-[130px] h-[156px] relative z-10" />,
       title: es ? "Partner Tecnológico" : "Technology Partner",
       subtitle: es ? "Lucy dice: cuando estés listo para liderar tu industria, yo te acompaño en cada paso del camino." : "Lucy says: when you're ready to lead your industry, I'll be with you every step of the way.",
       features: es
@@ -266,78 +237,77 @@ export default function Home() {
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-24">
           <FadeUp delay={0}>
             <div className="mb-10 text-xs font-semibold tracking-widest uppercase text-[#7C5CBF] dark:text-[#C4B5FD] bg-[#7C5CBF]/10 dark:bg-white/[0.07] px-5 py-2.5 rounded-full border border-[#7C5CBF]/20 dark:border-white/[0.12]">
-              {tr.badge}
+              AGENCIA DIGITAL
             </div>
           </FadeUp>
 
-            {/* Imagen grupal 3D */}
-            <div className="relative flex items-end justify-center mb-10">
-              <div className="absolute inset-0 blur-[80px] opacity-30 pointer-events-none" style={{ background: "radial-gradient(ellipse at center bottom, #7C5CBF40, transparent 70%)" }} />
-              <Image
-                src="/cats/group.png"
-                alt="Billie, Layla, Roxanne y Lucy — el equipo 4cats"
-                width={600}
-                height={480}
-                className="relative z-10 drop-shadow-2xl w-[340px] sm:w-[460px] md:w-[560px] h-auto"
-                priority
-              />
-            </div>
-
-          {/* Lucy label */}
-          <FadeUp delay={180}>
-            <p className="flex items-center gap-3 text-[#f5a855] font-bold tracking-[0.2em] uppercase text-xs mb-6">
-              <span className="w-10 h-px bg-[#f5a855]/40" />
-              {es ? "Lucy habla" : "Lucy speaks"}
-              <span className="w-10 h-px bg-[#f5a855]/40" />
-            </p>
-          </FadeUp>
+          {/* Imagen grupal 3D */}
+          <div className="relative flex items-end justify-center mb-8">
+            <div className="absolute inset-0 blur-[80px] opacity-30 pointer-events-none" style={{ background: "radial-gradient(ellipse at center bottom, #7C5CBF40, transparent 70%)" }} />
+            <Image
+              src="/cats/group.png"
+              alt="Billie, Layla, Roxanne y Lucy — el equipo 4cats"
+              width={600}
+              height={480}
+              className="relative z-10 drop-shadow-2xl w-[340px] sm:w-[460px] md:w-[560px] h-auto"
+              priority
+            />
+          </div>
 
           {/* Main headline */}
-          <FadeUp delay={260}>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.92] mb-8 max-w-5xl">
-              <span className="text-[#18181B] dark:text-white">{es ? "Convertimos tu web" : "We turn your web"}</span>
+          <FadeUp delay={180}>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.92] mb-6 max-w-5xl">
+              <span className="text-[#18181B] dark:text-white">Convertimos tu web</span>
               <br />
-              <span className="text-[#18181B] dark:text-white">{es ? "en una " : "into a "}</span>
+              <span className="text-[#18181B] dark:text-white">en un </span>
               <span className="bg-gradient-to-r from-[#9B8EB2] via-[#C4B5FD] to-[#D4788A] bg-clip-text text-transparent">
-                {es ? "máquina de captar" : "lead capturing"}
+                sistema para captar
               </span>
               <br />
-              <span className="text-[#18181B] dark:text-white">{es ? "clientes." : "machine."}</span>
+              <span className="text-[#18181B] dark:text-white">clientes.</span>
             </h1>
           </FadeUp>
 
-          <FadeUp delay={360}>
-            <p className="text-[#18181B] dark:text-black/70 dark:text-white/60 text-lg leading-relaxed max-w-2xl mb-12 font-medium">
-              {es
-                ? "Soy Lucy. Junto a mis hijas Billie, Layla y Roxanne hemos construido más de 50 proyectos que generan resultados reales para empresas del sur de Chile."
-                : "I'm Lucy. Together with my daughters Billie, Layla and Roxanne we've built over 50 projects that generate real results for businesses in southern Chile."}
+          <FadeUp delay={260}>
+            <p className="text-[#18181B] dark:text-white/80 text-xl md:text-2xl font-bold leading-relaxed max-w-3xl mb-8">
+              Diseñamos sitios web, automatizaciones y software para empresas de servicios que necesitan vender más y operar mejor.
             </p>
+            
+            <div className="bg-[#f5a855]/10 border border-[#f5a855]/20 rounded-2xl p-6 max-w-2xl mx-auto mb-10 text-left md:text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#f5a855]/10 blur-[30px] rounded-full pointer-events-none" />
+              <p className="text-[#18181B] dark:text-white/90 text-lg leading-relaxed font-medium relative z-10">
+                <span className="text-[#f5a855] font-black tracking-widest uppercase text-xs block mb-2">Lucy dice:</span>
+                &quot;Una web no debería ser un folleto digital. Conectamos tu web con captación, seguimiento y automatización para que cada oportunidad comercial tenga un siguiente paso.&quot;
+              </p>
+            </div>
           </FadeUp>
 
-          <FadeUp delay={440}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/planes"
-                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#7C5CBF] text-white font-bold rounded-2xl hover:bg-[#6B4DAE] transition-colors"
-                style={{ boxShadow: "0 4px 28px -4px rgba(124,92,191,0.65)" }}
-              >
-                <PawIcon className="w-4 h-4" />
-                {tr.cta1}
-              </Link>
+          <FadeUp delay={360}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/cotizar"
-                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-white/[0.18] text-[#18181B] dark:text-white font-bold rounded-2xl hover:bg-white/[0.07] transition-colors"
+                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#7C5CBF] text-white font-bold rounded-2xl hover:bg-[#6B4DAE] transition-colors text-lg"
+                style={{ boxShadow: "0 4px 28px -4px rgba(124,92,191,0.65)" }}
               >
-                <PawIcon className="w-4 h-4 text-[#7C5CBF]" />
-                {tr.cta2}
+                <PawIcon className="w-5 h-5" />
+                Quiero conseguir más clientes
+              </Link>
+              <Link
+                href="/portafolio/plus-grafica"
+                className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-4 border border-black/10 dark:border-white/[0.18] text-[#18181B] dark:text-white font-bold rounded-2xl hover:bg-black/[0.03] dark:hover:bg-white/[0.07] transition-colors text-lg"
+              >
+                Ver un caso real
               </Link>
             </div>
+            <p className="mt-8 text-sm font-black tracking-[0.3em] uppercase text-[#18181B]/40 dark:text-white/30">
+              Web · Automatización · Software · IA
+            </p>
           </FadeUp>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none">
-          <div className="w-px h-14 bg-gradient-to-b from-transparent to-white/40" />
-          <p className="text-[10px] tracking-[0.25em] uppercase text-[#18181B] dark:text-black/60 dark:text-white/50">{es ? "Conocé el equipo" : "Meet the team"}</p>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none">
+          <div className="w-px h-10 bg-gradient-to-b from-transparent to-black/20 dark:to-white/40" />
+          <p className="text-[10px] tracking-[0.25em] uppercase text-[#18181B]/50 dark:text-white/50">Conocé el equipo</p>
         </div>
       </section>
 
@@ -387,13 +357,13 @@ export default function Home() {
                 <div
                   className={`flex flex-col gap-10 py-16 ${idx % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} items-center ${idx < daughters.length - 1 ? "border-b border-black/[0.06] dark:border-white/[0.06]" : ""}`}
                 >
-                  <CatHoverWrapper className="relative flex-shrink-0 flex items-center justify-center w-[200px] h-[220px]" renderCat={(h) => (
+                  <CatHoverWrapper className="relative flex-shrink-0 flex items-center justify-center w-[200px] h-[220px]" renderCat={() => (
                     <>
                       <div
                         className="absolute inset-0 rounded-full blur-[70px] opacity-30 pointer-events-none"
                         style={{ background: d.color }}
                       />
-                      {d.renderCat(h)}
+                      {d.renderCat()}
                     </>
                   )} />
 
@@ -511,18 +481,26 @@ export default function Home() {
       {/* ─────────── STATS ─────────── */}
       <section className="max-w-5xl mx-auto px-6 py-20">
         <FadeUp>
-          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <BentoStatCell label={tr.stat1} target={50} suffix="+" colSpan={2} bg="bg-white dark:bg-[#1E1E26]" textColor="text-[#18181B] dark:text-white text-7xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1400} />
-            <BentoStatCell label={tr.stat2} target={98} suffix="%" bg="bg-[#7C5CBF]" textColor="text-white" labelColor="text-[#E5D8FF]/90" active={statsVisible} duration={1600} />
-            <BentoStatCell label={tr.stat3} target={3} suffix={es ? " años" : " yrs"} bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#7C5CBF] dark:text-[#F4F4F6]" labelColor="text-[#7C5CBF]" active={statsVisible} duration={800} />
-            <BentoStatCell label="PageSpeed" target={95} suffix="+" bg="bg-[#F3EEFF] dark:bg-[#1C1630]" textColor="text-[#7C5CBF] dark:text-[#F4F4F6] text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={1200} />
-            <div className="bento-cell col-span-2 bg-gradient-to-r from-[#7C5CBF] to-[#9B72F0] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
-              <p className="text-xs font-semibold tracking-widest uppercase text-white/90">
-                {es ? "Carga garantizada" : "Guaranteed load"}
-              </p>
-              <p className="text-5xl font-black text-white leading-none mt-4">{"< 2s"}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bento-cell bg-gradient-to-r from-[#7C5CBF] to-[#9B72F0] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
+              <p className="text-xs font-semibold tracking-widest uppercase text-white/90">Carga objetivo</p>
+              <p className="text-5xl font-black text-white leading-none mt-4">&lt; 2s</p>
             </div>
-            <BentoStatCell label={es ? "Entrega MVP" : "MVP delivery"} target={18} suffix="d" bg="bg-white dark:bg-[#1E1E26]" textColor="text-[#18181B] dark:text-white text-4xl" labelColor="text-[#7C5CBF]" active={statsVisible} duration={900} />
+            
+            <div className="bento-cell bg-[#F3EEFF] dark:bg-[#1C1630] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
+              <p className="text-xs font-semibold tracking-widest uppercase text-[#7C5CBF]">PageSpeed objetivo</p>
+              <p className="text-5xl font-black text-[#7C5CBF] dark:text-[#F4F4F6] leading-none mt-4">95+</p>
+            </div>
+
+            <div className="bento-cell bg-white dark:bg-[#1E1E26] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
+              <p className="text-xs font-semibold tracking-widest uppercase text-[#7C5CBF]">Código entregado</p>
+              <p className="text-5xl font-black text-[#18181B] dark:text-white leading-none mt-4">100%</p>
+            </div>
+
+            <div className="bento-cell bg-white dark:bg-[#1E1E26] rounded-3xl p-8 flex flex-col justify-between min-h-[140px]">
+              <p className="text-xs font-semibold tracking-widest uppercase text-[#7C5CBF]">Soporte directo</p>
+              <p className="text-4xl md:text-5xl font-black text-[#18181B] dark:text-white leading-none mt-4 tracking-tighter">Temuco</p>
+            </div>
           </div>
         </FadeUp>
       </section>
@@ -580,7 +558,7 @@ export default function Home() {
       <section className="bg-[#F4F4F6] dark:bg-[#0A0710] py-32 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <FadeUp>
-            <CatHoverWrapper className="relative inline-block mb-10 cursor-pointer" renderCat={(h) => (
+            <CatHoverWrapper className="relative inline-block mb-10 cursor-pointer" renderCat={() => (
               <>
                 <div className="absolute inset-0 blur-[80px] scale-[1.8] opacity-35 pointer-events-none rounded-full animate-pulse-slow" style={{ background: "radial-gradient(circle, #f5a85540, transparent)" }} />
                 <LucyCat className="w-[140px] h-[168px] relative z-10 mx-auto" />
@@ -602,8 +580,8 @@ export default function Home() {
             </h2>
             <p className="text-[#18181B] dark:text-black/60 dark:text-white/50 text-lg mb-12 max-w-xl mx-auto leading-relaxed">
               {es
-                ? "Cuéntanos tu proyecto. Mis hijas y yo te preparamos una propuesta en menos de 24 horas."
-                : "Tell us about your project. My daughters and I will prepare a proposal in less than 24 hours."}
+                ? "Hemos trabajado en proyectos digitales para empresas del sur de Chile, combinando diseño, software y automatización."
+                : "We have worked on digital projects for businesses in southern Chile, combining design, software, and automation."}
             </p>
           </FadeUp>
 

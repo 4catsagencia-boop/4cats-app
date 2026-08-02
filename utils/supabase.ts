@@ -133,10 +133,10 @@ export interface Cotizacion {
   impuesto?: number
   total: number
   moneda: Moneda
-  estado: 'pendiente' | 'aprobada' | 'rechazada'
+  estado: 'nuevo' | 'pendiente' | 'aprobada' | 'rechazada'
   notas?: string
   items?: CotizacionItem[]
-  metadata?: any
+  metadata?: unknown
   created_at?: string
 }
 
@@ -315,7 +315,7 @@ export interface PropouestaTecnica {
   cliente_id: string
   nombre: string
   descripcion: string
-  contenido_json: Record<string, any>
+  contenido_json: Record<string, unknown>
   estado: 'activo' | 'inactivo'
   expira_at?: string
   creado_por?: string
@@ -371,6 +371,7 @@ export const METRIC_HIGHER_IS_BETTER: Record<string, boolean> = {
 // =============================================================================
 // PUBLIC FUNCTIONS (Safe for Client-Side with RLS)
 // =============================================================================
+
 
 export const fetchPlanesPublicados = async (): Promise<Plan[]> => {
   const { data, error } = await supabase

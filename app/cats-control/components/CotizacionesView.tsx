@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAdminDB } from "@/app/admin/hooks/useAdminDB";
-import { type Cotizacion } from "../../../utils/supabase";
+import { type Cotizacion, type CotizacionItem } from "../../../utils/supabase";
 import { generateQuotePDF } from "../../../utils/pdf-generator";
 import NuevaCotizacionModal from "./NuevaCotizacionModal";
 
@@ -16,6 +16,7 @@ const MODULO_COLORS: Record<string, string> = {
 };
 
 const estadoBadge: Record<Cotizacion["estado"], string> = {
+  nuevo: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   pendiente: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
   aprobada: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   rechazada: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
@@ -123,6 +124,7 @@ export default function CotizacionesView() {
 
   const filtros: { key: Filtro; label: string }[] = [
     { key: "todas", label: "Todas" },
+    { key: "nuevo", label: "Nuevos" },
     { key: "pendiente", label: "Pendientes" },
     { key: "aprobada", label: "Aprobadas" },
     { key: "rechazada", label: "Rechazadas" },
@@ -189,11 +191,11 @@ export default function CotizacionesView() {
               )}
               {filtradas.map((c, idx) => {
                 const isExpanded = expandedId === c.id;
-                const parsedItems = c.items
-                  ? (typeof c.items === "string" ? JSON.parse(c.items) : c.items)
+                const parsedItems: CotizacionItem[] = c.items
+                  ? (typeof c.items === "string" ? JSON.parse(c.items) as CotizacionItem[] : c.items)
                   : [];
-                const hasDesglose = parsedItems.some((i: any) => i.costo_desarrollo !== undefined);
-                const totalCosto = parsedItems.reduce((s: number, i: any) => s + (i.costo_desarrollo || 0), 0);
+                const hasDesglose = parsedItems.some((i) => i.costo_desarrollo !== undefined);
+                const totalCosto = parsedItems.reduce((s, i) => s + (i.costo_desarrollo || 0), 0);
 
                 return (
                   <React.Fragment key={c.id}>
@@ -221,6 +223,7 @@ export default function CotizacionesView() {
                             onChange={(e) => handleEstado(c.id, e.target.value as Cotizacion["estado"])}
                             className="text-[10px] font-bold border border-[#E4E4E7] dark:border-[#2A2A35] bg-white dark:bg-[#0F0F12] text-[#18181B] dark:text-white rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-[#7C5CBF] transition-all"
                           >
+                            <option value="nuevo">Nuevo</option>
                             <option value="pendiente">Pendiente</option>
                             <option value="aprobada">Aprobada</option>
                             <option value="rechazada">Rechazada</option>
@@ -271,10 +274,10 @@ export default function CotizacionesView() {
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-[#E4E4E7] dark:divide-[#2A2A35]">
-                              {parsedItems.map((item: any, i: number) => (
+                              {parsedItems.map((item, i) => (
                                 <tr key={i}>
                                   <td className="py-1.5 pr-4">
-                                    <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full ${MODULO_COLORS[item.modulo] || "bg-gray-100 text-gray-600"}`}>
+                                    <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full ${item.modulo ? MODULO_COLORS[item.modulo] : "bg-gray-100 text-gray-600"}`}>
                                       {item.modulo || "—"}
                                     </span>
                                   </td>
