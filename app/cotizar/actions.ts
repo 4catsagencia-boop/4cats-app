@@ -9,6 +9,11 @@ export async function submitAuditoria(formData: FormData) {
     const web = formData.get("web")?.toString().trim() || "";
     const whatsapp = formData.get("whatsapp")?.toString().trim() || "";
     const objetivo = formData.get("objetivo")?.toString().trim() || "";
+    const landingPage = formData.get("landing_page")?.toString().trim() || "/cotizar";
+    const referrer = formData.get("referrer")?.toString().trim() || "";
+    const utmSource = formData.get("utm_source")?.toString().trim() || "";
+    const utmMedium = formData.get("utm_medium")?.toString().trim() || "";
+    const utmCampaign = formData.get("utm_campaign")?.toString().trim() || "";
 
     if (!empresa || !whatsapp || !objetivo) {
       return { error: "Por favor, completa los campos obligatorios." };
@@ -41,7 +46,7 @@ export async function submitAuditoria(formData: FormData) {
       whatsapp,
       objetivo,
       source: "auditoria_gratuita",
-      landing_page: "/cotizar",
+      landing_page: landingPage,
       created_at: createdAt,
       status: "nuevo",
     };
@@ -56,6 +61,10 @@ export async function submitAuditoria(formData: FormData) {
       moneda: "CLP",
       metadata: {
         ...lead,
+        referrer,
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign,
         ip,
         ua,
       },
@@ -84,3 +93,4 @@ export async function submitAuditoria(formData: FormData) {
     return { error: "Hubo un error al procesar tu solicitud." };
   }
 }
+

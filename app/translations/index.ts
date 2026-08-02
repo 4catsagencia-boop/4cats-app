@@ -18,10 +18,10 @@ export const t = {
       cta2: "Cotizar gratis",
       catGreeting: "¡Hola! Soy",
       cats: {
-        lucy:    { role: "Estrategia y Visión",    desc: "La mente maestra detrás de cada proyecto. Define el camino al éxito." },
-        billie:  { role: "Diseño y Creatividad",   desc: "Transforma ideas en experiencias visuales que enamoran." },
-        layla:   { role: "Desarrollo Web",          desc: "Código limpio, sitios rápidos. Tu web siempre perfecta." },
-        roxanne: { role: "Marketing Digital",       desc: "Convierte visitas en clientes con estrategias que funcionan." },
+        lucy:    { role: "Datos y estrategia",                 desc: "Ordena métricas, decisiones y próximos pasos para que el sistema mejore con evidencia." },
+        billie:  { role: "Diseño y experiencia",             desc: "Convierte la identidad de tu empresa en una experiencia clara, confiable y memorable." },
+        layla:   { role: "Software y arquitectura",          desc: "Construye bases técnicas rápidas, mantenibles y preparadas para escalar." },
+        roxanne: { role: "Automatización y conversión",       desc: "Conecta captación, seguimiento y automatización para transformar visitas en oportunidades." },
       },
       whyTitle: "Lo que nos hace distintos",
       why: [
@@ -209,10 +209,10 @@ export const t = {
       cta2: "Get a free quote",
       catGreeting: "Hi! I'm",
       cats: {
-        lucy:    { role: "Strategy & Vision",    desc: "The mastermind behind every project. She defines the path to success." },
-        billie:  { role: "Design & Creativity",  desc: "Transforms ideas into visual experiences that people fall in love with." },
-        layla:   { role: "Web Development",      desc: "Clean code, fast sites. Your website always perfect." },
-        roxanne: { role: "Digital Marketing",    desc: "Converts visits into customers with strategies that work." },
+        lucy:    { role: "Data and strategy",                 desc: "Turns metrics, decisions, and next steps into evidence-based growth." },
+        billie:  { role: "Design and experience",            desc: "Turns your company identity into a clear, trustworthy, memorable experience." },
+        layla:   { role: "Software and architecture",        desc: "Builds fast, maintainable technical foundations ready to scale." },
+        roxanne: { role: "Automation and conversion",        desc: "Connects capture, follow-up, and automation to turn visits into opportunities." },
       },
       whyTitle: "What makes us different",
       why: [
@@ -382,3 +382,4 @@ export const t = {
 } as const;
 
 export type Translations = typeof t.es;
+

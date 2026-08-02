@@ -11,6 +11,7 @@ import { useLang } from "./context/LanguageContext"
 import { t } from "./translations"
 import Navbar from "./components/Navbar"
 import { FadeUp } from "./components/FadeUp"
+import { PageViewEvent, trackFunnelEvent } from "./components/AnalyticsEvents"
 
 function PawIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -140,7 +141,7 @@ export default function Home() {
       color: "#9B8EB2",
       name: "Billie",
       quote: es ? '"Tu marca merece diseño que haga parar el scroll."' : '"Your brand deserves design that stops the scroll."',
-      role: es ? "Diseño & Experiencia" : "Design & Experience",
+      role: es ? "Diseño y experiencia" : "Design and experience",
       desc: es
         ? "Cada píxel tiene un propósito. Billie convierte tu identidad en una experiencia visual que conecta emocionalmente con tus clientes desde el primer segundo."
         : "Every pixel has a purpose. Billie transforms your identity into a visual experience that emotionally connects with your clients from the first second.",
@@ -152,7 +153,7 @@ export default function Home() {
       color: "#9370db",
       name: "Layla",
       quote: es ? '"Código que funciona perfecto aunque nadie lo vea."' : '"Code that works perfectly even when no one sees it."',
-      role: es ? "Desarrollo & Arquitectura" : "Development & Architecture",
+      role: es ? "Software y arquitectura" : "Software and architecture",
       desc: es
         ? "Layla construye sobre cimientos sólidos. Next.js, TypeScript, Supabase — tecnología de producción que escala contigo sin vendor lock-in."
         : "Layla builds on solid foundations. Next.js, TypeScript, Supabase — production technology that scales with you without vendor lock-in.",
@@ -164,7 +165,7 @@ export default function Home() {
       color: "#D4788A",
       name: "Roxanne",
       quote: es ? '"Tus visitas ya son clientes. Solo les falta el empuje correcto."' : '"Your visitors are already clients. They just need the right push."',
-      role: es ? "Marketing & Conversión" : "Marketing & Conversion",
+      role: es ? "Automatización y conversión" : "Automation and conversion",
       desc: es
         ? "Roxanne no cree en el tráfico. Cree en los resultados. Automatizaciones, funnels y estrategia digital que convierte visitas en ventas reales."
         : "Roxanne doesn't believe in traffic. She believes in results. Automations, funnels and digital strategy that converts visits into real sales.",
@@ -216,6 +217,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-x-hidden">
+      <PageViewEvent name="home_view" />
       <Navbar />
 
       {/* ─────────── HERO ─────────── */}
@@ -279,6 +281,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/cotizar"
+                onClick={() => trackFunnelEvent("primary_cta_click", { cta: "home_hero", target: "/cotizar" })}
                 className="btn-squish inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#7C5CBF] text-white font-bold rounded-2xl hover:bg-[#6B4DAE] transition-colors text-lg"
                 style={{ boxShadow: "0 4px 28px -4px rgba(124,92,191,0.65)" }}
               >
@@ -601,3 +604,6 @@ export default function Home() {
     </main>
   )
 }
+
+
+

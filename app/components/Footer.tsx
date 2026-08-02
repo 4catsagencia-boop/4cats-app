@@ -10,10 +10,10 @@ export default function Footer() {
   const tr = t[lang].footer;
 
   const teamRoles = {
-    es: ["Fundadora", "Soporte", "Diseño", "Estrategia"],
-    en: ["Founder", "Support", "Design", "Strategy"],
+    es: ["Diseño y experiencia", "Software y arquitectura", "Automatización y conversión", "Datos y estrategia"],
+    en: ["Design and experience", "Software and architecture", "Automation and conversion", "Data and strategy"],
   };
-  const teamNames = ["Lucy", "Billie", "Layla", "Roxanne"];
+  const teamNames = ["Billie", "Layla", "Roxanne", "Lucy"];
 
   return (
     <footer className="bg-[#18181B] text-white mt-0">
@@ -125,3 +125,4 @@ export default function Footer() {
     </footer>
   );
 }
+

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { submitAuditoria } from "./actions";
+import { getTrackingContext, trackFunnelEvent } from "../components/AnalyticsEvents";
 
 function inputClass(hasError: boolean) {
   return [
@@ -29,6 +30,18 @@ export default function AuditoriaForm() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [trackingContext, setTrackingContext] = useState(getTrackingContext);
+  const started = useRef(false);
+
+  useEffect(() => {
+    setTrackingContext(getTrackingContext());
+  }, []);
+
+  function handleStarted() {
+    if (started.current) return;
+    started.current = true;
+    trackFunnelEvent("audit_started");
+  }
 
   async function handleAction(formData: FormData) {
     setLoading(true);
@@ -38,6 +51,7 @@ export default function AuditoriaForm() {
       if (res.error) {
         setErrorMsg(res.error);
       } else {
+        trackFunnelEvent("audit_submitted", { objetivo: formData.get("objetivo")?.toString() || "" });
         setSubmitted(true);
       }
     } catch {
@@ -71,7 +85,10 @@ export default function AuditoriaForm() {
 
   return (
     <div className="rounded-3xl p-8 border border-black/[0.10] dark:border-white/[0.10]" style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(20px)" }}>
-      <form action={handleAction} className="flex flex-col gap-6">
+      <form action={handleAction} onFocusCapture={handleStarted} className="flex flex-col gap-6">
+        {Object.entries(trackingContext).map(([key, value]) => (
+          <input key={key} type="hidden" name={key} value={value} readOnly />
+        ))}
         {errorMsg && (
           <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm font-medium text-center">
             {errorMsg}
@@ -117,3 +134,4 @@ export default function AuditoriaForm() {
     </div>
   );
 }
+
