@@ -256,15 +256,8 @@ export default function Home() {
 
           {/* Main headline */}
           <FadeUp delay={180}>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.92] mb-6 max-w-5xl">
-              <span className="text-[#18181B] dark:text-white">Convertimos tu web</span>
-              <br />
-              <span className="text-[#18181B] dark:text-white">en un </span>
-              <span className="bg-gradient-to-r from-[#9B8EB2] via-[#C4B5FD] to-[#D4788A] bg-clip-text text-transparent">
-                sistema para captar
-              </span>
-              <br />
-              <span className="text-[#18181B] dark:text-white">clientes.</span>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.92] mb-6 max-w-5xl text-[#18181B] dark:text-white">
+              Convertimos tu web en un sistema para captar clientes.
             </h1>
           </FadeUp>
 
